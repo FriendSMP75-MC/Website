@@ -1,25 +1,28 @@
-import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:server_site/supabase_config.dart';
 import 'package:server_site/widgets/nav_drawer.dart';
+import 'dart:async';
 
 SupabaseClient get supabase => Supabase.instance.client;
 
-class Status extends StatefulWidget {
-  const Status({super.key});
+class Home extends StatefulWidget {
+  const Home({super.key});
 
   @override
-  State<Status> createState() => _StatusState();
+  State<Home> createState() => _HomeState();
 }
 
-class _StatusState extends State<Status> {
+class _HomeState extends State<Home> {
   StreamSubscription<AuthState>? _authSub;
 
   @override
   void initState() {
     super.initState();
-    _authSub = supabase.auth.onAuthStateChange.listen((data) {});
+    // Subscribe to auth state changes
+    _authSub = supabase.auth.onAuthStateChange.listen((data) {
+      if (mounted) setState(() {});
+    });
   }
 
   @override
@@ -41,7 +44,6 @@ class _StatusState extends State<Status> {
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              // server logo
               Padding(
                 padding: const EdgeInsets.only(right: 3),
                 child: Image.network(
@@ -51,16 +53,12 @@ class _StatusState extends State<Status> {
                       const Icon(Icons.broken_image),
                 ),
               ),
-
-              // server name
               const Flexible(
                 child: Text('FriendSMP75', overflow: TextOverflow.visible),
               ),
             ],
           ),
         ),
-
-        // to open end drawer by default and for icon
         actions: [
           Builder(
             builder: (context) => IconButton(
@@ -74,11 +72,11 @@ class _StatusState extends State<Status> {
       ),
 
       endDrawer: NavDrawer(
-        currentPage: 'Status',
+        currentPage: 'Home',
         parentContext: context,
       ),
 
-      body: const Center(child: Text('Welcome to the Status app!')),
+      body: const Center(child: Text('Welcome to the Home Page!')),
     );
   }
 }

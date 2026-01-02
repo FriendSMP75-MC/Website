@@ -6,7 +6,7 @@ import 'dart:async';
 class SupabaseConfig {
   static SupabaseClient? _client;
   static StreamSubscription<AuthState>? _authSub;
-  static bool _initialized = false;
+  static final bool _initialized = false;
 
   static SupabaseClient get client {
     if (_client == null) {
