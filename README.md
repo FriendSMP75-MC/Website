@@ -1,16 +1,9 @@
-# server_site
+# FriendSMP75 Website
 
-A new Flutter project.
+This website is for [FriendSMP75 Minecraft Server](https://discord.gg/K8ucVvjfge)
 
-## Getting Started
+## Used to build
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+- Flutter [Dart Framework, Supabase - For login]
+- Python [Flask, Supabase - upload and retrive data]
+- Supabase [Database]
