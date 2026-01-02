@@ -35,7 +35,8 @@ migrate_working_dir/
 sshkey
 sshkey.pub
 build/*
-!build/web/
+!build/web
+!build/web/**
 *.apk
 *.so
 
