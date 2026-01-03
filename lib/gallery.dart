@@ -33,7 +33,7 @@ class _GalleryState extends State<Gallery> {
   @override
   Widget build(BuildContext context) {
     final user = SupabaseConfig.client.auth.currentUser;
-    SupabaseConfig.getDisplayName(user);
+    SupabaseConfig.getUserName(user);
     SupabaseConfig.getAvatarUrl(user);
 
     return Scaffold(

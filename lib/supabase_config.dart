@@ -79,7 +79,7 @@ class SupabaseConfig {
   /// --- Helpers for user metadata ---
 
   /// Get a safe display name from user metadata
-  static String getDisplayName(User? user) {
+  static String getUserName(User? user) {
     if (user == null) return 'User';
     final meta = user.userMetadata;
 

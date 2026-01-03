@@ -36,7 +36,7 @@ class NavDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final user = SupabaseConfig.client.auth.currentUser;
-    final displayName = SupabaseConfig.getDisplayName(user);
+    final username = SupabaseConfig.getUserName(user);
 
     return Drawer(
       child: Column(
@@ -165,7 +165,7 @@ class NavDrawer extends StatelessWidget {
                       Text(
                         user == null
                             ? "Login with Discord"
-                            : "Welcome Back! \n $displayName",
+                            : "Welcome Back! \n $username",
                         style: const TextStyle(
                         ),
                         textAlign: TextAlign.center,

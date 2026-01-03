@@ -34,7 +34,7 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     final user = SupabaseConfig.client.auth.currentUser;
-    SupabaseConfig.getDisplayName(user);
+    SupabaseConfig.getUserName(user);
     SupabaseConfig.getAvatarUrl(user);
 
     return Scaffold(

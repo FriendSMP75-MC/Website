@@ -34,6 +34,7 @@ class _DashboardState extends State<Dashboard> {
   @override
   Widget build(BuildContext context) {
     final user = SupabaseConfig.client.auth.currentUser;
+    final username = SupabaseConfig.getUserName(user);
     
 
     return Scaffold(
@@ -86,7 +87,34 @@ class _DashboardState extends State<Dashboard> {
         parentContext: context,
       ),
 
-      body: const Center(child: Text('Welcome to the Dashboard!')),
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            SizedBox(
+              width: double.infinity,
+              child: Row(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      'Welcome $username',
+                      textAlign: TextAlign.start,
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      'Discord ID: ${user?.id ?? 'Not logged in'}',
+                      textAlign: TextAlign.end,
+                      ),
+                  ),
+                ],
+              ),
+            )
+
+          ],
+        ),
+      ),
     );
   }
 }

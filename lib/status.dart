@@ -31,7 +31,7 @@ class _StatusState extends State<Status> {
   @override
   Widget build(BuildContext context) {
     final user = SupabaseConfig.client.auth.currentUser;
-    SupabaseConfig.getDisplayName(user);
+    SupabaseConfig.getUserName(user);
     SupabaseConfig.getAvatarUrl(user);
 
     return Scaffold(
