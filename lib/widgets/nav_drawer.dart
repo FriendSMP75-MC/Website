@@ -147,7 +147,9 @@ class NavDrawer extends StatelessWidget {
                     backgroundColor: Colors.deepPurple[400],
                     foregroundColor: Colors.white,
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
+                      borderRadius: BorderRadius.only(
+                        bottomLeft: Radius.circular(10),
+                      ),
                     ),
                   ),
                   onPressed: () async {

@@ -69,6 +69,17 @@ class _AboutState extends State<About> {
             ),
           ),
         ],
+        bottom: const PreferredSize(
+          preferredSize: Size.fromHeight(1),
+          child: SizedBox(
+            width: double.infinity,
+            child: Divider(
+              height: 1,
+              thickness: 1,
+              color: Colors.grey,
+            ),
+          ),
+        ),
       ),
 
       endDrawer: NavDrawer(
