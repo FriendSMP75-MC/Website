@@ -36,7 +36,6 @@ class NavDrawer extends StatelessWidget {
   Widget build(BuildContext context) {
     final user = SupabaseConfig.client.auth.currentUser;
     final displayName = SupabaseConfig.getDisplayName(user);
-    final avatarUrl = SupabaseConfig.getAvatarUrl(user);
 
     return Drawer(
       child: Column(
@@ -119,31 +118,6 @@ class NavDrawer extends StatelessWidget {
           Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              if (user != null)
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 8),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      if (avatarUrl != null)
-                        CircleAvatar(
-                          radius: 16,
-                          backgroundImage: NetworkImage(avatarUrl),
-                          backgroundColor: Colors.transparent,
-                        ),
-                      if (avatarUrl != null) const SizedBox(width: 8),
-                      Text(
-                        ' Hello $displayName',
-                        style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w500,
-                          color: Colors.deepPurple,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                    ],
-                  ),
-                ),
               SizedBox(
                 width: double.infinity,
                 height: 60,
@@ -171,7 +145,6 @@ class NavDrawer extends StatelessWidget {
                             : "Welcome Back! \n $displayName",
                         style: const TextStyle(
                           fontSize: 16,
-                          fontWeight: FontWeight.bold,
                         ),
                         textAlign: TextAlign.center,
                       ),

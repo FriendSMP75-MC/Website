@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -19,7 +21,7 @@ class SupabaseConfig {
   static Future<Map<String, String>?> fetchSupabaseDetails() async {
     const backendUrl =
         'https://key-backend-for-friendsmp75-website.onrender.com/secure-data';
-    const accessToken = 'ybjyyfusdhhdtfvsckbcksdufhcgsjhcmnnxgcjbcn';
+    const accessToken = 'ybjyyfusdhhdtfvsckbcksdufhcgsjhcmnnxgcjbcn'; ///need to change accesstoken before full production change
 
     try {
       final response = await http.get(
