@@ -123,20 +123,21 @@ class NavDrawer extends StatelessWidget {
           Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              if (user!=null)
-              ListTile(
-                contentPadding: EdgeInsets.symmetric(horizontal: 16),
-                minTileHeight: 57,
-                title: const Text('Dashboard',
-                textAlign: TextAlign.center,
-                style: TextStyle(color: Colors.white),
+              if (user != null)
+                ListTile(
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 16),
+                  minTileHeight: 57,
+                  title: const Text(
+                    'Dashboard',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(color: Colors.white),
+                  ),
+                  selected: currentPage == 'Dashboard',
+                  selectedTileColor: Colors.purpleAccent,
+                  onTap: () {
+                    _navigateSafely(const Dashboard());
+                  },
                 ),
-                selected: currentPage=='Dashboard',
-                selectedTileColor: Colors.purpleAccent,
-                onTap: () {
-                  _navigateSafely(const Dashboard());
-                },
-              ),
 
               SizedBox(
                 width: double.infinity,
