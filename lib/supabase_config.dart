@@ -98,12 +98,8 @@ class SupabaseConfig {
     return 'User';
   }
 
-  static String getDiscordID(User? user) {
-    final meta = user?.userMetadata;
-    final discordId = meta?['discord_id'];
-    if (discordId is String) return discordId;
-    if (discordId != null) return discordId.toString();
-    return '';
+  static String getSupabaseUUID(User? user) {
+    return user?.id ?? 'Not logged in';
   }
 
   /// Get avatar URL if provided by Discord OAuth
