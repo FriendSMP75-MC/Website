@@ -35,7 +35,7 @@ class _DashboardState extends State<Dashboard> {
   Widget build(BuildContext context) {
     final user = SupabaseConfig.client.auth.currentUser;
     final username = SupabaseConfig.getUserName(user);
-    
+    final discordID = SupabaseConfig.getDiscordID(user);
 
     return Scaffold(
       appBar: AppBar(
@@ -106,7 +106,7 @@ class _DashboardState extends State<Dashboard> {
                     Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Text(
-                        'Discord ID: ${user?.userMetadata?['id'] ?? 'Not logged in'}',
+                        'Discord ID: ${discordID.isNotEmpty ? discordID : 'Not logged in'}',
                         textAlign: TextAlign.end,
                         ),
                     ),
