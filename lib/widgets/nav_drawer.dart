@@ -126,6 +126,12 @@ class NavDrawer extends StatelessWidget {
               ListTile(
                 contentPadding: EdgeInsets.symmetric(horizontal: 16),
                 minTileHeight: 57,
+                title: const Text('Dashboard',
+                textAlign: TextAlign.center,
+                style: TextStyle(color: Colors.white),
+                ),
+                selected: currentPage=='Dashboard',
+                selectedTileColor: Colors.purpleAccent,
               ),
 
               SizedBox(
