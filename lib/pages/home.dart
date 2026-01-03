@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:server_site/supabase_config.dart';
+import 'package:server_site/data/supabase_config.dart';
 import 'package:server_site/widgets/nav_drawer.dart';
 import 'dart:async';
 
 SupabaseClient get supabase => Supabase.instance.client;
 
-class Dashboard extends StatefulWidget {
-  const Dashboard({super.key});
+class Home extends StatefulWidget {
+  const Home({super.key});
 
   @override
-  State<Dashboard> createState() => _DashboardState();
+  State<Home> createState() => _HomeState();
 }
 
-class _DashboardState extends State<Dashboard> {
+class _HomeState extends State<Home> {
   StreamSubscription<AuthState>? _authSub;
 
   @override
@@ -34,9 +34,7 @@ class _DashboardState extends State<Dashboard> {
   @override
   Widget build(BuildContext context) {
     final user = SupabaseConfig.client.auth.currentUser;
-    final username = SupabaseConfig.getUserName(user);
-    final authUUID = SupabaseConfig.getSupabaseUUID(user);
-
+    SupabaseConfig.getUserName(user);
 
     return Scaffold(
       appBar: AppBar(
@@ -84,41 +82,11 @@ class _DashboardState extends State<Dashboard> {
       ),
 
       endDrawer: NavDrawer(
-        currentPage: 'Dashboard',
+        currentPage: 'Home',
         parentContext: context,
       ),
 
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            Expanded(
-              child: SizedBox(
-                width: double.infinity,
-                child: Row(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Text(
-                        'Welcome $username',
-                        textAlign: TextAlign.start,
-                      ),
-                    ),
-                    Spacer(),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: SelectableText(
-                        'Auth ID: $authUUID',
-                        textAlign: TextAlign.end,
-                        ),
-                    ),
-                  ],
-                ),
-              ),
-            )
-
-          ],
-        ),
-      ),
+      body: const Center(child: Text('Welcome to the Home Page!')),
     );
   }
 }

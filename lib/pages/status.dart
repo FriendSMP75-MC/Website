@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:server_site/supabase_config.dart';
+import 'package:server_site/data/supabase_config.dart';
 import 'package:server_site/widgets/nav_drawer.dart';
 
 SupabaseClient get supabase => Supabase.instance.client;
@@ -32,7 +32,6 @@ class _StatusState extends State<Status> {
   Widget build(BuildContext context) {
     final user = SupabaseConfig.client.auth.currentUser;
     SupabaseConfig.getUserName(user);
-    SupabaseConfig.getAvatarUrl(user);
 
     return Scaffold(
       appBar: AppBar(

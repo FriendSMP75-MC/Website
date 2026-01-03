@@ -102,11 +102,6 @@ class SupabaseConfig {
     return user?.id ?? 'Not logged in';
   }
 
-  /// Get avatar URL if provided by Discord OAuth
-  static String? getAvatarUrl(User? user) {
-    final meta = user?.userMetadata;
-    return meta?['avatar_url'] as String?;
-  }
 
   /// Quick login/logout helpers
   static Future<void> loginWithDiscord() async {

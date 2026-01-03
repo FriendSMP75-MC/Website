@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:server_site/dashboard.dart';
+import 'package:server_site/pages/dashboard.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:server_site/supabase_config.dart';
-import 'package:server_site/home.dart';
-import 'package:server_site/about.dart';
-import 'package:server_site/status.dart';
-import 'package:server_site/gallery.dart';
+import 'package:server_site/data/supabase_config.dart';
+import 'package:server_site/pages/home.dart';
+import 'package:server_site/pages/about.dart';
+import 'package:server_site/pages/status.dart';
+import 'package:server_site/pages/gallery.dart';
 
 SupabaseClient get supabase => Supabase.instance.client;
 

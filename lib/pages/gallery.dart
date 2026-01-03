@@ -1,25 +1,24 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:server_site/supabase_config.dart';
+import 'package:server_site/data/supabase_config.dart';
 import 'package:server_site/widgets/nav_drawer.dart';
-import 'dart:async';
 
 SupabaseClient get supabase => Supabase.instance.client;
 
-class About extends StatefulWidget {
-  const About({super.key});
+class Gallery extends StatefulWidget {
+  const Gallery({super.key});
 
   @override
-  State<About> createState() => _AboutState();
+  State<Gallery> createState() => _GalleryState();
 }
 
-class _AboutState extends State<About> {
+class _GalleryState extends State<Gallery> {
   StreamSubscription<AuthState>? _authSub;
 
   @override
   void initState() {
     super.initState();
-    // Subscribe to auth state changes
     _authSub = supabase.auth.onAuthStateChange.listen((data) {
       if (mounted) setState(() {});
     });
@@ -35,8 +34,7 @@ class _AboutState extends State<About> {
   Widget build(BuildContext context) {
     final user = SupabaseConfig.client.auth.currentUser;
     SupabaseConfig.getUserName(user);
-    SupabaseConfig.getAvatarUrl(user);
-
+    
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
@@ -44,6 +42,7 @@ class _AboutState extends State<About> {
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
+              // server logo
               Padding(
                 padding: const EdgeInsets.only(right: 3),
                 child: Image.network(
@@ -53,12 +52,16 @@ class _AboutState extends State<About> {
                       const Icon(Icons.broken_image),
                 ),
               ),
+
+              // server name
               const Flexible(
                 child: Text('FriendSMP75', overflow: TextOverflow.visible),
               ),
             ],
           ),
         ),
+
+        // to open end drawer by default and for icon
         actions: [
           Builder(
             builder: (context) => IconButton(
@@ -83,11 +86,11 @@ class _AboutState extends State<About> {
       ),
 
       endDrawer: NavDrawer(
-        currentPage: 'About',
+        currentPage: 'Gallery',
         parentContext: context,
       ),
 
-      body: const Center(child: Text('Welcome to the About app!')),
+      body: const Center(child: Text('Welcome to the Gallery app!')),
     );
   }
 }
