@@ -106,7 +106,7 @@ class _DashboardState extends State<Dashboard> {
                     Spacer(),
                     Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: Text(
+                      child: SelectableText(
                         'Auth ID: $authUUID',
                         textAlign: TextAlign.end,
                         ),
