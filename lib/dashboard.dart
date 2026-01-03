@@ -90,25 +90,28 @@ class _DashboardState extends State<Dashboard> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            SizedBox(
-              width: double.infinity,
-              child: Row(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text(
-                      'Welcome $username',
-                      textAlign: TextAlign.start,
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text(
-                      'Discord ID: ${user?.id ?? 'Not logged in'}',
-                      textAlign: TextAlign.end,
+            Expanded(
+              child: SizedBox(
+                width: double.infinity,
+                child: Row(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(
+                        'Welcome $username',
+                        textAlign: TextAlign.start,
                       ),
-                  ),
-                ],
+                    ),
+                    Spacer(),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(
+                        'Discord ID: ${user?.id ?? 'Not logged in'}',
+                        textAlign: TextAlign.end,
+                        ),
+                    ),
+                  ],
+                ),
               ),
             )
 
