@@ -114,7 +114,7 @@ class _DashboardState extends State<Dashboard> {
                 if (snapshot.connectionState != ConnectionState.done) {
                   return const SizedBox.shrink();
                 }
-                if (authUUID != null && authUUID == snapshot.data) {
+                if (authUUID == snapshot.data) {
                   return const ListTile(title: Text('hello'));
                 }
                 return const SizedBox.shrink();
