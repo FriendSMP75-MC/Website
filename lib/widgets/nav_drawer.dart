@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:server_site/dashboard.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:server_site/supabase_config.dart';
 import 'package:server_site/home.dart';
@@ -132,6 +133,9 @@ class NavDrawer extends StatelessWidget {
                 ),
                 selected: currentPage=='Dashboard',
                 selectedTileColor: Colors.purpleAccent,
+                onTap: () {
+                  _navigateSafely(const Dashboard());
+                },
               ),
 
               SizedBox(

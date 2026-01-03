@@ -6,14 +6,14 @@ import 'dart:async';
 
 SupabaseClient get supabase => Supabase.instance.client;
 
-class About extends StatefulWidget {
-  const About({super.key});
+class Dashboard extends StatefulWidget {
+  const Dashboard({super.key});
 
   @override
-  State<About> createState() => _AboutState();
+  State<Dashboard> createState() => _DashboardState();
 }
 
-class _AboutState extends State<About> {
+class _DashboardState extends State<Dashboard> {
   StreamSubscription<AuthState>? _authSub;
 
   @override
