@@ -106,7 +106,7 @@ class _DashboardState extends State<Dashboard> {
                     Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Text(
-                        'Discord ID: ${user?.id ?? 'Not logged in'}',
+                        'Discord ID: ${user?.userMetadata!['id'] ?? 'Not logged in'}',
                         textAlign: TextAlign.end,
                         ),
                     ),

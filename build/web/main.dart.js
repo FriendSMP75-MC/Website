@@ -70054,8 +70054,8 @@ m=t.F
 q=A.pF(!0,A.pD(A.c([new A.dZ(B.da,A.EL(u.p,new A.aa9(),40),n),B.de],m),B.ax,B.bq),B.ad,!0)
 q=A.Cb(A.c([new A.d5(new A.aaa(),n)],m),!1,B.dH,q)
 p=A.a7c("Welcome "+r,n,B.aF)
-o=s==null?n:s.a
-return A.Hq(q,new A.I5(A.Df(A.c([A.ai7(A.I8(A.pD(A.c([new A.dZ(B.ht,p,n),new A.Ir(n),new A.dZ(B.ht,A.a7c("Discord ID: "+(o==null?"Not logged in":o),n,B.dU),n)],m),B.ax,B.cj),n,1/0),1)],m),B.bp,B.cj),n),new A.kn("Dashboard",a,n))}}
+o=s==null?n:s.c.i(0,"id")
+return A.Hq(q,new A.I5(A.Df(A.c([A.ai7(A.I8(A.pD(A.c([new A.dZ(B.ht,p,n),new A.Ir(n),new A.dZ(B.ht,A.a7c("Discord ID: "+A.i(o==null?"Not logged in":o),n,B.dU),n)],m),B.ax,B.cj),n,1/0),1)],m),B.bp,B.cj),n),new A.kn("Dashboard",a,n))}}
 A.aac.prototype={
 $1(a){var s=this.a
 if(s.c!=null)s.az(new A.aab())},
