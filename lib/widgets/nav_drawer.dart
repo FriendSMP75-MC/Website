@@ -42,14 +42,14 @@ class NavDrawer extends StatelessWidget {
         children: [
           // Header
           Container(
-            height: 66,
+            height: 75,
             width: double.infinity,
-            padding: const EdgeInsets.symmetric(vertical: 16),
+            alignment: Alignment.center,
             color: Colors.purple,
             child: Text(
               'Current page: $currentPage',
               textAlign: TextAlign.center,
-              style: const TextStyle(color: Colors.white, fontSize: 16),
+              style: const TextStyle(color: Colors.white),
             ),
           ),
 
@@ -60,6 +60,7 @@ class NavDrawer extends StatelessWidget {
               children: [
                 ListTile(
                   contentPadding: const EdgeInsets.symmetric(horizontal: 16),
+                  minTileHeight: 57,
                   title: const Text(
                     'Home',
                     textAlign: TextAlign.center,
@@ -73,6 +74,7 @@ class NavDrawer extends StatelessWidget {
                 ),
                 ListTile(
                   contentPadding: const EdgeInsets.symmetric(horizontal: 16),
+                  minTileHeight: 57,
                   title: const Text(
                     'About',
                     textAlign: TextAlign.center,
@@ -90,6 +92,7 @@ class NavDrawer extends StatelessWidget {
                 ),
                 ListTile(
                   contentPadding: const EdgeInsets.symmetric(horizontal: 16),
+                  minTileHeight: 57,
                   title: const Text('Status',
                       textAlign: TextAlign.center,
                       style: TextStyle(color: Colors.white)),
@@ -101,6 +104,7 @@ class NavDrawer extends StatelessWidget {
                 ),
                 ListTile(
                   contentPadding: const EdgeInsets.symmetric(horizontal: 16),
+                  minTileHeight: 57,
                   title: const Text('Gallery',
                       textAlign: TextAlign.center,
                       style: TextStyle(color: Colors.white)),
@@ -114,13 +118,19 @@ class NavDrawer extends StatelessWidget {
             ),
           ),
 
-          // Bottom greeting + login/logout button
+          //login/logout button with greeting
           Column(
             mainAxisSize: MainAxisSize.min,
             children: [
+              if (user!=null)
+              ListTile(
+                contentPadding: EdgeInsets.symmetric(horizontal: 16),
+                minTileHeight: 57,
+              ),
+
               SizedBox(
                 width: double.infinity,
-                height: 60,
+                height: 75,
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.deepPurple[400],
@@ -144,7 +154,6 @@ class NavDrawer extends StatelessWidget {
                             ? "Login with Discord"
                             : "Welcome Back! \n $displayName",
                         style: const TextStyle(
-                          fontSize: 16,
                         ),
                         textAlign: TextAlign.center,
                       ),
