@@ -32,7 +32,7 @@ class BackendData {
     try {
       final data = await retrieveData('check-owner');
       if (data !=null) {
-        return data['AUTH_ID'] as String?;
+        return data['UUID_ID'] as String?;
       }
     } catch (e) {
       print('Error getting owner auth id: $e');

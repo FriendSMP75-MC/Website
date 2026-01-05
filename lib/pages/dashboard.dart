@@ -112,7 +112,7 @@ class _DashboardState extends State<Dashboard> {
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: SelectableText(
-                      'Auth ID: $authUUID',
+                      'UUID ID: $authUUID',
                       textAlign: TextAlign.end,
                     ),
                   ),
@@ -134,10 +134,16 @@ class _DashboardState extends State<Dashboard> {
                   );
                 }
                 if (_isOwner == true) {
-                  return const Padding(
-                    padding: EdgeInsets.all(8.0),
-                    child: Text('Hello'),
-                  );
+                  return Column(
+                    children: [
+                      TextField(
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(),
+                          hintText: 'Enter Provided UUID ID ',
+                          labelText: 'UUID ID'
+                        ),
+                      )
+                  ],);
                 }
                 return const SizedBox.shrink();
               },
