@@ -124,7 +124,14 @@ class _DashboardState extends State<Dashboard> {
             Builder(
               builder: (context) {
                 if (_isOwner == null) {
-                  return const SizedBox.shrink();
+                  return Padding(
+                    padding: const EdgeInsets.all(12.0),
+                    child: SizedBox(
+                      width: 24,
+                      height: 24,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    ),
+                  );
                 }
                 if (_isOwner == true) {
                   return const Padding(
