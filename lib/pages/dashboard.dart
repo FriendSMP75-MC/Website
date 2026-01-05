@@ -44,6 +44,8 @@ class _DashboardState extends State<Dashboard> {
     _authSub?.cancel();
     super.dispose();
   }
+  /// Key for TextFormField (UUID)
+   final _uuidkey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
@@ -136,14 +138,12 @@ class _DashboardState extends State<Dashboard> {
                 if (_isOwner == true) {
                   return Column(
                     children: [
-                      TextField(
-                        decoration: InputDecoration(
-                          border: OutlineInputBorder(),
-                          hintText: 'Enter Provided UUID ID ',
-                          labelText: 'UUID ID'
-                        ),
+                      Text('hello'), 
+                      Form(
+                      child: TextFormField(),
                       )
-                  ],);
+                      ]
+                    );
                 }
                 return const SizedBox.shrink();
               },
