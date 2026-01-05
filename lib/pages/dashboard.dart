@@ -115,7 +115,7 @@ class _DashboardState extends State<Dashboard> {
                   return const SizedBox.shrink();
                 }
                 if (authUUID == snapshot.data) {
-                  return const ListTile(title: Text('hello'));
+                  return const Text('Hello');
                 }
                 return const SizedBox.shrink();
               },
