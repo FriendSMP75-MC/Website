@@ -127,7 +127,7 @@ class _DashboardState extends State<Dashboard> {
                   return const SizedBox.shrink();
                 }
                 if (_isOwner == true) {
-                  const Padding(
+                  return const Padding(
                     padding: EdgeInsets.all(8.0),
                     child: Text('Hello'),
                   );
