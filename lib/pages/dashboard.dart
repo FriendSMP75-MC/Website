@@ -16,13 +16,26 @@ class Dashboard extends StatefulWidget {
 
 class _DashboardState extends State<Dashboard> {
   StreamSubscription<AuthState>? _authSub;
+  bool? _isOwner;
 
   @override
   void initState() {
     super.initState();
-    // Subscribe to auth state changes
+    // Subscribe to auth state changes and refresh owner flag
     _authSub = supabase.auth.onAuthStateChange.listen((data) {
       if (mounted) setState(() {});
+      if (mounted) _loadOwner();
+    });
+    _loadOwner();
+  }
+
+  Future<void> _loadOwner() async {
+    final ownerId = await BackendData.getOwnerAuthID();
+    final user = SupabaseConfig.client.auth.currentUser;
+    final currentUuid = SupabaseConfig.getSupabaseUUID(user);
+    if (!mounted) return;
+    setState(() {
+      _isOwner = (ownerId != null && ownerId == currentUuid);
     });
   }
 
@@ -108,14 +121,16 @@ class _DashboardState extends State<Dashboard> {
             ),
 
             /// Owner-only add users by auth id
-            FutureBuilder<String?>(
-              future: BackendData.getOwnerAuthID(),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState != ConnectionState.done) {
+            Builder(
+              builder: (context) {
+                if (_isOwner == null) {
                   return const SizedBox.shrink();
                 }
-                if (authUUID == snapshot.data) {
-                  return const Text('Hello');
+                if (_isOwner == true) {
+                  const Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: Text('Hello'),
+                  );
                 }
                 return const SizedBox.shrink();
               },
