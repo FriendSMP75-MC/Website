@@ -45,7 +45,7 @@ class _DashboardState extends State<Dashboard> {
     super.dispose();
   }
   /// Key for TextFormField (UUID)
-   final _uuidkey = GlobalKey<FormState>();
+   final _uuidKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
@@ -140,7 +140,14 @@ class _DashboardState extends State<Dashboard> {
                     children: [
                       Text('hello'), 
                       Form(
-                      child: TextFormField(),
+                        key: _uuidKey,
+                        child: TextFormField(
+                          decoration: InputDecoration(
+                            border: OutlineInputBorder(),
+                            labelText: 'Enter UUID',
+                            hintText: "Enter provided UUID",
+                          ),
+                      ),
                       )
                       ]
                     );
