@@ -42,7 +42,7 @@
       pointer-events: none;
     }
 
-    /* Simple spinner */
+    /* Spinner style */
     .spinner {
       border: 6px solid #f3f3f3;
       border-top: 6px solid #4CAF50;
@@ -57,25 +57,53 @@
       0% { transform: rotate(0deg); }
       100% { transform: rotate(360deg); }
     }
+
+    /* Tick style (hidden by default) */
+    .tick {
+      display: none;
+      font-size: 2em;
+      color: #4CAF50;
+      margin-right: 15px;
+    }
+
+    .tick.show {
+      display: inline-block;
+      animation: pop 0.3s ease forwards;
+    }
+
+    @keyframes pop {
+      0% { transform: scale(0); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
   </style>
 </head>
 <body>
   <!-- Loading screen -->
   <div id="loading">
     <div class="spinner"></div>
-    <div>Loading...</div>
+    <div class="tick">✔</div>
+    <div> Welcome to FriendSMP75</div>
   </div>
 
   <!-- Flutter app -->
   <script src="flutter_bootstrap.js" async></script>
 
   <script>
-    // Fade out loading screen once Flutter is ready
+    // When Flutter is ready, swap spinner for tick, then fade out
     window.addEventListener('flutter-first-frame', function () {
       const loader = document.getElementById('loading');
-      loader.classList.add('fade-out');
-      // Remove completely after transition ends
-      loader.addEventListener('transitionend', () => loader.remove());
+      const spinner = loader.querySelector('.spinner');
+      const tick = loader.querySelector('.tick');
+
+      // Hide spinner, show tick
+      spinner.style.display = 'none';
+      tick.classList.add('show');
+
+      // Wait a moment to show the tick, then fade out
+      setTimeout(() => {
+        loader.classList.add('fade-out');
+        loader.addEventListener('transitionend', () => loader.remove());
+      }, 800); // show tick for 0.8s
     });
   </script>
 </body>
