@@ -172,7 +172,7 @@ class _DashboardState extends State<Dashboard> {
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(
                                 content: Text(
-                                  'Data sent to backend successfully',
+                                  'Data sent to backend successfully!',
                                 ),
                               ),
                             );
