@@ -142,22 +142,25 @@ class _DashboardState extends State<Dashboard> {
                       Text('hello'),
                       Form(
                         key: _uuidKey,
-                        child: TextFormField(
-                          decoration: InputDecoration(
-                            border: OutlineInputBorder(),
-                            labelText: 'Enter UUID',
-                            hintText: "Enter provided UUID",
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: TextFormField(
+                            decoration: InputDecoration(
+                              border: OutlineInputBorder(),
+                              labelText: 'Enter UUID',
+                              hintText: "Enter provided UUID",
+                            ),
+                          
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Please Enter UUID';
+                              }
+                              if (value.length < 35) {
+                                return 'Enter valid UUID';
+                              }
+                              return null;
+                            },
                           ),
-
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Please Enter UUID';
-                            }
-                            if (value.length < 37) {
-                              return 'Enter valid UUID';
-                            }
-                            return null;
-                          },
                         ),
                       ),
 
