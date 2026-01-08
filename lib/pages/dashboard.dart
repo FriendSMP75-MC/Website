@@ -45,6 +45,8 @@ class _DashboardState extends State<Dashboard> {
     super.dispose();
   }
 
+  final TextEditingController _uuidController = TextEditingController();
+
   /// Key for TextFormField (UUID)
   final _uuidKey = GlobalKey<FormState>();
 
@@ -139,19 +141,19 @@ class _DashboardState extends State<Dashboard> {
                 if (_isOwner == true) {
                   return Column(
                     children: [
-
                       Form(
                         key: _uuidKey,
                         child: Padding(
                           padding: const EdgeInsets.all(8.0),
-                          
+
                           child: TextFormField(
+                            controller: _uuidController,
                             decoration: InputDecoration(
                               border: OutlineInputBorder(),
                               labelText: 'Enter UUID',
                               hintText: "Enter provided UUID",
                             ),
-                          
+
                             validator: (value) {
                               if (value == null || value.isEmpty) {
                                 return 'Please Enter UUID';
@@ -171,11 +173,10 @@ class _DashboardState extends State<Dashboard> {
                           if (_uuidKey.currentState!.validate()) {
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(
-                                content: Text(
-                                  'Adding user to the list',
-                                ),
+                                content: Text('Adding user to the list'),
                               ),
                             );
+                            _uuidController.clear();
                           }
                         },
                         icon: const Icon(Icons.add),
