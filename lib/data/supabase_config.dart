@@ -21,7 +21,7 @@ class SupabaseConfig {
   static Future<Map<String, String>?> fetchSupabaseDetails() async {
     const backendUrl =
         'https://key-backend-for-friendsmp75-website.onrender.com/secure-data';
-    const accessToken = 'ybjyyfusdhhdtfvsckbcksdufhcgsjhcmnnxgcjbcn'; ///need to change accesstoken before full production change
+    const accessToken = String.fromEnvironment("ACCESS_TOKEN"); 
 
     try {
       final response = await http.get(
