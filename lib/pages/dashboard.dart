@@ -45,10 +45,13 @@ class _DashboardState extends State<Dashboard> {
     super.dispose();
   }
 
+  /// Key for TextFormField (UUID) and controller
+  final _uuidKey = GlobalKey<FormState>();
   final TextEditingController _uuidController = TextEditingController();
 
-  /// Key for TextFormField (UUID)
-  final _uuidKey = GlobalKey<FormState>();
+  // Key and Controller for TextFormField (nickName)
+  final _nickNameKey = GlobalKey<FormState>();
+  final TextEditingController _nickNameController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -141,36 +144,68 @@ class _DashboardState extends State<Dashboard> {
                 if (_isOwner == true) {
                   return Column(
                     children: [
-                      Form(
-                        key: _uuidKey,
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
 
-                          child: TextFormField(
-                            controller: _uuidController,
-                            decoration: InputDecoration(
-                              border: OutlineInputBorder(),
-                              labelText: 'Enter UUID',
-                              hintText: "Enter provided UUID",
+                      // UUID TextField
+                      Row(
+                        children: [
+                          Form(
+                            key: _uuidKey,
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                          
+                              child: TextFormField(
+                                controller: _uuidController,
+                                decoration: InputDecoration(
+                                  border: OutlineInputBorder(),
+                                  labelText: 'Enter UUID',
+                                  hintText: "Enter provided UUID",
+                                ),
+
+                                //No empty text field and no wrong uuid
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'Please Enter UUID';
+                                  }
+                                  if (value.length < 35) {
+                                    return 'Enter valid UUID';
+                                  }
+                                  return null;
+                                },
+                              ),
                             ),
-
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'Please Enter UUID';
-                              }
-                              if (value.length < 35) {
-                                return 'Enter valid UUID';
-                              }
-                              return null;
-                            },
                           ),
-                        ),
+
+                          // NickName TextField
+                          Form(
+                            key: _nickNameKey,
+                            child: Padding(
+                            padding: EdgeInsetsGeometry.all(8.0),
+                            child: TextFormField(
+                              controller: _nickNameController,
+                              decoration: InputDecoration(
+                                border: OutlineInputBorder(),
+                                labelText: "NickName",
+                                hintText: "Enter Nickname of the staff member",
+                              ),
+                              
+                              // No empty field
+                              validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'Please Enter Nickname';
+                                  }
+                                  return null;
+                                },
+                            ),
+                            ),
+                          ),
+
+                        ],
                       ),
 
                       // Validate data on button press
                       ElevatedButton.icon(
                         onPressed: () {
-                          if (_uuidKey.currentState!.validate()) {
+                          if (_uuidKey.currentState!.validate() && _nickNameKey.currentState!.validate()) {
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(
                                 content: Text('Adding user to the list'),

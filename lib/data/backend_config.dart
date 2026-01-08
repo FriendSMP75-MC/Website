@@ -11,7 +11,6 @@ const accessToken = String.fromEnvironment("ACCESS_TOKEN");
 
 class BackendData {
   static Future<dynamic> retrieveData(String endpoint) async {
-    print('Injected token: $accessToken');
     try {
       final response = await http.get(
         Uri.parse(backendUrl + endpoint),
@@ -29,10 +28,36 @@ class BackendData {
     return 'Error Retrieving Data';
   }
 
+  static Future<String?> sendData(
+    String endpoint,
+    Map<String, dynamic> content,
+  ) async {
+    try {
+      final response = await http.post(
+        Uri.parse(backendUrl + endpoint),
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Access-Token': accessToken,
+        },
+        body: jsonEncode(content),
+      );
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        return response.body;
+      } else {
+        print("Backend error: ${response.statusCode} ${response.body}");
+        return null;
+      }
+    } catch (e) {
+      print("Error contacting backend! $e");
+      return null;
+    }
+  }
+
   static Future<String?> getOwnerAuthID() async {
     try {
       final data = await retrieveData('check-owner');
-      if (data !=null) {
+      if (data != null) {
         return data['UUID_ID'] as String?;
       }
     } catch (e) {
