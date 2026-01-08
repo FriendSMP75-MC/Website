@@ -11,6 +11,7 @@ const accessToken = String.fromEnvironment("ACCESS_TOKEN");
 
 class BackendData {
   static Future<dynamic> retrieveData(String endpoint) async {
+    print('Injected token: $accessToken');
     try {
       final response = await http.get(
         Uri.parse(backendUrl + endpoint),
