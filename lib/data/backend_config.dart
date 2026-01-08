@@ -5,7 +5,7 @@ import 'package:http/http.dart' as http;
 import 'dart:async';
 
 const backendUrl = 'https://key-backend-for-friendsmp75-website.onrender.com/';
-const accessToken = 'ybjyyfusdhhdtfvsckbcksdufhcgsjhcmnnxgcjbcn';
+const accessToken = String.fromEnvironment("ACCESS_TOKEN");
 
 ///need to change accesstoken before full production change
 
