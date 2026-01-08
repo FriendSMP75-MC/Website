@@ -44,8 +44,9 @@ class _DashboardState extends State<Dashboard> {
     _authSub?.cancel();
     super.dispose();
   }
+
   /// Key for TextFormField (UUID)
-   final _uuidKey = GlobalKey<FormState>();
+  final _uuidKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
@@ -138,7 +139,7 @@ class _DashboardState extends State<Dashboard> {
                 if (_isOwner == true) {
                   return Column(
                     children: [
-                      Text('hello'), 
+                      Text('hello'),
                       Form(
                         key: _uuidKey,
                         child: TextFormField(
@@ -147,10 +148,37 @@ class _DashboardState extends State<Dashboard> {
                             labelText: 'Enter UUID',
                             hintText: "Enter provided UUID",
                           ),
+
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Please Enter UUID';
+                            }
+                            if (value.length < 37) {
+                              return 'Enter valid UUID';
+                            }
+                            return null;
+                          },
+                        ),
                       ),
-                      )
-                      ]
-                    );
+
+                      // Validate data on button press
+                      ElevatedButton.icon(
+                        onPressed: () {
+                          if (_uuidKey.currentState!.validate()) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text(
+                                  'Data sent to backend successfully',
+                                ),
+                              ),
+                            );
+                          }
+                        },
+                        icon: const Icon(Icons.add),
+                        label: const Text('Add'),
+                      ),
+                    ],
+                  );
                 }
                 return const SizedBox.shrink();
               },
