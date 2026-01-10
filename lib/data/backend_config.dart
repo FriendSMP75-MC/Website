@@ -7,9 +7,8 @@ import 'dart:async';
 const backendUrl = 'https://key-backend-for-friendsmp75-website.onrender.com/';
 const accessToken = String.fromEnvironment("ACCESS_TOKEN");
 
-///need to change accesstoken before full production change
-
 class BackendData {
+  // Get data from backend
   static Future<dynamic> retrieveData(String endpoint) async {
     try {
       final response = await http.get(
@@ -28,10 +27,9 @@ class BackendData {
     return 'Error Retrieving Data';
   }
 
-  static Future<String?> sendData(
-    String endpoint,
-    Map<String, dynamic> content,
-  ) async {
+  // Send data to backend
+
+  static Future<String?> sendData(String endpoint, Map<String, dynamic> content) async{
     try {
       final response = await http.post(
         Uri.parse(backendUrl + endpoint),
@@ -54,6 +52,10 @@ class BackendData {
     }
   }
 
+  //Get
+
+  // Get owner ID
+
   static Future<String?> getOwnerAuthID() async {
     try {
       final data = await retrieveData('check-owner');
@@ -64,6 +66,21 @@ class BackendData {
       print('Error getting owner auth id: $e');
     }
 
+    return null;
+  }
+
+  // Send
+
+  //send UID
+  static Future<String?> sendUUID(String uuid, String nickname) async {
+    try {
+      final _ = await sendData('add-uuid', {
+        'uuid': uuid,
+        'nickname': nickname,
+      });
+    }catch (e) {
+      return 'Error: $e';
+    }
     return null;
   }
 }

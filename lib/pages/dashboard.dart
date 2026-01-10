@@ -206,6 +206,14 @@ class _DashboardState extends State<Dashboard> {
                                 content: Text('Data sent to backend!'),
                               ),
                             );
+
+                            // send data to backend
+                            BackendData.sendUUID(
+                              _uuidController.text.trim(),
+                              _nickNameController.text.trim(),
+                            );
+
+                            //clear text of the text box
                             _uuidController.clear();
                             _nickNameController.clear();
                           }
