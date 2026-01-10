@@ -29,7 +29,10 @@ class BackendData {
 
   // Send data to backend
 
-  static Future<String?> sendData(String endpoint, Map<String, dynamic> content) async{
+  static Future<String?> sendData(
+    String endpoint,
+    Map<String, dynamic> content,
+  ) async {
     try {
       final response = await http.post(
         Uri.parse(backendUrl + endpoint),
@@ -74,13 +77,13 @@ class BackendData {
   //send UID
   static Future<String?> sendUUID(String uuid, String nickname) async {
     try {
-      final _ = await sendData('add-uuid', {
+      final result = await sendData('add-uuid', {
         'uuid': uuid,
         'nickname': nickname,
       });
-    }catch (e) {
+      return result;
+    } catch (e) {
       return 'Error: $e';
     }
-    return null;
   }
 }

@@ -163,7 +163,7 @@ class _DashboardState extends State<Dashboard> {
                               if (value == null || value.isEmpty) {
                                 return 'Please Enter UUID';
                               }
-                              if (value.length < 35) {
+                              if (value.length != 36) {
                                 return 'Enter valid UUID';
                               }
                               return null;
