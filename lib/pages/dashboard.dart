@@ -17,6 +17,8 @@ class Dashboard extends StatefulWidget {
 class _DashboardState extends State<Dashboard> {
   StreamSubscription<AuthState>? _authSub;
   bool? _isOwner;
+  List<dynamic> users = [];
+  Timer? _timer;
 
   @override
   void initState() {
@@ -27,6 +29,10 @@ class _DashboardState extends State<Dashboard> {
       if (mounted) _loadOwner();
     });
     _loadOwner();
+    _fetchStaffUUID();
+    _timer = Timer.periodic(const Duration(seconds: 3), (timer) {
+      _fetchStaffUUID();
+    });
   }
 
   Future<void> _loadOwner() async {
@@ -39,9 +45,19 @@ class _DashboardState extends State<Dashboard> {
     });
   }
 
+  Future<void> _fetchStaffUUID() async {
+    final result = await BackendData.getUUID();
+    if (result != null) {
+      setState(() {
+        users = result;
+      });
+    }
+  }
+
   @override
   void dispose() {
     _authSub?.cancel();
+    _timer?.cancel();
     super.dispose();
   }
 
@@ -220,6 +236,42 @@ class _DashboardState extends State<Dashboard> {
                         },
                         icon: const Icon(Icons.add),
                         label: const Text('Add'),
+                      ),
+
+                      // List Added uuid users
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text(
+                              "Staff UUIDs:",
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            users.isEmpty
+                                ? const Text("No staff added yet.")
+                                : ListView.builder(
+                                    shrinkWrap: true,
+                                    physics:
+                                        const NeverScrollableScrollPhysics(),
+                                    itemCount: users.length,
+                                    itemBuilder: (context, index) {
+                                      final user = users[index];
+                                      return ListTile(
+                                        leading: const Icon(Icons.person),
+                                        title: Text(
+                                          user['staff_display_name'] ??
+                                              '${Icon(Icons.warning)} Unknown',
+                                        ),
+                                        subtitle: Text(user['staff_uid'] ?? ''),
+                                      );
+                                    },
+                                  ),
+                          ],
+                        ),
                       ),
                     ],
                   );
