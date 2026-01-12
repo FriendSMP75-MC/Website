@@ -34,7 +34,7 @@ class _GalleryState extends State<Gallery> {
   Widget build(BuildContext context) {
     final user = SupabaseConfig.client.auth.currentUser;
     SupabaseConfig.getUserName(user);
-    
+
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
@@ -76,19 +76,12 @@ class _GalleryState extends State<Gallery> {
           preferredSize: Size.fromHeight(1),
           child: SizedBox(
             width: double.infinity,
-            child: Divider(
-              height: 1,
-              thickness: 1,
-              color: Colors.grey,
-            ),
+            child: Divider(height: 1, thickness: 1, color: Colors.grey),
           ),
         ),
       ),
 
-      endDrawer: NavDrawer(
-        currentPage: 'Gallery',
-        parentContext: context,
-      ),
+      endDrawer: NavDrawer(currentPage: 'Gallery', parentContext: context),
 
       body: const Center(child: Text('Welcome to the Gallery app!')),
     );

@@ -74,19 +74,12 @@ class _StatusState extends State<Status> {
           preferredSize: Size.fromHeight(1),
           child: SizedBox(
             width: double.infinity,
-            child: Divider(
-              height: 1,
-              thickness: 1,
-              color: Colors.grey,
-            ),
+            child: Divider(height: 1, thickness: 1, color: Colors.grey),
           ),
         ),
       ),
 
-      endDrawer: NavDrawer(
-        currentPage: 'Status',
-        parentContext: context,
-      ),
+      endDrawer: NavDrawer(currentPage: 'Status', parentContext: context),
 
       body: const Center(child: Text('Welcome to the Status app!')),
     );

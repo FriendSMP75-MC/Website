@@ -72,19 +72,12 @@ class _HomeState extends State<Home> {
           preferredSize: Size.fromHeight(1),
           child: SizedBox(
             width: double.infinity,
-            child: Divider(
-              height: 1,
-              thickness: 1,
-              color: Colors.grey,
-            ),
+            child: Divider(height: 1, thickness: 1, color: Colors.grey),
           ),
         ),
       ),
 
-      endDrawer: NavDrawer(
-        currentPage: 'Home',
-        parentContext: context,
-      ),
+      endDrawer: NavDrawer(currentPage: 'Home', parentContext: context),
 
       body: const Center(child: Text('Welcome to the Home Page!')),
     );

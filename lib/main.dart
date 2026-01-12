@@ -40,7 +40,7 @@ class _MyAppState extends State<MyApp> {
       debugShowCheckedModeBanner: false,
       themeMode: ThemeMode.dark,
       darkTheme: ThemeData(brightness: Brightness.dark),
-      home: Home()
+      home: Home(),
     );
   }
 }

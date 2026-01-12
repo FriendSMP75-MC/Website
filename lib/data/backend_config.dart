@@ -29,7 +29,10 @@ class BackendData {
 
   // Send data to backend
 
-  static Future<String?> sendData(String endpoint, Map<String, dynamic> content) async {
+  static Future<String?> sendData(
+    String endpoint,
+    Map<String, dynamic> content,
+  ) async {
     try {
       final response = await http.post(
         Uri.parse(backendUrl + endpoint),
@@ -69,19 +72,18 @@ class BackendData {
     return null;
   }
 
- static Future<List<dynamic>?> getUUID() async {
-  try {
-    final result = await retrieveData('get-staff-uuids'); 
-    if (result is List<dynamic>) {
-      return result;
+  static Future<List<dynamic>?> getUUID() async {
+    try {
+      final result = await retrieveData('get-staff-uuids');
+      if (result is List<dynamic>) {
+        return result;
+      }
+      return null;
+    } catch (e) {
+      print('Error when getting uuid $e');
+      return null;
     }
-    return null;
-  } catch (e) {
-    print('Error when getting uuid $e');
-    return null;
   }
-}
-
 
   // Send
 

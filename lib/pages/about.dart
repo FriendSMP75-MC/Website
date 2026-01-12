@@ -35,7 +35,7 @@ class _AboutState extends State<About> {
   Widget build(BuildContext context) {
     final user = SupabaseConfig.client.auth.currentUser;
     SupabaseConfig.getUserName(user);
-    
+
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
@@ -72,19 +72,12 @@ class _AboutState extends State<About> {
           preferredSize: Size.fromHeight(1),
           child: SizedBox(
             width: double.infinity,
-            child: Divider(
-              height: 1,
-              thickness: 1,
-              color: Colors.grey,
-            ),
+            child: Divider(height: 1, thickness: 1, color: Colors.grey),
           ),
         ),
       ),
 
-      endDrawer: NavDrawer(
-        currentPage: 'About',
-        parentContext: context,
-      ),
+      endDrawer: NavDrawer(currentPage: 'About', parentContext: context),
 
       body: const Center(child: Text('Welcome to the About app!')),
     );
