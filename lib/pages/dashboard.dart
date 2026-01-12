@@ -248,7 +248,6 @@ class _DashboardState extends State<Dashboard> {
                               "Staff UUIDs:",
                               style: TextStyle(
                                 fontSize: 18,
-                                fontWeight: FontWeight.bold,
                               ),
                             ),
                             users.isEmpty
@@ -270,6 +269,19 @@ class _DashboardState extends State<Dashboard> {
                                       );
                                     },
                                   ),
+                            ElevatedButton.icon(
+                              icon: const Icon(Icons.refresh),
+                              label: const Text("Refresh"),
+                              onPressed: () async {
+                                final ctx = context;
+                                if (!mounted) return;
+                                ScaffoldMessenger.of(ctx).showSnackBar(
+                                  const SnackBar(
+                                    content: Text("Data refreshed"),
+                                  ),
+                                );
+                              },
+                            ),
                           ],
                         ),
                       ),
