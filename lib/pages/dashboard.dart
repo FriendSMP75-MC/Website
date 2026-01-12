@@ -246,9 +246,7 @@ class _DashboardState extends State<Dashboard> {
                           children: [
                             const Text(
                               "Staff UUIDs:",
-                              style: TextStyle(
-                                fontSize: 18,
-                              ),
+                              style: TextStyle(fontSize: 18),
                             ),
                             users.isEmpty
                                 ? const Text("No staff added yet.")
@@ -269,19 +267,6 @@ class _DashboardState extends State<Dashboard> {
                                       );
                                     },
                                   ),
-                            ElevatedButton.icon(
-                              icon: const Icon(Icons.refresh),
-                              label: const Text("Refresh"),
-                              onPressed: () async {
-                                final ctx = context;
-                                if (!mounted) return;
-                                ScaffoldMessenger.of(ctx).showSnackBar(
-                                  const SnackBar(
-                                    content: Text("Data refreshed"),
-                                  ),
-                                );
-                              },
-                            ),
                           ],
                         ),
                       ),
