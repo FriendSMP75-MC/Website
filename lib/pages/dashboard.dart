@@ -211,7 +211,7 @@ class _DashboardState extends State<Dashboard> {
 
                       // Validate data on button press
                       ElevatedButton.icon(
-                        onPressed: () {
+                        onPressed: () async{
                           if (_uuidKey.currentState!.validate() &&
                               _nickNameKey.currentState!.validate()) {
                             ScaffoldMessenger.of(context).showSnackBar(
@@ -221,7 +221,7 @@ class _DashboardState extends State<Dashboard> {
                             );
 
                             // send data to backend
-                            BackendData.sendUUID(
+                            await BackendData.sendUUID(
                               _uuidController.text.trim(),
                               _nickNameController.text.trim(),
                             );
@@ -231,7 +231,7 @@ class _DashboardState extends State<Dashboard> {
                             _nickNameController.clear();
 
                             // fetch updated staff list
-                            _fetchStaffUUID();
+                            await _fetchStaffUUID();
                           }
                         },
                         icon: const Icon(Icons.add),
