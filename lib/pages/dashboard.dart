@@ -229,6 +229,9 @@ class _DashboardState extends State<Dashboard> {
                             //clear text of the text box
                             _uuidController.clear();
                             _nickNameController.clear();
+
+                            // fetch updated staff list
+                            _fetchStaffUUID();
                           }
                         },
                         icon: const Icon(Icons.add),
@@ -297,7 +300,8 @@ class _DashboardState extends State<Dashboard> {
                                                     ),
                                                   ),
                                                 );
-
+                                                //fetch updated staff list
+                                                _fetchStaffUUID();
                                               } catch (e) {
                                                 if (!context.mounted) return;
                                                 //show snackbar if found any error
