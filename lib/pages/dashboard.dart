@@ -298,7 +298,6 @@ class _DashboardState extends State<Dashboard> {
                                                   ),
                                                 );
 
-                                                _fetchStaffUUID();
                                               } catch (e) {
                                                 if (!context.mounted) return;
                                                 //show snackbar if found any error
