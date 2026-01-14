@@ -55,6 +55,26 @@ class BackendData {
     }
   }
 
+  // Request data to remove data from backend
+  static Future<String?> removeData(String endpoint) async {
+    try {
+      final response = await http.delete(
+        Uri.parse(backendUrl + endpoint),
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Access-Token': accessToken,
+        },
+      );
+      if (response.statusCode == 200) {
+        return response.body;
+      } else {
+        return ("Backend error: ${response.statusCode} ${response.body}");
+      }
+    } catch (e) {
+      return ("Error contacting backend! $e");
+    }
+  }
+
   //Get
 
   // Get owner ID
@@ -97,6 +117,16 @@ class BackendData {
       return result;
     } catch (e) {
       return 'Error: $e';
+    }
+  }
+
+  // Delete UUID
+  static Future<String?> deleteUUID(String uuid) async {
+    try {
+      final result = await removeData('delete-uuid/$uuid');
+      return result;
+    } catch (e) {
+      return 'Error deleting uuid: $e';
     }
   }
 }

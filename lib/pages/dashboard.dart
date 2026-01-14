@@ -18,7 +18,6 @@ class _DashboardState extends State<Dashboard> {
   StreamSubscription<AuthState>? _authSub;
   bool? _isOwner;
   List<dynamic> users = [];
-  Timer? _timer;
 
   @override
   void initState() {
@@ -30,11 +29,9 @@ class _DashboardState extends State<Dashboard> {
     });
     _loadOwner();
     _fetchStaffUUID();
-    _timer = Timer.periodic(const Duration(seconds: 3), (timer) {
-      _fetchStaffUUID();
-    });
   }
 
+  // Get owner's uuid
   Future<void> _loadOwner() async {
     final ownerId = await BackendData.getOwnerAuthID();
     final user = SupabaseConfig.client.auth.currentUser;
@@ -45,6 +42,7 @@ class _DashboardState extends State<Dashboard> {
     });
   }
 
+  // Get staff uuid
   Future<void> _fetchStaffUUID() async {
     final result = await BackendData.getUUID();
     if (result != null) {
@@ -57,7 +55,6 @@ class _DashboardState extends State<Dashboard> {
   @override
   void dispose() {
     _authSub?.cancel();
-    _timer?.cancel();
     super.dispose();
   }
 
@@ -249,23 +246,83 @@ class _DashboardState extends State<Dashboard> {
                               style: TextStyle(fontSize: 18),
                             ),
                             users.isEmpty
-                                ? const Text("No staff added yet.")
-                                : ListView.builder(
-                                    shrinkWrap: true,
-                                    physics:
-                                        const NeverScrollableScrollPhysics(),
-                                    itemCount: users.length,
-                                    itemBuilder: (context, index) {
-                                      final user = users[index];
-                                      return ListTile(
-                                        leading: const Icon(Icons.person),
-                                        title: Text(
-                                          user['staff_display_name'] ??
-                                              '${Icon(Icons.warning)} Unknown',
-                                        ),
-                                        subtitle: Text(user['staff_uid'] ?? ''),
-                                      );
-                                    },
+                                ? const Text(
+                                    "No staff added yet.",
+                                  ) // if no UUID is added
+                                : SizedBox(
+                                    height: 300,
+                                    //listing added uuid
+                                    child: ListView.builder(
+                                      itemCount: users.length,
+                                      itemBuilder: (context, index) {
+                                        final user = users[index];
+
+                                        return ListTile(
+                                          leading: const Icon(Icons.person),
+                                          title: Text(
+                                            user['staff_display_name'] ??
+                                                '${Icon(Icons.warning)} Unknown',
+                                          ),
+                                          subtitle: Text(
+                                            user['staff_uid'] ??
+                                                'No uuid found? strange',
+                                          ),
+                                          trailing: IconButton(
+                                            onPressed: () {
+                                              try {
+                                                // delete staff uuid
+                                                BackendData.deleteUUID(
+                                                  user['staff_uid'],
+                                                );
+
+                                                //show deleted snack bar
+                                                ScaffoldMessenger.of(
+                                                  context,
+                                                ).showSnackBar(
+                                                  SnackBar(
+                                                    content: Row(
+                                                      mainAxisSize:
+                                                          MainAxisSize.max,
+                                                      children: [
+                                                        Icon(
+                                                          Icons.info,
+                                                          color: Colors.blue,
+                                                        ),
+                                                        SizedBox(width: 8),
+                                                        Text(
+                                                          'Staff UUID deleted successfully!',
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                );
+                                              } catch (e) {
+
+                                                //show snackbar if found any error
+                                                ScaffoldMessenger.of(
+                                                  context,
+                                                ).showSnackBar(
+                                                  SnackBar(
+                                                    content: Row(
+                                                      children: [
+                                                        Icon(
+                                                          Icons.error,
+                                                          color: Colors.red,
+                                                        ),
+                                                        Text(
+                                                          'Found error when deleting staff uuid!: $e',
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                );
+                                              }
+                                            },
+                                            icon: Icon(Icons.delete_forever),
+                                          ),
+                                        );
+                                      },
+                                    ),
                                   ),
                           ],
                         ),
