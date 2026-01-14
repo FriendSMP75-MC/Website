@@ -251,6 +251,7 @@ class _DashboardState extends State<Dashboard> {
                                   ) // if no UUID is added
                                 : SizedBox(
                                     height: 300,
+
                                     //listing added uuid
                                     child: ListView.builder(
                                       itemCount: users.length,
@@ -268,13 +269,13 @@ class _DashboardState extends State<Dashboard> {
                                                 'No uuid found? strange',
                                           ),
                                           trailing: IconButton(
-                                            onPressed: () {
+                                            onPressed: () async {
                                               try {
                                                 // delete staff uuid
-                                                BackendData.deleteUUID(
+                                                await BackendData.deleteUUID(
                                                   user['staff_uid'],
                                                 );
-
+                                                if (!context.mounted) return;
                                                 //show deleted snack bar
                                                 ScaffoldMessenger.of(
                                                   context,
@@ -296,8 +297,10 @@ class _DashboardState extends State<Dashboard> {
                                                     ),
                                                   ),
                                                 );
-                                              } catch (e) {
 
+                                                _fetchStaffUUID();
+                                              } catch (e) {
+                                                if (!context.mounted) return;
                                                 //show snackbar if found any error
                                                 ScaffoldMessenger.of(
                                                   context,
@@ -318,6 +321,7 @@ class _DashboardState extends State<Dashboard> {
                                                 );
                                               }
                                             },
+
                                             icon: Icon(Icons.delete_forever),
                                           ),
                                         );
