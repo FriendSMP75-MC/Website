@@ -220,7 +220,10 @@ class _DashboardState extends State<Dashboard> {
                                   children: [
                                     Icon(Icons.info),
                                     SizedBox(width: 8),
-                                    Text('Data sent to backend!'),
+                                    Text(
+                                      'Data sent to backend!',
+                                      style: TextStyle(color: Colors.white),
+                                    ),
                                   ],
                                 ),
                                 backgroundColor: Colors.purpleAccent[100],
@@ -297,13 +300,13 @@ class _DashboardState extends State<Dashboard> {
                                                       mainAxisSize:
                                                           MainAxisSize.max,
                                                       children: [
-                                                        Icon(
-                                                          Icons.info,
-                                                          color: Colors.blue,
-                                                        ),
+                                                        Icon(Icons.info),
                                                         SizedBox(width: 8),
                                                         Text(
                                                           'Staff UUID deleted successfully!',
+                                                          style: TextStyle(
+                                                            color: Colors.white,
+                                                          ),
                                                         ),
                                                       ],
                                                     ),
