@@ -298,6 +298,8 @@ class _DashboardState extends State<Dashboard> {
                                                         ),
                                                       ],
                                                     ),
+                                                    backgroundColor: Colors.lime,
+                                                    behavior: SnackBarBehavior.floating,
                                                   ),
                                                 );
                                                 //fetch updated staff list
