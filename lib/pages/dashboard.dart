@@ -211,7 +211,7 @@ class _DashboardState extends State<Dashboard> {
 
                       // Validate data on button press
                       ElevatedButton.icon(
-                        onPressed: () async{
+                        onPressed: () async {
                           if (_uuidKey.currentState!.validate() &&
                               _nickNameKey.currentState!.validate()) {
                             ScaffoldMessenger.of(context).showSnackBar(
@@ -219,10 +219,11 @@ class _DashboardState extends State<Dashboard> {
                                 content: Row(
                                   children: [
                                     Icon(Icons.info),
+                                    SizedBox(width: 8),
                                     Text('Data sent to backend!'),
                                   ],
                                 ),
-                                backgroundColor: Colors.deepPurpleAccent,
+                                backgroundColor: Colors.purpleAccent,
                                 behavior: SnackBarBehavior.floating,
                               ),
                             );
@@ -306,8 +307,10 @@ class _DashboardState extends State<Dashboard> {
                                                         ),
                                                       ],
                                                     ),
-                                                    backgroundColor: Colors.deepPurpleAccent,
-                                                    behavior: SnackBarBehavior.floating,
+                                                    backgroundColor:
+                                                        Colors.purpleAccent,
+                                                    behavior: SnackBarBehavior
+                                                        .floating,
                                                   ),
                                                 );
                                                 //fetch updated staff list
