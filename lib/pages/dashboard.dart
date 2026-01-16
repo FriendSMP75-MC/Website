@@ -216,7 +216,14 @@ class _DashboardState extends State<Dashboard> {
                               _nickNameKey.currentState!.validate()) {
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(
-                                content: Text('Data sent to backend!'),
+                                content: Row(
+                                  children: [
+                                    Icon(Icons.info),
+                                    Text('Data sent to backend!'),
+                                  ],
+                                ),
+                                backgroundColor: Colors.deepPurpleAccent,
+                                behavior: SnackBarBehavior.floating,
                               ),
                             );
 
@@ -279,6 +286,7 @@ class _DashboardState extends State<Dashboard> {
                                                   user['staff_uid'],
                                                 );
                                                 if (!context.mounted) return;
+
                                                 //show deleted snack bar
                                                 ScaffoldMessenger.of(
                                                   context,
@@ -298,7 +306,7 @@ class _DashboardState extends State<Dashboard> {
                                                         ),
                                                       ],
                                                     ),
-                                                    backgroundColor: Colors.lime,
+                                                    backgroundColor: Colors.deepPurpleAccent,
                                                     behavior: SnackBarBehavior.floating,
                                                   ),
                                                 );
