@@ -215,7 +215,7 @@ class _DashboardState extends State<Dashboard> {
                           if (_uuidKey.currentState!.validate() &&
                               _nickNameKey.currentState!.validate()) {
                             ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
+                              SnackBar(
                                 content: Row(
                                   children: [
                                     Icon(Icons.info),
@@ -223,7 +223,7 @@ class _DashboardState extends State<Dashboard> {
                                     Text('Data sent to backend!'),
                                   ],
                                 ),
-                                backgroundColor: Colors.purpleAccent,
+                                backgroundColor: Colors.purpleAccent[100],
                                 behavior: SnackBarBehavior.floating,
                               ),
                             );
@@ -307,8 +307,8 @@ class _DashboardState extends State<Dashboard> {
                                                         ),
                                                       ],
                                                     ),
-                                                    backgroundColor:
-                                                        Colors.purpleAccent,
+                                                    backgroundColor: Colors
+                                                        .purpleAccent[100],
                                                     behavior: SnackBarBehavior
                                                         .floating,
                                                   ),
