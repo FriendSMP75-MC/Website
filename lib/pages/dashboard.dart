@@ -55,10 +55,9 @@ class _DashboardState extends State<Dashboard> {
   }
 
   // Check staff list
-  Future<bool> isStaff(String user) async {
+  Future<bool> isStaff(String uuid) async {
     final staffList = users;
-    if (staffList.contains(user)) return true;
-    return false;
+    return staffList.any((listUser) => listUser['staff_uid']);
   }
 
   @override
@@ -333,15 +332,16 @@ class _DashboardState extends State<Dashboard> {
             FutureBuilder<bool>(
               future: isStaff(authUUID),
               builder: (context, snapshot) {
-                if (!snapshot.hasData) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
                   return CircularProgressIndicator();
                 }
-
-                if (snapshot.data!) {
-                  return StaffDashboard(); // staff-only widget
-                } else {
-                  return Text("Access denied");
+                if (snapshot.hasError) {
+                  return Text("Error: ${snapshot.error}");
                 }
+                if (snapshot.data == true) {
+                  return StaffDashboard();
+                }
+                return Text('Hello there! \n unfortunately you don\'t have access to this page :(');
               },
             ),
           ],
