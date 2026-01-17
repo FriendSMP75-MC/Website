@@ -19,13 +19,16 @@ class _StaffDashboardState extends State<StaffDashboard> {
             style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
           ),
         ),
-        GridView.count(
-          crossAxisCount: 2,
-          children: [
-            Container(color: Colors.red, child: Text('hello1')),
-            Container(color: Colors.red, child: Text('hello2')),
-            Container(color: Colors.red, child: Text('hello3')),
-          ],
+        SizedBox(
+          width: 100,
+          child: GridView.count(
+            crossAxisCount: 7,
+            children: [
+              Container(color: Colors.red, child: Text('hello1')),
+              Container(color: Colors.red, child: Text('hello2')),
+              Container(color: Colors.red, child: Text('hello3')),
+            ],
+          ),
         ),
       ],
     );
