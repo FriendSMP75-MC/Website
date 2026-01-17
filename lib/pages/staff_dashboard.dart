@@ -25,7 +25,7 @@ class _StaffDashboardState extends State<StaffDashboard> {
           height: 200, 
           child: GridView.count(
             crossAxisCount: 3,
-            crossAxisSpacing: 8,
+            crossAxisSpacing: 50,
             mainAxisSpacing: 8,
             padding: const EdgeInsets.all(8),
             children: [

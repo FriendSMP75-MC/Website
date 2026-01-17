@@ -234,7 +234,7 @@ class _DashboardState extends State<Dashboard> {
                                     "No staff added yet.",
                                   ) // if no UUID is added
                                 : SizedBox(
-                                    height: 300,
+                                    height: 100,
 
                                     //listing added uuid
                                     child: ListView.builder(
@@ -289,7 +289,9 @@ class _DashboardState extends State<Dashboard> {
                                                 //fetch updated staff list
                                                 _fetchStaffUUID();
                                               } catch (e) {
+
                                                 if (!context.mounted) return;
+
                                                 //show snackbar if found any error
                                                 ScaffoldMessenger.of(
                                                   context,
