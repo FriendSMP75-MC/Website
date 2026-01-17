@@ -10,73 +10,75 @@ class StaffDashboard extends StatefulWidget {
 class _StaffDashboardState extends State<StaffDashboard> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Column(
-        children: [
-          Row(
-            children: [
-              GridView.count(
-                crossAxisCount: 2,
-                children: [
-                  Container(
-                    color: Colors.grey,
-                    child: Column(
-                      children: [
-                        Text(
-                          'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
-                        ),
-                      ],
+    return Expanded(
+      child: Scaffold(
+        body: Column(
+          children: [
+            Row(
+              children: [
+                GridView.count(
+                  crossAxisCount: 2,
+                  children: [
+                    Container(
+                      color: Colors.grey,
+                      child: Column(
+                        children: [
+                          Text(
+                            'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-
-                  Container(
-                    color: Colors.grey,
-                    child: Column(
-                      children: [
-                        Text(
-                          'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
-                        ),
-                      ],
+      
+                    Container(
+                      color: Colors.grey,
+                      child: Column(
+                        children: [
+                          Text(
+                            'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-
-                  Container(
-                    color: Colors.grey,
-                    child: Column(
-                      children: [
-                        Text(
-                          'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
-                        ),
-                      ],
+      
+                    Container(
+                      color: Colors.grey,
+                      child: Column(
+                        children: [
+                          Text(
+                            'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-
-                  Container(
-                    color: Colors.grey,
-                    child: Column(
-                      children: [
-                        Text(
-                          'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
-                        ),
-                      ],
+      
+                    Container(
+                      color: Colors.grey,
+                      child: Column(
+                        children: [
+                          Text(
+                            'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-
-                  Container(
-                    color: Colors.grey,
-                    child: Column(
-                      children: [
-                        Text(
-                          'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
-                        ),
-                      ],
+      
+                    Container(
+                      color: Colors.grey,
+                      child: Column(
+                        children: [
+                          Text(
+                            'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ],
+                  ],
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
