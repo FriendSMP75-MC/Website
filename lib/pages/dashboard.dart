@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:server_site/data/backend_config.dart';
+import 'package:server_site/pages/staff_dashboard.dart';
+import 'package:server_site/widgets/appbar.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:server_site/data/supabase_config.dart';
 import 'package:server_site/widgets/nav_drawer.dart';
@@ -52,6 +54,13 @@ class _DashboardState extends State<Dashboard> {
     }
   }
 
+  // Check staff list
+  Future<bool> isStaff(String user) async {
+    final staffList = users;
+    if (staffList.contains(user)) return true;
+    return false;
+  }
+
   @override
   void dispose() {
     _authSub?.cancel();
@@ -73,45 +82,7 @@ class _DashboardState extends State<Dashboard> {
     final authUUID = SupabaseConfig.getSupabaseUUID(user);
 
     return Scaffold(
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        title: SafeArea(
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(right: 3),
-                child: Image.network(
-                  'https://i.ibb.co/4nkHpYDw/servercurrent.jpg',
-                  height: 40,
-                  errorBuilder: (context, error, stackTrace) =>
-                      const Icon(Icons.broken_image),
-                ),
-              ),
-              const Flexible(
-                child: Text('FriendSMP75', overflow: TextOverflow.visible),
-              ),
-            ],
-          ),
-        ),
-        actions: [
-          Builder(
-            builder: (context) => IconButton(
-              icon: const Icon(Icons.menu),
-              onPressed: () {
-                Scaffold.of(context).openEndDrawer();
-              },
-            ),
-          ),
-        ],
-        bottom: const PreferredSize(
-          preferredSize: Size.fromHeight(1),
-          child: SizedBox(
-            width: double.infinity,
-            child: Divider(height: 1, thickness: 1, color: Colors.grey),
-          ),
-        ),
-      ),
+      appBar: AppbarPage(),
 
       endDrawer: NavDrawer(currentPage: 'Dashboard', parentContext: context),
 
@@ -347,6 +318,7 @@ class _DashboardState extends State<Dashboard> {
                                       },
                                     ),
                                   ),
+                            Divider(thickness: 3),
                           ],
                         ),
                       ),
@@ -354,6 +326,22 @@ class _DashboardState extends State<Dashboard> {
                   );
                 }
                 return const SizedBox.shrink();
+              },
+            ),
+
+            // staff only - Main dashboard
+            FutureBuilder<bool>(
+              future: isStaff(authUUID),
+              builder: (context, snapshot) {
+                if (!snapshot.hasData) {
+                  return CircularProgressIndicator();
+                }
+
+                if (snapshot.data!) {
+                  return StaffDashboard(); // staff-only widget
+                } else {
+                  return Text("Access denied");
+                }
               },
             ),
           ],

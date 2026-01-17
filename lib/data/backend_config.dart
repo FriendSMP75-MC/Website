@@ -92,6 +92,7 @@ class BackendData {
     return null;
   }
 
+  // Get UUID
   static Future<List<dynamic>?> getUUID() async {
     try {
       final result = await retrieveData('get-staff-uuids');
@@ -107,7 +108,7 @@ class BackendData {
 
   // Send
 
-  //send UID
+  //send UUID
   static Future<String?> sendUUID(String uuid, String nickname) async {
     try {
       final result = await sendData('add-uuid', {
