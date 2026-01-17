@@ -57,7 +57,7 @@ class _DashboardState extends State<Dashboard> {
   // Check staff list
   Future<bool> isStaff(String uuid) async {
     final staffList = users;
-    return staffList.any((listUser) => listUser['staff_uid']);
+    return staffList.any((listUser) => listUser['staff_uid']==uuid);
   }
 
   @override
