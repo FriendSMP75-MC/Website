@@ -19,7 +19,6 @@ class _StaffDashboardState extends State<StaffDashboard> {
         ),
 
         SizedBox(
-          width: double.infinity,
           height: double.infinity,
           child: GridView.count(
             crossAxisCount: 3,
@@ -28,6 +27,7 @@ class _StaffDashboardState extends State<StaffDashboard> {
             padding: const EdgeInsets.all(8),
             children: [
               Container(
+                width: 400,
                 color: Colors.grey,
                 child: Column(
                   children: [
