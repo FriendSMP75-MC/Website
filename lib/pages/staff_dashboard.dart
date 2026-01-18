@@ -15,13 +15,12 @@ class _StaffDashboardState extends State<StaffDashboard> {
         // Title
         Padding(
           padding: const EdgeInsets.all(8.0),
-          child: Text(
-            'Staff Dashboard',
-            style: TextStyle(fontSize: 20),
-          ),
+          child: Text('Staff Dashboard', style: TextStyle(fontSize: 20)),
         ),
 
-        Expanded(
+        SizedBox(
+          width: double.infinity,
+          height: double.infinity,
           child: GridView.count(
             crossAxisCount: 3,
             crossAxisSpacing: 50,
@@ -29,28 +28,174 @@ class _StaffDashboardState extends State<StaffDashboard> {
             padding: const EdgeInsets.all(8),
             children: [
               Container(
-                color: Colors.red,
-                child: Center(child: Text('hello1 a')),
+                color: Colors.grey,
+                child: Column(
+                  children: [
+                    Center(
+                      child: Text(
+                        'Announcements',
+                        style: TextStyle(fontSize: 15),
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsetsGeometry.all(8.0),
+                      child: Text(
+                        'Click the below button to make announcement',
+                      ),
+                    ),
+                    FloatingActionButton(
+                      onPressed: () {},
+                      backgroundColor: Colors.blue,
+                      child: Text(
+                        'To announcment',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
+                  ],
+                ),
               ),
+              // Announcements
               Container(
-                color: Colors.green,
-                child: Center(child: Text('hello2')),
+                color: Colors.grey,
+                child: Column(
+                  children: [
+                    Center(
+                      child: Text(
+                        'Announcements',
+                        style: TextStyle(fontSize: 15),
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsetsGeometry.all(8.0),
+                      child: Text(
+                        'Click the below button to make announcement',
+                      ),
+                    ),
+                    FloatingActionButton(
+                      onPressed: () {},
+                      backgroundColor: Colors.blue,
+                      child: Text(
+                        'To announcment',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
+                  ],
+                ),
               ),
+              // Gallary [Will be available soon]
               Container(
-                color: Colors.blue,
-                child: Center(child: Text('hello3')),
+                color: Colors.grey,
+                child: Column(
+                  children: [
+                    Center(
+                      child: Text(
+                        'Gallary',
+                        style: TextStyle(fontSize: 15),
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsetsGeometry.all(8.0),
+                      child: Text(
+                        'Click the below button to add an image to Gallery',
+                      ),
+                    ),
+                    FloatingActionButton(
+                      onPressed: () {},
+                      backgroundColor: Colors.blue,
+                      child: Text(
+                        'To Gallary',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
+                  ],
+                ),
               ),
+
+              // Status update [Instatus API]
               Container(
-                color: Colors.orange,
-                child: Center(child: Text('Reports')),
+                color: Colors.grey,
+                child: Column(
+                  children: [
+                    Center(
+                      child: Text(
+                        'Announcements',
+                        style: TextStyle(fontSize: 15),
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsetsGeometry.all(8.0),
+                      child: Text(
+                        'Click the below button to make announcement',
+                      ),
+                    ),
+                    FloatingActionButton(
+                      onPressed: () {},
+                      backgroundColor: Colors.blue,
+                      child: Text(
+                        'To announcment',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
+                  ],
+                ),
               ),
+
+              // Place holder
               Container(
-                color: Colors.purple,
-                child: Center(child: Text('Settings')),
+                color: Colors.grey,
+                child: Column(
+                  children: [
+                    Center(
+                      child: Text(
+                        'Announcements',
+                        style: TextStyle(fontSize: 15),
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsetsGeometry.all(8.0),
+                      child: Text(
+                        'Click the below button to make announcement',
+                      ),
+                    ),
+                    FloatingActionButton(
+                      onPressed: () {},
+                      backgroundColor: Colors.blue,
+                      child: Text(
+                        'To announcment',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
+                  ],
+                ),
               ),
+
+              // Place holder
               Container(
-                color: Colors.teal,
-                child: Center(child: Text('Logout')),
+                color: Colors.grey,
+                child: Column(
+                  children: [
+                    Center(
+                      child: Text(
+                        'Announcements',
+                        style: TextStyle(fontSize: 15),
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsetsGeometry.all(8.0),
+                      child: Text(
+                        'Click the below button to make announcement',
+                      ),
+                    ),
+                    FloatingActionButton(
+                      onPressed: () {},
+                      backgroundColor: Colors.blue,
+                      child: Text(
+                        'To announcment',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ],
           ),
