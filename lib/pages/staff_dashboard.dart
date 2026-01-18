@@ -22,7 +22,7 @@ class _StaffDashboardState extends State<StaffDashboard> {
         ),
 
         SizedBox(
-          height: 200, 
+          height: double.infinity, 
           child: GridView.count(
             crossAxisCount: 3,
             crossAxisSpacing: 50,
@@ -30,10 +30,10 @@ class _StaffDashboardState extends State<StaffDashboard> {
             padding: const EdgeInsets.all(8),
             children: [
               Container(
-                color: Colors.red,
+                color: Colors.blueGrey,
                 child: Column(
                   children: [
-                    Text('Hello world'),
+                    Text('Announcement',style: TextStyle(fontSize: 20),textAlign: TextAlign.left,),
                     ElevatedButton(onPressed: (){}, child: Text('hi'))
                   ],
                 )
