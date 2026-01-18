@@ -10,87 +10,53 @@ class StaffDashboard extends StatefulWidget {
 class _StaffDashboardState extends State<StaffDashboard> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text("Staff Dashboard")),
-      body: Column(
-        children: [
-          // Title
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text('Staff Dashboard', style: TextStyle(fontSize: 20)),
+    return Column(
+      children: [
+        // Title
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Text(
+            'Staff Dashboard',
+            style: TextStyle(fontSize: 20),
           ),
+        ),
 
-          // Expanded instead of SizedBox with infinity
-          Expanded(
-            child: GridView.count(
-              crossAxisCount: 3,
-              crossAxisSpacing: 50,
-              mainAxisSpacing: 8,
-              padding: const EdgeInsets.all(8),
-              children: [
-                Container(
-                  color: Colors.grey,
-                  child: Column(
-                    children: [
-                      const Center(
-                        child: Text('Announcements', style: TextStyle(fontSize: 15)),
-                      ),
-                      const Padding(
-                        padding: EdgeInsets.all(8.0),
-                        child: Text('Click the below button to make announcement'),
-                      ),
-                      ElevatedButton(
-                        onPressed: () {},
-                        style: ElevatedButton.styleFrom(backgroundColor: Colors.blue),
-                        child: const Text('To announcement', style: TextStyle(color: Colors.white)),
-                      ),
-                    ],
-                  ),
-                ),
-                Container(
-                  color: Colors.grey,
-                  child: Column(
-                    children: [
-                      const Center(
-                        child: Text('Gallery', style: TextStyle(fontSize: 15)),
-                      ),
-                      const Padding(
-                        padding: EdgeInsets.all(8.0),
-                        child: Text('Click the below button to add an image to Gallery'),
-                      ),
-                      ElevatedButton(
-                        onPressed: () {},
-                        style: ElevatedButton.styleFrom(backgroundColor: Colors.blue),
-                        child: const Text('To Gallery', style: TextStyle(color: Colors.white)),
-                      ),
-                    ],
-                  ),
-                ),
-                Container(
-                  color: Colors.grey,
-                  child: Column(
-                    children: [
-                      const Center(
-                        child: Text('Events', style: TextStyle(fontSize: 15)),
-                      ),
-                      const Padding(
-                        padding: EdgeInsets.all(8.0),
-                        child: Text('Click the below button to add an event'),
-                      ),
-                      ElevatedButton(
-                        onPressed: () {},
-                        style: ElevatedButton.styleFrom(backgroundColor: Colors.blue),
-                        child: const Text('To Events', style: TextStyle(color: Colors.white)),
-                      ),
-                    ],
-                  ),
-                ),
-                // You can keep adding more containers here as needed
-              ],
-            ),
+        SizedBox(
+          height: 200, 
+          child: GridView.count(
+            crossAxisCount: 3,
+            crossAxisSpacing: 50,
+            mainAxisSpacing: 8,
+            padding: const EdgeInsets.all(8),
+            children: [
+              Container(
+                color: Colors.red,
+                child: Center(child: Text('hello1')),
+              ),
+              Container(
+                color: Colors.green,
+                child: Center(child: Text('hello2')),
+              ),
+              Container(
+                color: Colors.blue,
+                child: Center(child: Text('hello3')),
+              ),
+              Container(
+                color: Colors.orange,
+                child: Center(child: Text('Reports')),
+              ),
+              Container(
+                color: Colors.purple,
+                child: Center(child: Text('Settings')),
+              ),
+              Container(
+                color: Colors.teal,
+                child: Center(child: Text('Logout')),
+              ),
+            ],
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }
