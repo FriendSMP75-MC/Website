@@ -31,7 +31,12 @@ class _StaffDashboardState extends State<StaffDashboard> {
             children: [
               Container(
                 color: Colors.red,
-                child: Center(child: Text('hello1')),
+                child: Column(
+                  children: [
+                    Text('Hello world'),
+                    ElevatedButton(onPressed: (){}, child: Text('hi'))
+                  ],
+                )
               ),
               Container(
                 color: Colors.green,
