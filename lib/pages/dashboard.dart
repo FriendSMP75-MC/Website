@@ -341,7 +341,7 @@ class _DashboardState extends State<Dashboard> {
                   return Text("Error: ${snapshot.error}");
                 }
                 if (snapshot.data == true) {
-                  return Expanded(child: StaffDashboard());
+                  return SizedBox(height:MediaQuery.of(context).size.height,child:  StaffDashboard());
                 }
                 return Text('Hello there! \n unfortunately you don\'t have access to this page :(');
               },
