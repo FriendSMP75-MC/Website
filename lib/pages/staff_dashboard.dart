@@ -33,7 +33,7 @@ class _StaffDashboardState extends State<StaffDashboard> {
               children: [
                 Container(
                   color: Colors.grey,
-                  child: Row(
+                  child: Column(
                     children: [
                       Text(
                         'Announcement',
