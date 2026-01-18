@@ -22,7 +22,7 @@ class _StaffDashboardState extends State<StaffDashboard> {
         ),
 
         SizedBox(
-          height: double.infinity, 
+          height: 200, 
           child: GridView.count(
             crossAxisCount: 3,
             crossAxisSpacing: 50,
