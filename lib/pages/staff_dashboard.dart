@@ -31,166 +31,167 @@ class _StaffDashboardState extends State<StaffDashboard> {
                 color: Colors.grey,
                 child: Column(
                   children: [
-                    Center(
+                    const Center(
                       child: Text(
                         'Announcements',
                         style: TextStyle(fontSize: 15),
                       ),
                     ),
-                    Padding(
-                      padding: EdgeInsetsGeometry.all(8.0),
+                    const Padding(
+                      padding: EdgeInsets.all(8.0),
                       child: Text(
                         'Click the below button to make announcement',
                       ),
                     ),
-                    FloatingActionButton(
+                    ElevatedButton(
                       onPressed: () {},
-                      backgroundColor: Colors.blue,
-                      child: Text(
-                        'To announcment',
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.blue,
+                      ),
+                      child: const Text(
+                        'To announcement',
                         style: TextStyle(color: Colors.white),
                       ),
                     ),
                   ],
                 ),
               ),
-              // Announcements
               Container(
                 color: Colors.grey,
                 child: Column(
                   children: [
-                    Center(
+                    const Center(
                       child: Text(
                         'Announcements',
                         style: TextStyle(fontSize: 15),
                       ),
                     ),
-                    Padding(
-                      padding: EdgeInsetsGeometry.all(8.0),
+                    const Padding(
+                      padding: EdgeInsets.all(8.0),
                       child: Text(
                         'Click the below button to make announcement',
                       ),
                     ),
-                    FloatingActionButton(
+                    ElevatedButton(
                       onPressed: () {},
-                      backgroundColor: Colors.blue,
-                      child: Text(
-                        'To announcment',
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.blue,
+                      ),
+                      child: const Text(
+                        'To announcement',
                         style: TextStyle(color: Colors.white),
                       ),
                     ),
                   ],
                 ),
               ),
-              // Gallary [Will be available soon]
               Container(
                 color: Colors.grey,
                 child: Column(
                   children: [
-                    Center(
-                      child: Text(
-                        'Gallary',
-                        style: TextStyle(fontSize: 15),
-                      ),
+                    const Center(
+                      child: Text('Gallery', style: TextStyle(fontSize: 15)),
                     ),
-                    Padding(
-                      padding: EdgeInsetsGeometry.all(8.0),
+                    const Padding(
+                      padding: EdgeInsets.all(8.0),
                       child: Text(
                         'Click the below button to add an image to Gallery',
                       ),
                     ),
-                    FloatingActionButton(
+                    ElevatedButton(
                       onPressed: () {},
-                      backgroundColor: Colors.blue,
-                      child: Text(
-                        'To Gallary',
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.blue,
+                      ),
+                      child: const Text(
+                        'To Gallery',
                         style: TextStyle(color: Colors.white),
                       ),
                     ),
                   ],
                 ),
               ),
-
-              // Status update [Instatus API]
               Container(
                 color: Colors.grey,
                 child: Column(
                   children: [
-                    Center(
+                    const Center(
                       child: Text(
                         'Announcements',
                         style: TextStyle(fontSize: 15),
                       ),
                     ),
-                    Padding(
-                      padding: EdgeInsetsGeometry.all(8.0),
+                    const Padding(
+                      padding: EdgeInsets.all(8.0),
                       child: Text(
                         'Click the below button to make announcement',
                       ),
                     ),
-                    FloatingActionButton(
+                    ElevatedButton(
                       onPressed: () {},
-                      backgroundColor: Colors.blue,
-                      child: Text(
-                        'To announcment',
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.blue,
+                      ),
+                      child: const Text(
+                        'To announcement',
                         style: TextStyle(color: Colors.white),
                       ),
                     ),
                   ],
                 ),
               ),
-
-              // Place holder
               Container(
                 color: Colors.grey,
                 child: Column(
                   children: [
-                    Center(
+                    const Center(
                       child: Text(
                         'Announcements',
                         style: TextStyle(fontSize: 15),
                       ),
                     ),
-                    Padding(
-                      padding: EdgeInsetsGeometry.all(8.0),
+                    const Padding(
+                      padding: EdgeInsets.all(8.0),
                       child: Text(
                         'Click the below button to make announcement',
                       ),
                     ),
-                    FloatingActionButton(
+                    ElevatedButton(
                       onPressed: () {},
-                      backgroundColor: Colors.blue,
-                      child: Text(
-                        'To announcment',
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.blue,
+                      ),
+                      child: const Text(
+                        'To announcement',
                         style: TextStyle(color: Colors.white),
                       ),
                     ),
                   ],
                 ),
               ),
-
-              // Place holder
               Container(
                 color: Colors.grey,
                 child: Column(
                   children: [
-                    Center(
+                    const Center(
                       child: Text(
                         'Announcements',
                         style: TextStyle(fontSize: 15),
                       ),
                     ),
-                    Padding(
-                      padding: EdgeInsetsGeometry.all(8.0),
+                    const Padding(
+                      padding: EdgeInsets.all(8.0),
                       child: Text(
                         'Click the below button to make announcement',
                       ),
                     ),
-                    FloatingActionButton(
+                    ElevatedButton(
                       onPressed: () {},
-                      backgroundColor: Colors.blue,
-                      child: Text(
-                        'To announcment',
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.blue,
+                      ),
+                      child: const Text(
+                        'To announcement',
                         style: TextStyle(color: Colors.white),
                       ),
                     ),
