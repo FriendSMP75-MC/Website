@@ -11,7 +11,7 @@ class _StaffDashboardState extends State<StaffDashboard> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-
+      appBar: AppBar(title: const Text("Staff Dashboard")),
       body: Column(
         children: [
           // Title
@@ -24,8 +24,7 @@ class _StaffDashboardState extends State<StaffDashboard> {
           ),
 
           // GridView fills remaining space
-          SizedBox(
-            height: double.infinity,
+          Expanded(
             child: GridView.count(
               crossAxisCount: 3,
               crossAxisSpacing: 50,
