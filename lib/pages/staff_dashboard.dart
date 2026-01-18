@@ -19,7 +19,7 @@ class _StaffDashboardState extends State<StaffDashboard> {
             padding: const EdgeInsets.all(8.0),
             child: Text(
               'Staff Dashboard',
-              style: TextStyle(fontSize: 20),
+              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
           ),
 
@@ -27,43 +27,46 @@ class _StaffDashboardState extends State<StaffDashboard> {
           Expanded(
             child: GridView.count(
               crossAxisCount: 3,
-              crossAxisSpacing: 50,
-              mainAxisSpacing: 8,
+              crossAxisSpacing: 16, // ✅ smaller spacing so items fit
+              mainAxisSpacing: 16,
               padding: const EdgeInsets.all(8),
               children: [
                 Container(
                   color: Colors.grey,
                   child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center, // ✅ center content
                     children: [
-                      Text(
+                      const Text(
                         'Announcement',
                         style: TextStyle(fontSize: 20),
-                        textAlign: TextAlign.left,
                       ),
-                      SizedBox(height: 2,),
-                      ElevatedButton(onPressed: () {}, child: Text('hi'))
+                      const SizedBox(height: 8),
+                      ElevatedButton(
+                        onPressed: () {},
+                        child: const Text('hi'),
+                      ),
                     ],
                   ),
                 ),
                 Container(
                   color: Colors.green,
-                  child: Center(child: Text('Gallery')),
+                  child: const Center(child: Text('Gallery')),
                 ),
                 Container(
                   color: Colors.blue,
-                  child: Center(child: Text('hello3')),
+                  child: const Center(child: Text('hello3')),
                 ),
                 Container(
                   color: Colors.orange,
-                  child: Center(child: Text('Reports')),
+                  child: const Center(child: Text('Reports')),
                 ),
                 Container(
                   color: Colors.purple,
-                  child: Center(child: Text('Settings')),
+                  child: const Center(child: Text('Settings')),
                 ),
                 Container(
                   color: Colors.teal,
-                  child: Center(child: Text('Logout')),
+                  child: const Center(child: Text('Logout')),
                 ),
               ],
             ),
