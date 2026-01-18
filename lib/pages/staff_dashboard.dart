@@ -21,8 +21,7 @@ class _StaffDashboardState extends State<StaffDashboard> {
           ),
         ),
 
-        SizedBox(
-          height: 200, 
+        Expanded(
           child: GridView.count(
             crossAxisCount: 3,
             crossAxisSpacing: 50,
@@ -31,7 +30,7 @@ class _StaffDashboardState extends State<StaffDashboard> {
             children: [
               Container(
                 color: Colors.red,
-                child: Center(child: Text('hello1')),
+                child: Center(child: Text('hello1 a')),
               ),
               Container(
                 color: Colors.green,
