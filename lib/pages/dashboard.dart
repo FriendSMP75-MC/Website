@@ -57,7 +57,7 @@ class _DashboardState extends State<Dashboard> {
   // Check staff list
   Future<bool> isStaff(String uuid) async {
     final staffList = users;
-    return staffList.any((listUser) => listUser['staff_uid']==uuid);
+    return staffList.any((listUser) => listUser['staff_uid'] == uuid);
   }
 
   @override
@@ -90,24 +90,54 @@ class _DashboardState extends State<Dashboard> {
           children: [
             SizedBox(
               width: double.infinity,
-              child: Row(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text(
-                      'Welcome $username',
-                      textAlign: TextAlign.start,
-                    ),
-                  ),
-                  Spacer(),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: SelectableText(
-                      'UUID ID: $authUUID',
-                      textAlign: TextAlign.end,
-                    ),
-                  ),
-                ],
+              child: LayoutBuilder(
+                builder: (context, constraints) {
+                  if (constraints.maxWidth < 600) {
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Center(
+                            child: Text(
+                              'Welcome $username',
+                              textAlign: TextAlign.start,
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Center(
+                            child: SelectableText(
+                              'UUID ID: $authUUID',
+                              textAlign: TextAlign.start,
+                            ),
+                          ),
+                        ),
+                      ],
+                    );
+                  } else {
+                    return Row(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text(
+                            'Welcome $username',
+                            textAlign: TextAlign.start,
+                          ),
+                        ),
+                        Spacer(),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: SelectableText(
+                            'UUID ID: $authUUID',
+                            textAlign: TextAlign.end,
+                          ),
+                        ),
+                      ],
+                    );
+                  }
+                },
               ),
             ),
 
@@ -289,7 +319,6 @@ class _DashboardState extends State<Dashboard> {
                                                 //fetch updated staff list
                                                 _fetchStaffUUID();
                                               } catch (e) {
-
                                                 if (!context.mounted) return;
 
                                                 //show snackbar if found any error
@@ -341,9 +370,14 @@ class _DashboardState extends State<Dashboard> {
                   return Text("Error: ${snapshot.error}");
                 }
                 if (snapshot.data == true) {
-                  return SizedBox(height:MediaQuery.of(context).size.height,child:  StaffDashboard());
+                  return SizedBox(
+                    height: MediaQuery.of(context).size.height,
+                    child: StaffDashboard(),
+                  );
                 }
-                return Text('Hello there! \n unfortunately you don\'t have access to this page :(');
+                return Text(
+                  'Hello there! \n unfortunately you don\'t have access to this page :(',
+                );
               },
             ),
           ],
