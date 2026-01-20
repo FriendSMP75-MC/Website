@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 
 class AppbarPage extends StatelessWidget implements PreferredSizeWidget {
   final String? customTitle;
-  const AppbarPage({super.key, this.customTitle});
+  final bool? backArrow;
+  const AppbarPage({super.key, this.customTitle, this.backArrow});
 
   @override
   Size get preferredSize => const Size.fromHeight(kToolbarHeight);
@@ -10,7 +11,7 @@ class AppbarPage extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      automaticallyImplyLeading: false,
+      automaticallyImplyLeading: backArrow ?? false,
       title: SafeArea(
         child: Row(
           mainAxisSize: MainAxisSize.min,
