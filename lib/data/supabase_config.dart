@@ -21,7 +21,7 @@ class SupabaseConfig {
   static Future<Map<String, String>?> fetchSupabaseDetails() async {
     const backendUrl =
         'https://key-backend-for-friendsmp75-website.onrender.com/secure-data';
-    const accessToken = 'ybjyyfusdhhdtfvsckbcksdufhcgsjhcmnnxgcjbcn'; ///need to change accesstoken before full production change
+    const accessToken = String.fromEnvironment("ACCESS_TOKEN");
 
     try {
       final response = await http.get(
@@ -54,10 +54,7 @@ class SupabaseConfig {
     if (_initialized) return;
     final details = await fetchSupabaseDetails();
     if (details != null) {
-      await Supabase.initialize(
-        url: details['url']!,
-        anonKey: details['key']!,
-      );
+      await Supabase.initialize(url: details['url']!, anonKey: details['key']!);
       _client = Supabase.instance.client;
       print("Supabase initialized with backend credentials");
     } else {
@@ -79,7 +76,7 @@ class SupabaseConfig {
   /// --- Helpers for user metadata ---
 
   /// Get a safe display name from user metadata
-  static String getDisplayName(User? user) {
+  static String getUserName(User? user) {
     if (user == null) return 'User';
     final meta = user.userMetadata;
 
@@ -98,10 +95,8 @@ class SupabaseConfig {
     return 'User';
   }
 
-  /// Get avatar URL if provided by Discord OAuth
-  static String? getAvatarUrl(User? user) {
-    final meta = user?.userMetadata;
-    return meta?['avatar_url'] as String?;
+  static String getSupabaseUUID(User? user) {
+    return user?.id ?? 'Not logged in';
   }
 
   /// Quick login/logout helpers

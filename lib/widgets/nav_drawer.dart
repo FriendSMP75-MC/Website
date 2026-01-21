@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:server_site/pages/dashboard.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:server_site/supabase_config.dart';
-import 'package:server_site/home.dart';
-import 'package:server_site/about.dart';
-import 'package:server_site/status.dart';
-import 'package:server_site/gallery.dart';
+import 'package:server_site/data/supabase_config.dart';
+import 'package:server_site/pages/home.dart';
+import 'package:server_site/pages/about.dart';
+import 'package:server_site/pages/status.dart';
+import 'package:server_site/pages/gallery.dart';
 
 SupabaseClient get supabase => Supabase.instance.client;
 
@@ -35,21 +36,21 @@ class NavDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final user = SupabaseConfig.client.auth.currentUser;
-    final displayName = SupabaseConfig.getDisplayName(user);
+    final username = SupabaseConfig.getUserName(user);
 
     return Drawer(
       child: Column(
         children: [
           // Header
           Container(
-            height: 66,
+            height: 75,
             width: double.infinity,
-            padding: const EdgeInsets.symmetric(vertical: 16),
+            alignment: Alignment.center,
             color: Colors.purple,
             child: Text(
               'Current page: $currentPage',
               textAlign: TextAlign.center,
-              style: const TextStyle(color: Colors.white, fontSize: 16),
+              style: const TextStyle(color: Colors.white),
             ),
           ),
 
@@ -60,6 +61,7 @@ class NavDrawer extends StatelessWidget {
               children: [
                 ListTile(
                   contentPadding: const EdgeInsets.symmetric(horizontal: 16),
+                  minTileHeight: 57,
                   title: const Text(
                     'Home',
                     textAlign: TextAlign.center,
@@ -73,6 +75,7 @@ class NavDrawer extends StatelessWidget {
                 ),
                 ListTile(
                   contentPadding: const EdgeInsets.symmetric(horizontal: 16),
+                  minTileHeight: 57,
                   title: const Text(
                     'About',
                     textAlign: TextAlign.center,
@@ -90,6 +93,7 @@ class NavDrawer extends StatelessWidget {
                 ),
                 ListTile(
                   contentPadding: const EdgeInsets.symmetric(horizontal: 16),
+                  minTileHeight: 57,
                   title: const Text('Status',
                       textAlign: TextAlign.center,
                       style: TextStyle(color: Colors.white)),
@@ -101,6 +105,7 @@ class NavDrawer extends StatelessWidget {
                 ),
                 ListTile(
                   contentPadding: const EdgeInsets.symmetric(horizontal: 16),
+                  minTileHeight: 57,
                   title: const Text('Gallery',
                       textAlign: TextAlign.center,
                       style: TextStyle(color: Colors.white)),
@@ -114,19 +119,37 @@ class NavDrawer extends StatelessWidget {
             ),
           ),
 
-          // Bottom greeting + login/logout button
+          //login/logout button with greeting
           Column(
             mainAxisSize: MainAxisSize.min,
             children: [
+              if (user != null)
+                ListTile(
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 16),
+                  minTileHeight: 57,
+                  title: const Text(
+                    'Dashboard',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(color: Colors.white),
+                  ),
+                  selected: currentPage == 'Dashboard',
+                  selectedTileColor: Colors.purpleAccent,
+                  onTap: () {
+                    _navigateSafely(const Dashboard());
+                  },
+                ),
+
               SizedBox(
                 width: double.infinity,
-                height: 60,
+                height: 75,
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.deepPurple[400],
                     foregroundColor: Colors.white,
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
+                      borderRadius: BorderRadius.only(
+                        bottomLeft: Radius.circular(10),
+                      ),
                     ),
                   ),
                   onPressed: () async {
@@ -142,9 +165,8 @@ class NavDrawer extends StatelessWidget {
                       Text(
                         user == null
                             ? "Login with Discord"
-                            : "Welcome Back! \n $displayName",
+                            : "Welcome Back! \n $username",
                         style: const TextStyle(
-                          fontSize: 16,
                         ),
                         textAlign: TextAlign.center,
                       ),
