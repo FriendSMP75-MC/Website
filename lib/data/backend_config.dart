@@ -4,8 +4,14 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'dart:async';
 
+import 'package:server_site/data/supabase_config.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+
 const backendUrl = 'https://key-backend-for-friendsmp75-website.onrender.com/';
 const accessToken = String.fromEnvironment("ACCESS_TOKEN");
+
+SupabaseClient get supabase => Supabase.instance.client;
+final user = SupabaseConfig.client.auth.currentUser;
 
 class BackendData {
   // Get data from backend
@@ -115,6 +121,23 @@ class BackendData {
         'uuid': uuid,
         'nickname': nickname,
       });
+      return result;
+    } catch (e) {
+      return 'Error: $e';
+    }
+  }
+
+  static Future<String?> newAnnouncement(String title, String body) async {
+    try {
+      final author = SupabaseConfig.getDisplayName(user);
+      final authorUUID = SupabaseConfig.getSupabaseUUID(user);
+      final result = await sendData('new-announcements', {
+        'title': title,
+        'body': body,
+        'author': author,
+        'author_uuid': authorUUID,
+      });
+
       return result;
     } catch (e) {
       return 'Error: $e';

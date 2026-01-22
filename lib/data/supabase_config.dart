@@ -75,7 +75,7 @@ class SupabaseConfig {
 
   /// --- Helpers for user metadata ---
 
-  /// Get a safe display name from user metadata
+  /// Get a safe username from user metadata
   static String getUserName(User? user) {
     if (user == null) return 'User';
     final meta = user.userMetadata;
@@ -93,6 +93,18 @@ class SupabaseConfig {
     if (candidate != null) return candidate.toString();
 
     return 'User';
+  }
+
+  // Get user's display name
+  static String getDisplayName(User? user) {
+    if (user == null) return 'user';
+    final meta = user.userMetadata;
+    try {
+      final displayName = meta?['global_name'];
+      return displayName;
+    } catch (e) {
+      return 'Error: $e';
+    }
   }
 
   static String getSupabaseUUID(User? user) {
