@@ -1,6 +1,7 @@
 // ignore_for_file: avoid_print
 
 import 'dart:convert';
+import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'dart:async';
 
@@ -112,6 +113,20 @@ class BackendData {
     }
   }
 
+  // Get announcements
+  static Future<List<dynamic>?> getAnnouncements() async {
+    try {
+      final result = await retrieveData('/get-announcements');
+      if (result is List<dynamic>) {
+        return result;
+      }
+      return null;
+    } catch (e) {
+      debugPrint('Error when getting announcements: $e');
+    }
+    return null;
+  }
+
   // Send
 
   //send UUID
@@ -127,6 +142,7 @@ class BackendData {
     }
   }
 
+  // send announcement
   static Future<String?> newAnnouncement(String title, String body) async {
     try {
       final author = SupabaseConfig.getDisplayName(user);

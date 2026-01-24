@@ -96,13 +96,17 @@ class SupabaseConfig {
   }
 
   // Get user's display name
-  static String getDisplayName(User? user) {
-    if (user == null) return 'user';
-    final meta = user.userMetadata;
-    try {
-      final displayName = meta?['global_name'];
-      return displayName;
-    } catch (e) {
+ static String getDisplayName(User? user) {
+  try{
+  if (user == null) return 'user';
+  final meta = user.userMetadata;
+  final customClaims = meta?['custom_claims'];
+  final displayName = customClaims?['global_name'];
+  if (displayName is String && displayName.isNotEmpty) {
+    return displayName;
+  }
+  return 'user';
+  } catch (e) {
       return 'Error: $e';
     }
   }

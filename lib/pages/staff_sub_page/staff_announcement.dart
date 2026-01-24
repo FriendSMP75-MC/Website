@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:server_site/data/backend_config.dart';
+import 'package:server_site/data/supabase_config.dart';
 import 'package:server_site/widgets/appbar.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:flutter_markdown_plus/flutter_markdown_plus.dart' as markdown;
 
 SupabaseClient get supabase => Supabase.instance.client;
 
@@ -13,12 +15,11 @@ class Staffannouncements extends StatefulWidget {
 }
 
 class _StaffannouncementsState extends State<Staffannouncements> {
-  //key and controller for announcement title
+  // Keys and controllers
   final announcementTitle = GlobalKey<FormState>();
   final TextEditingController _announcementTitleController =
       TextEditingController();
 
-  // key and controller for announcement body
   final announcementBody = GlobalKey<FormState>();
   final TextEditingController _announcementBodyContoller =
       TextEditingController();
@@ -29,14 +30,16 @@ class _StaffannouncementsState extends State<Staffannouncements> {
     _announcementTitleController.addListener(() {
       setState(() {});
     });
+    _announcementBodyContoller.addListener(() {
+      setState(() {});
+    });
   }
 
   @override
   void dispose() {
+    _announcementTitleController.dispose();
+    _announcementBodyContoller.dispose();
     super.dispose();
-    _announcementBodyContoller.addListener(() {
-      setState(() {});
-    });
   }
 
   @override
@@ -45,9 +48,9 @@ class _StaffannouncementsState extends State<Staffannouncements> {
       appBar: AppbarPage(backArrow: true),
       body: SingleChildScrollView(
         child: Column(
-          mainAxisSize: MainAxisSize.max,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            // Header
             Padding(
               padding: EdgeInsets.all(8.0),
               child: Center(
@@ -62,16 +65,14 @@ class _StaffannouncementsState extends State<Staffannouncements> {
             Padding(
               padding: const EdgeInsets.only(left: 8),
               child: Text(
-                'Add a new Announcemnt!',
+                'Add a new Announcement!',
                 style: TextStyle(fontSize: 18),
               ),
             ),
-            // Preview Info
             SizedBox(height: 2),
 
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
-              mainAxisSize: MainAxisSize.max,
               children: [
                 Icon(Icons.info_outline, color: Colors.lightBlue),
                 Padding(
@@ -81,7 +82,7 @@ class _StaffannouncementsState extends State<Staffannouncements> {
               ],
             ),
 
-            // Announcement title textfield
+            // AnnouncementTitle textfield
             Form(
               key: announcementTitle,
               child: Padding(
@@ -106,19 +107,21 @@ class _StaffannouncementsState extends State<Staffannouncements> {
               ),
             ),
 
-            // Announcemnet body textfield
+            // AnnouncemnetBody textfield
             Form(
               key: announcementBody,
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: TextFormField(
+                  minLines: 5,
+                  maxLines: null,
+                  keyboardType: TextInputType.multiline,
                   controller: _announcementBodyContoller,
                   decoration: InputDecoration(
                     border: OutlineInputBorder(),
-                    hintText: 'Enter description of announcemnet',
-                    labelText: 'Announcemnet Description',
+                    hintText: 'Enter description of announcement',
+                    labelText: 'Announcement Description',
                   ),
-
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'This field is required';
@@ -132,12 +135,11 @@ class _StaffannouncementsState extends State<Staffannouncements> {
               ),
             ),
 
-            // Validation + adding announcement
+            // Submit button
             Center(
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: ElevatedButton(
-                  // Styles
                   style: ElevatedButton.styleFrom(
                     side: BorderSide(color: Colors.redAccent),
                     shape: RoundedRectangleBorder(
@@ -145,8 +147,6 @@ class _StaffannouncementsState extends State<Staffannouncements> {
                     ),
                     backgroundColor: Colors.lightBlueAccent,
                   ),
-
-                  // Behaviour
                   onPressed: () async {
                     final messenger = ScaffoldMessenger.of(context);
 
@@ -155,10 +155,9 @@ class _StaffannouncementsState extends State<Staffannouncements> {
                       try {
                         await BackendData.newAnnouncement(
                           _announcementTitleController.text.trim(),
-                          _announcementBodyContoller.text.trim(),
+                          _announcementBodyContoller.text,
                         );
 
-                        // clear text fields
                         _announcementBodyContoller.clear();
                         _announcementTitleController.clear();
 
@@ -195,7 +194,6 @@ class _StaffannouncementsState extends State<Staffannouncements> {
                       }
                     }
                   },
-
                   child: Text(
                     'Add Announcement!',
                     textAlign: TextAlign.center,
@@ -206,7 +204,7 @@ class _StaffannouncementsState extends State<Staffannouncements> {
             ),
             Divider(),
 
-            // Preview
+            // Preview header
             Center(
               child: Text(
                 'Preview',
@@ -215,7 +213,7 @@ class _StaffannouncementsState extends State<Staffannouncements> {
             ),
             Divider(),
 
-            // Mobile view
+            // Mobile view preview
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: LayoutBuilder(
@@ -223,56 +221,93 @@ class _StaffannouncementsState extends State<Staffannouncements> {
                   if (constraints.maxWidth < 600) {
                     return Column(
                       children: [
-                        Center(
-                          child: Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.only(
-                                topLeft: Radius.circular(8),
-                                topRight: Radius.circular(8)
-                              ),
-                              color: const Color.fromARGB(255, 47, 47, 47),
+                        Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(8),
+                              topRight: Radius.circular(8),
                             ),
-                            child: SizedBox(
-                              height: 400,
-                              child: Column(
-                                children: [
-                                  Center(
-                                    child: Padding(
-                                      padding: const EdgeInsets.fromLTRB(8, 8, 8, 0),
-                                      child: Text(
-                                        _announcementTitleController.text
-                                            .trim(),
-                                        style: TextStyle(
-                                          fontSize: 30,
-                                          color: Colors.greenAccent,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                        textAlign: TextAlign.center,
-                                        softWrap: true,
-                                      ),
-                                    ),
+                            color: Colors.white10,
+                          ),
+                          child: SizedBox(
+                            height: 400,
+                            child: Column(
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.fromLTRB(
+                                    8,
+                                    8,
+                                    8,
+                                    0,
                                   ),
-                                ],
-                              ),
+                                  child: Text(
+                                    _announcementTitleController.text.trim(),
+                                    style: TextStyle(
+                                      fontSize: 30,
+                                      color: Colors.greenAccent,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                    textAlign: TextAlign.center,
+                                    softWrap: true,
+                                  ),
+                                ),
+                                Expanded(
+                                  child: markdown.Markdown(
+                                    data:
+                                        _announcementBodyContoller
+                                            .text
+                                            .isNotEmpty
+                                        ? _announcementBodyContoller.text
+                                        : "*No announcement body yet*",
+                                    selectable: true,
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
                         ),
-                        // Author and created at time
                         Container(
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.only(
                               bottomLeft: Radius.circular(8),
                               bottomRight: Radius.circular(8),
                             ),
-                            color: Colors.black45,
+                            color: const Color.fromARGB(130, 195, 17, 17),
                           ),
-                          child: Row(children: [Text('data')]),
+                          child: SizedBox(
+                            height: 70,
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Row(
+                                children: [
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text('Authored By'),
+                                      Text(SupabaseConfig.getDisplayName(user)),
+                                    ],
+                                  ),
+                                  Spacer(),
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.end,
+                                    children: [
+                                      Text('Created on'),
+                                      Text("Today's Date will be displayed"),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
                         ),
                       ],
                     );
                   } else {
-                    // Desktop View
-                    return Column();
+                    // Desktop view placeholder
+                    return Column(
+                      children: [Text("Desktop preview coming soon")],
+                    );
                   }
                 },
               ),
