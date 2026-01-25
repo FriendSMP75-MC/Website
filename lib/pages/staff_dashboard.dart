@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:server_site/pages/staff_sub_page/staff_announcement.dart';
-import 'package:server_site/pages/staff_sub_page/staff_gallary.dart';
+import 'package:server_site/staff_sub_page/staff_announcement.dart';
+import 'package:server_site/staff_sub_page/staff_gallary.dart';
 
 class StaffDashboard extends StatefulWidget {
   const StaffDashboard({super.key});

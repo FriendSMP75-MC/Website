@@ -42,7 +42,13 @@ class _AboutState extends State<About> {
 
       endDrawer: NavDrawer(currentPage: 'About', parentContext: context),
 
-      body: const Center(child: Text('Welcome to the About app!')),
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            Padding(padding: EdgeInsets.all(8.0),child: Text('latest Announcmement'),)
+          ],
+        ),
+      )
     );
   }
 }

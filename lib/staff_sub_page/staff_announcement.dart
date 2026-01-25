@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:server_site/data/backend_config.dart';
 import 'package:server_site/data/supabase_config.dart';
+import 'package:server_site/sub_page/view_announcements.dart';
 import 'package:server_site/widgets/appbar.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart' as markdown;
@@ -114,7 +115,7 @@ class _StaffannouncementsState extends State<Staffannouncements> {
                 padding: const EdgeInsets.all(8.0),
                 child: TextFormField(
                   minLines: 5,
-                  maxLines: null,
+                  maxLines: 10,
                   keyboardType: TextInputType.multiline,
                   controller: _announcementBodyContoller,
                   decoration: InputDecoration(
@@ -244,28 +245,65 @@ class _StaffannouncementsState extends State<Staffannouncements> {
                                     _announcementTitleController.text.trim(),
                                     style: TextStyle(
                                       fontSize: 30,
-                                      color: Colors.greenAccent,
+                                      color: Colors.blue.shade400,
                                       fontWeight: FontWeight.bold,
                                     ),
                                     textAlign: TextAlign.center,
                                     softWrap: true,
                                   ),
                                 ),
+                                SizedBox(height: 10),
                                 Expanded(
-                                  child: markdown.Markdown(
-                                    data:
-                                        _announcementBodyContoller
-                                            .text
-                                            .isNotEmpty
-                                        ? _announcementBodyContoller.text
-                                        : "*No announcement body yet*",
-                                    selectable: true,
+                                  child: OverflowBox(
+                                    maxHeight: 400,
+                                    child: markdown.Markdown(
+                                      physics: NeverScrollableScrollPhysics(),
+                                      data:
+                                          _announcementBodyContoller
+                                              .text
+                                              .isNotEmpty
+                                          ? _announcementBodyContoller.text
+                                          : "*No announcement body yet*",
+                                      selectable: true,
+                                      shrinkWrap: true,
+                                    ),
                                   ),
                                 ),
                               ],
                             ),
                           ),
                         ),
+                        Container(
+                          width: double.infinity,
+                          color: Colors.blueAccent,
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.blueAccent,
+                            ),
+                            onPressed: () {
+                              Navigator.of(context).push(
+                                PageRouteBuilder(
+                                  pageBuilder:
+                                      (
+                                        context,
+                                        animation,
+                                        secondaryAnimation,
+                                      ) => ViewAnnouncement(
+                                        title:
+                                            _announcementTitleController.text,
+                                        body: _announcementBodyContoller.text,
+                                      ),
+                                ),
+                              );
+                            },
+                            child: Text(
+                              'Read more!',
+                              style: TextStyle(color: Colors.white),
+                            ),
+                          ),
+                        ),
+
+                        // Author details
                         Container(
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.only(
@@ -306,7 +344,125 @@ class _StaffannouncementsState extends State<Staffannouncements> {
                   } else {
                     // Desktop view placeholder
                     return Column(
-                      children: [Text("Desktop preview coming soon")],
+                      children: [
+                        Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(8),
+                              topRight: Radius.circular(8),
+                            ),
+                            color: Colors.white10,
+                          ),
+                          child: SizedBox(
+                            height: 200,
+                            child: Column(
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.fromLTRB(
+                                    8,
+                                    8,
+                                    8,
+                                    0,
+                                  ),
+                                  child: Text(
+                                    _announcementTitleController.text.trim(),
+                                    style: TextStyle(
+                                      fontSize: 30,
+                                      color: Colors.blue.shade400,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                    textAlign: TextAlign.center,
+                                    softWrap: true,
+                                  ),
+                                ),
+                                SizedBox(height: 10),
+                                Expanded(
+                                  child: OverflowBox(
+                                    maxHeight: 400,
+                                    child: markdown.Markdown(
+                                      physics: NeverScrollableScrollPhysics(),
+                                      data:
+                                          _announcementBodyContoller
+                                              .text
+                                              .isNotEmpty
+                                          ? _announcementBodyContoller.text
+                                          : "*No announcement body yet*",
+                                      selectable: true,
+                                      shrinkWrap: true,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        Container(
+                          width: double.infinity,
+                          color: Colors.blueAccent,
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.blueAccent,
+                            ),
+                            onPressed: () {
+                              Navigator.of(context).push(
+                                PageRouteBuilder(
+                                  pageBuilder:
+                                      (
+                                        context,
+                                        animation,
+                                        secondaryAnimation,
+                                      ) => ViewAnnouncement(
+                                        title:
+                                            _announcementTitleController.text,
+                                        body: _announcementBodyContoller.text,
+                                      ),
+                                ),
+                              );
+                            },
+                            child: Text(
+                              'Read more!',
+                              style: TextStyle(color: Colors.white),
+                            ),
+                          ),
+                        ),
+
+                        // Author details
+                        Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.only(
+                              bottomLeft: Radius.circular(8),
+                              bottomRight: Radius.circular(8),
+                            ),
+                            color: const Color.fromARGB(130, 195, 17, 17),
+                          ),
+                          child: SizedBox(
+                            height: 70,
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Row(
+                                children: [
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text('Authored By'),
+                                      Text(SupabaseConfig.getDisplayName(user)),
+                                    ],
+                                  ),
+                                  Spacer(),
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.end,
+                                    children: [
+                                      Text('Created on'),
+                                      Text("Today's Date will be displayed"),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
                     );
                   }
                 },
