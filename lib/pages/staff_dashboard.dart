@@ -94,7 +94,6 @@ class _StaffDashboardState extends State<StaffDashboard> {
                   mainAxisSpacing: 16,
                   padding: const EdgeInsets.all(8),
                   children: [
-
                     // Announcment App
                     DashboardTiles(
                       title: 'Announcement',

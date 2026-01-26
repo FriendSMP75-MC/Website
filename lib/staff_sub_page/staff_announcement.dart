@@ -279,6 +279,12 @@ class _StaffannouncementsState extends State<Staffannouncements> {
                           child: ElevatedButton(
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.blueAccent,
+                              shape: const RoundedRectangleBorder(
+                                borderRadius: BorderRadius.only(
+                                  bottomLeft: Radius.circular(0),
+                                  bottomRight: Radius.circular(0),
+                                ),
+                              ),
                             ),
                             onPressed: () {
                               Navigator.of(context).push(
@@ -402,6 +408,12 @@ class _StaffannouncementsState extends State<Staffannouncements> {
                           child: ElevatedButton(
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.blueAccent,
+                              shape: const RoundedRectangleBorder(
+                                borderRadius: BorderRadius.only(
+                                  bottomLeft: Radius.circular(0),
+                                  bottomRight: Radius.circular(0),
+                                ),
+                              ),
                             ),
                             onPressed: () {
                               Navigator.of(context).push(

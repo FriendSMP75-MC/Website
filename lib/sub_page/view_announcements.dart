@@ -14,28 +14,67 @@ class ViewAnnouncement extends StatelessWidget {
     return Scaffold(
       appBar: AppbarPage(customTitle: 'Announcements', backArrow: true),
       endDrawer: NavDrawer(
-        currentPage: 'Announcemnets',
+        currentPage: 'Announcements',
         parentContext: context,
       ),
-      
-      body: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Center(
-              child: Text(
-                title,
-                style: TextStyle(
-                  fontSize: 20,
-                  color: Colors.blue,
-                  fontWeight: FontWeight.bold,
+
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          if (constraints.maxWidth < 600) {
+            return Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Center(
+                    child: Text(
+                      title,
+                      style: TextStyle(
+                        fontSize: 20,
+                        color: Colors.blue,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
                 ),
-              ),
-            ),
-          ),
-          SizedBox(height: 10),
-          Expanded(child: Markdown(data: body)),
-        ],
+                SizedBox(height: 10),
+                Expanded(child: Markdown(data: body)),
+              ],
+            );
+          } else {
+            return Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Center(
+                    child: Text(
+                      title,
+                      style: TextStyle(
+                        fontSize: 20,
+                        color: Colors.blue,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ),
+
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.all(20.0),
+                    child: Container(
+                      width: MediaQuery.widthOf(context) - 200,
+                      decoration: BoxDecoration(
+                        border: Border.all(width: 2),
+                        borderRadius: BorderRadius.all(Radius.circular(8)),
+                        color: Colors.white10,
+                      ),
+                      child: Markdown(data: body,selectable: true,shrinkWrap: true,),
+                    ),
+                  ),
+                ),
+              ],
+            );
+          }
+        },
       ),
     );
   }
