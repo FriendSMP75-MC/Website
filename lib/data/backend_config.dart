@@ -1,11 +1,18 @@
 // ignore_for_file: avoid_print
 
 import 'dart:convert';
+import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'dart:async';
 
+import 'package:server_site/data/supabase_config.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+
 const backendUrl = 'https://key-backend-for-friendsmp75-website.onrender.com/';
 const accessToken = String.fromEnvironment("ACCESS_TOKEN");
+
+SupabaseClient get supabase => Supabase.instance.client;
+final user = SupabaseConfig.client.auth.currentUser;
 
 class BackendData {
   // Get data from backend
@@ -106,6 +113,20 @@ class BackendData {
     }
   }
 
+  // Get announcements
+  static Future<List<dynamic>?> getAnnouncements() async {
+    try {
+      final result = await retrieveData('/get-announcements');
+      if (result is List<dynamic>) {
+        return result;
+      }
+      return null;
+    } catch (e) {
+      debugPrint('Error when getting announcements: $e');
+    }
+    return null;
+  }
+
   // Send
 
   //send UUID
@@ -115,6 +136,24 @@ class BackendData {
         'uuid': uuid,
         'nickname': nickname,
       });
+      return result;
+    } catch (e) {
+      return 'Error: $e';
+    }
+  }
+
+  // send announcement
+  static Future<String?> newAnnouncement(String title, String body) async {
+    try {
+      final author = SupabaseConfig.getDisplayName(user);
+      final authorUUID = SupabaseConfig.getSupabaseUUID(user);
+      final result = await sendData('new-announcements', {
+        'title': title,
+        'body': body,
+        'author': author,
+        'author_uuid': authorUUID,
+      });
+
       return result;
     } catch (e) {
       return 'Error: $e';

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:server_site/pages/staff_sub_page/staff_announcement.dart';
-import 'package:server_site/pages/staff_sub_page/staff_gallary.dart';
+import 'package:server_site/staff_sub_page/staff_announcement.dart';
+import 'package:server_site/staff_sub_page/staff_gallary.dart';
 
 class StaffDashboard extends StatefulWidget {
   const StaffDashboard({super.key});
@@ -45,6 +45,7 @@ class DashboardTiles extends StatelessWidget {
                 children: [
                   Center(child: Text(subText)),
                   SizedBox(height: 3),
+                  // Button appearence
                   Container(
                     decoration: BoxDecoration(
                       color: Colors.blue,
@@ -93,76 +94,7 @@ class _StaffDashboardState extends State<StaffDashboard> {
                   mainAxisSpacing: 16,
                   padding: const EdgeInsets.all(8),
                   children: [
-                    DashboardTiles(
-                      title: 'Announcement',
-                      color: Colors.transparent,
-                      subText:
-                          'Ready to make or manage an announcement? Lets inform players about new updates!',
-                      onTap: () async {
-                        await Navigator.push(
-                          context,
-                          PageRouteBuilder(
-                            pageBuilder:
-                                (context, animation, secondaryAnimation) =>
-                                    Staffannouncements(),
-                            transitionsBuilder:
-                                (
-                                  context,
-                                  animation,
-                                  secondaryAnimation,
-                                  child,
-                                ) {
-                                  return SlideTransition(
-                                    position: Tween(
-                                      begin: const Offset(1, 0),
-                                      end: Offset.zero,
-                                    ).animate(animation),
-                                    child: child,
-                                  );
-                                },
-                          ),
-                        );
-                      },
-                    ),
-                    DashboardTiles(
-                      title: 'Gallery',
-                      color: Colors.transparent,
-                      onTap: () async {
-                        await Navigator.push(
-                          context,
-                          PageRouteBuilder(
-                            pageBuilder:
-                                (context, animation, secondaryAnimation) =>
-                                    Staffannouncements(),
-                            transitionsBuilder:
-                                (
-                                  context,
-                                  animation,
-                                  secondaryAnimation,
-                                  child,
-                                ) {
-                                  return SlideTransition(
-                                    position: Tween(
-                                      begin: const Offset(1, 0),
-                                      end: Offset.zero,
-                                    ).animate(animation),
-                                    child: child,
-                                  );
-                                },
-                          ),
-                        );
-                      },
-                      subText: 'Ready to make or upload an Group Photo?',
-                    ),
-                  ],
-                );
-              } else {
-                return GridView.count(
-                  crossAxisCount: 3,
-                  crossAxisSpacing: 16,
-                  mainAxisSpacing: 16,
-                  padding: const EdgeInsets.all(8),
-                  children: [
+                    // Announcment App
                     DashboardTiles(
                       title: 'Announcement',
                       color: Colors.transparent,
@@ -195,6 +127,80 @@ class _StaffDashboardState extends State<StaffDashboard> {
                       },
                     ),
 
+                    // Gallery App
+                    DashboardTiles(
+                      title: 'Gallery',
+                      color: Colors.transparent,
+                      onTap: () async {
+                        await Navigator.push(
+                          context,
+                          PageRouteBuilder(
+                            pageBuilder:
+                                (context, animation, secondaryAnimation) =>
+                                    StaffGallary(),
+                            transitionsBuilder:
+                                (
+                                  context,
+                                  animation,
+                                  secondaryAnimation,
+                                  child,
+                                ) {
+                                  return SlideTransition(
+                                    position: Tween(
+                                      begin: const Offset(1, 0),
+                                      end: Offset.zero,
+                                    ).animate(animation),
+                                    child: child,
+                                  );
+                                },
+                          ),
+                        );
+                      },
+                      subText: 'Ready to make or upload an Group Photo?',
+                    ),
+                  ],
+                );
+              } else {
+                return GridView.count(
+                  crossAxisCount: 3,
+                  crossAxisSpacing: 16,
+                  mainAxisSpacing: 16,
+                  padding: const EdgeInsets.all(8),
+                  children: [
+                    //Announcment App
+                    DashboardTiles(
+                      title: 'Announcement',
+                      color: Colors.transparent,
+                      subText:
+                          'Ready to make or manage an announcement? Lets inform players about new updates!',
+                      onTap: () async {
+                        await Navigator.push(
+                          context,
+                          PageRouteBuilder(
+                            pageBuilder:
+                                (context, animation, secondaryAnimation) =>
+                                    Staffannouncements(),
+                            transitionsBuilder:
+                                (
+                                  context,
+                                  animation,
+                                  secondaryAnimation,
+                                  child,
+                                ) {
+                                  return SlideTransition(
+                                    position: Tween(
+                                      begin: const Offset(1, 0),
+                                      end: Offset.zero,
+                                    ).animate(animation),
+                                    child: child,
+                                  );
+                                },
+                          ),
+                        );
+                      },
+                    ),
+
+                    // Gallery App
                     DashboardTiles(
                       title: 'Gallery',
                       color: Colors.transparent,

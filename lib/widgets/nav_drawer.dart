@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:server_site/pages/announcement.dart';
 import 'package:server_site/pages/dashboard.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:server_site/data/supabase_config.dart';
@@ -94,9 +95,11 @@ class NavDrawer extends StatelessWidget {
                 ListTile(
                   contentPadding: const EdgeInsets.symmetric(horizontal: 16),
                   minTileHeight: 57,
-                  title: const Text('Status',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(color: Colors.white)),
+                  title: const Text(
+                    'Status',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(color: Colors.white),
+                  ),
                   selected: currentPage == 'Status',
                   selectedTileColor: Colors.purpleAccent,
                   onTap: () {
@@ -106,13 +109,30 @@ class NavDrawer extends StatelessWidget {
                 ListTile(
                   contentPadding: const EdgeInsets.symmetric(horizontal: 16),
                   minTileHeight: 57,
-                  title: const Text('Gallery',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(color: Colors.white)),
+                  title: const Text(
+                    'Gallery',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(color: Colors.white),
+                  ),
                   selected: currentPage == 'Gallery',
                   selectedTileColor: Colors.purpleAccent,
                   onTap: () {
                     _navigateSafely(const Gallery());
+                  },
+                ),
+
+                ListTile(
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 16),
+                  minTileHeight: 57,
+                  title: const Text(
+                    'Announcements',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(color: Colors.white),
+                  ),
+                  selected: currentPage == 'Announcements',
+                  selectedTileColor: Colors.purpleAccent,
+                  onTap: () {
+                    _navigateSafely(const ListAnnouncements());
                   },
                 ),
               ],
@@ -166,8 +186,7 @@ class NavDrawer extends StatelessWidget {
                         user == null
                             ? "Login with Discord"
                             : "Welcome Back! \n $username",
-                        style: const TextStyle(
-                        ),
+                        style: const TextStyle(),
                         textAlign: TextAlign.center,
                       ),
                     ],
