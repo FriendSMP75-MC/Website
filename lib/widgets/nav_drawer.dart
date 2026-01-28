@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:server_site/pages/announcement.dart';
 import 'package:server_site/pages/dashboard.dart';
+import 'package:server_site/pages/support_us.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:server_site/data/supabase_config.dart';
 import 'package:server_site/pages/home.dart';
@@ -133,6 +134,22 @@ class NavDrawer extends StatelessWidget {
                   selectedTileColor: Colors.purpleAccent,
                   onTap: () {
                     _navigateSafely(const ListAnnouncements());
+                  },
+                ),
+
+                
+                ListTile(
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 16),
+                  minTileHeight: 57,
+                  title: const Text(
+                    'Support us',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(color: Colors.white),
+                  ),
+                  selected: currentPage == 'Support Us',
+                  selectedTileColor: Colors.purpleAccent,
+                  onTap: () {
+                    _navigateSafely(const SupportUsPage());
                   },
                 ),
               ],
