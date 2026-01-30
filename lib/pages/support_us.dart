@@ -34,7 +34,7 @@ class _SupportUsPageState extends State<SupportUsPage> {
       } else {
         final script = web.document.createElement('script') as web.HTMLScriptElement;
         script.src = asset['src']!;
-        script.async = true;
+        script.async = false; // Load in order to prevent 'videojs undefined'
         web.document.head?.append(script);
       }
     }
@@ -47,6 +47,7 @@ class _SupportUsPageState extends State<SupportUsPage> {
 
     ui_web.platformViewRegistry.registerViewFactory('hilltop-video-zone', (int viewId) {
       final div = web.document.createElement('div') as web.HTMLDivElement;
+      div.id = 'ad-container-wrapper';
       div.style.width = '100%';
       div.style.height = '100%';
       div.style.backgroundColor = 'black';
@@ -55,19 +56,17 @@ class _SupportUsPageState extends State<SupportUsPage> {
       video.id = 'ad-video-player';
       video.className = 'video-js vjs-default-skin';
       
-      // Essential for modern browsers to allow autoplay
+      // Critical browser compatibility flags
       video.muted = true; 
+      video.autoplay = true;
       video.setAttribute('playsinline', 'true');
-      video.setAttribute('autoplay', 'true');
+      video.setAttribute('muted', 'true'); // Redundant but necessary for some browsers
       
       video.style.width = '100%';
       video.style.height = '100%';
 
       div.append(video);
-
-      // Trigger initialization logic
       _initPlayer();
-
       return div;
     });
   }
@@ -75,11 +74,9 @@ class _SupportUsPageState extends State<SupportUsPage> {
   void _initPlayer() {
     final jsCode = """
       (function() {
-        // Use an interval to wait until Flutter actually puts the video tag in the DOM
-        var checkExist = setInterval(function() {
+        var setupPlayer = function() {
           var element = document.getElementById('ad-video-player');
-          if (element && typeof videojs !== 'undefined') {
-            clearInterval(checkExist);
+          if (element && typeof videojs !== 'undefined' && typeof google !== 'undefined') {
             try {
               var player = videojs('ad-video-player');
               player.ima({
@@ -87,19 +84,26 @@ class _SupportUsPageState extends State<SupportUsPage> {
                 adTagUrl: 'https://shiny-fortune.com/dDm/F.zUdAG-NOvWZ/GzUb/Ketm/9huqZYUOl/kmPaT/YQ3WNLjXAF5lNhDHIat/N/jZce2fMLDNkj0eMGwD'
               });
 
-              // Handle "No Ads" (Error 1009) or other loading failures
               player.on('adserror', function(data) {
-                console.log('IMA Ads Error: ', data.getError());
-                element.parentElement.innerHTML = '<div style="color:white;display:flex;justify-content:center;align-items:center;height:100%;text-align:center;padding:20px;">No video available right now. Thanks for your support!</div>';
+                console.log('Ad Error:', data.getError());
+                var wrapper = document.getElementById('ad-container-wrapper');
+                if(wrapper) wrapper.innerHTML = '<div style="color:white;display:flex;justify-content:center;align-items:center;height:100%;text-align:center;padding:20px;">Ad could not load. Thank you for trying to support us!</div>';
               });
 
               player.muted(true);
               player.play();
             } catch (e) {
-              console.error('VideoJS Init Error:', e);
+              console.error('Setup failed:', e);
             }
+            return true;
           }
-        }, 200);
+          return false;
+        };
+
+        // Use a persistent checker to catch the element as soon as Flutter renders it
+        var interval = setInterval(function() {
+          if (setupPlayer()) clearInterval(interval);
+        }, 100);
       })();
     """;
     final script = web.document.createElement('script') as web.HTMLScriptElement;
@@ -111,48 +115,48 @@ class _SupportUsPageState extends State<SupportUsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFF0D1117),
-      appBar: AppBar(title: const Text("Support Us"), backgroundColor: Colors.transparent),
+      appBar: AppBar(title: const Text("Support Us"), centerTitle: true),
       body: SingleChildScrollView(
         child: Column(
           children: [
-            const SizedBox(height: 20),
-            const Text(
-              'Why support us?',
-              style: TextStyle(fontSize: 30, color: Colors.blueAccent, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 10),
-            const Text("➤ Support server hosting costs", style: TextStyle(color: Colors.white70)),
-            const Text("➤ Help us buy premium plugins", style: TextStyle(color: Colors.white70)),
             const SizedBox(height: 30),
+            const Text('Why support us?', style: TextStyle(fontSize: 28, color: Colors.blueAccent, fontWeight: FontWeight.bold)),
+            const SizedBox(height: 10),
+            const Text("➤ Maintain server hosting", style: TextStyle(color: Colors.white70)),
+            const Text("➤ Fund premium plugins", style: TextStyle(color: Colors.white70)),
+            const SizedBox(height: 25),
             ElevatedButton(
+              style: ElevatedButton.styleFrom(backgroundColor: Colors.blueAccent, foregroundColor: Colors.white),
               onPressed: () {
                 _injectScripts();
-                setState(() {
-                  showAd = true;
-                });
+                setState(() => showAd = true);
               },
               child: const Text('Watch Video Ad to Support Us!'),
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 25),
             if (showAd)
               Center(
                 child: Container(
-                  width: 400,
-                  height: 300,
-                  decoration: BoxDecoration(border: Border.all(color: Colors.blueAccent.withOpacity(0.5))),
-                  child: const HtmlElementView(viewType: 'hilltop-video-zone'),
+                  width: 350, // Slightly smaller width for better mobile compatibility
+                  height: 250,
+                  decoration: BoxDecoration(
+                    color: Colors.black,
+                    border: Border.all(color: Colors.blueAccent.withOpacity(0.3)),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(8),
+                    child: const HtmlElementView(viewType: 'hilltop-video-zone'),
+                  ),
                 ),
               ),
-            const SizedBox(height: 40),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 30),
-              child: Markdown(
-                shrinkWrap: true,
-                data: 'Ads are provided by third parties. Please report any inappropriate content on Discord.',
-                styleSheet: MarkdownStyleSheet(
-                  textAlign: WrapAlignment.center,
-                  p: const TextStyle(color: Colors.white38, fontSize: 12),
-                ),
+            const SizedBox(height: 30),
+            const Padding(
+              padding: EdgeInsets.all(20.0),
+              child: Text(
+                'If the video stays black, please check if an AdBlocker is active or refresh the page.',
+                textAlign: TextAlign.center,
+                style: TextStyle(color: Colors.white38, fontSize: 12),
               ),
             ),
           ],
