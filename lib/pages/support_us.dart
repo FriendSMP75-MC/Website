@@ -1,22 +1,45 @@
-import "package:flutter/material.dart";
-import 'package:flutter_adsterra/flutter_adsterra.dart' as ad;
+import 'dart:ui_web' as ui_web;
+import 'package:flutter/material.dart';
+import 'package:web/web.dart' as web;
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'package:server_site/widgets/appbar.dart';
 import 'package:server_site/widgets/nav_drawer.dart';
-import 'package:url_launcher/url_launcher.dart';
 
-class SupportUsPage extends StatelessWidget {
+class SupportUsPage extends StatefulWidget {
   const SupportUsPage({super.key});
 
-  final String url =
-      'https://www.effectivegatecpm.com/fdyxudzb52?key=c6b07a3f738ebead7c217a43e9b3c89a';
+  @override
+  State<SupportUsPage> createState() => _SupportUsPageState();
+}
+
+class _SupportUsPageState extends State<SupportUsPage> {
+  bool showAd = false;
+
+  @override
+  void initState() {
+    super.initState();
+
+    // Register iframe view factory
+    ui_web.platformViewRegistry.registerViewFactory(
+      'hilltop-iframe',
+      (int viewId) {
+        final iframe = web.document.createElement('iframe') as web.HTMLIFrameElement;
+        iframe.src =
+            'https://shiny-fortune.com/dAm.FfzudTGnNIvyZ/G/Uh/ceJmL9JuBZsU/likaPFTwYq3qNIjeAr5aNiDoInt/Nej/cI2AMED/kC0wMRwJ';
+        iframe.style.border = 'none';
+        iframe.style.width = '100%';
+        iframe.style.height = '300px'; // 👈 Explicit height
+        iframe.allow = "autoplay"; // allow video playback
+        return iframe;
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppbarPage(),
       endDrawer: NavDrawer(currentPage: 'Support us', parentContext: context),
-
       body: Column(
         children: [
           // Title
@@ -34,86 +57,55 @@ class SupportUsPage extends StatelessWidget {
             ),
           ),
 
-          // Bullet points centered under the title
+          // Bullet points
           Column(
             crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              bulletItem('Allow us to maintain cost for hosting'),
-              bulletItem('Buy (or) Pay for plugins'),
-              bulletItem('Provide support instantly'),
+            children: const [
+              Text("➤ Allow us to maintain cost for hosting",
+                  style: TextStyle(color: Colors.white)),
+              Text("➤ Buy (or) Pay for plugins",
+                  style: TextStyle(color: Colors.white)),
+              Text("➤ Provide support instantly",
+                  style: TextStyle(color: Colors.white)),
             ],
           ),
 
+          const SizedBox(height: 20),
+
+          // Button to trigger video ad
           ElevatedButton(
-            onPressed: () async {
-              final Uri adurl = Uri.parse(url);
-              if (!await launchUrl(
-                adurl,
-                mode: LaunchMode.externalApplication,
-              )) {
-                throw ('Unable to launch url!');
-              }
+            onPressed: () {
+              setState(() {
+                showAd = true; // show iframe only after click
+              });
             },
-            child: Text(
-              'Click to support us!',
+            child: const Text(
+              'Watch Video Ad to Support Us!',
               style: TextStyle(color: Colors.blueAccent),
             ),
           ),
 
+          const SizedBox(height: 20),
+
+          // Show iframe only after button click
+          if (showAd)
+            SizedBox(
+              height: 300, // 👈 Explicit height for platform view
+              child: HtmlElementView(viewType: 'hilltop-iframe'),
+            ),
+
+          const SizedBox(height: 20),
+
+          // Disclaimer
           Expanded(
             child: Markdown(
               data:
-                  'Please remember **AD showen** on the page redirect are not set by us \n if you found ads disturbing please report to us on discord to filter it out',
+                  'Please remember **ads shown** on the page redirect are not set by us.\nIf you find ads disturbing, please report to us on Discord so we can filter them out.',
               styleSheet: MarkdownStyleSheet(textAlign: WrapAlignment.center),
             ),
-          ),
-          SizedBox(
-            width: 728,
-            height: 90,
-            child: ad.BannerAd728x90(adKey: '68bc87d2433b2f2a4f12af59a1379b9d'),
-          ),
-
-          SizedBox(
-            width: 100,
-            child: ad.SocialBarAd(scriptUrl: 'https://pl28605137.effectivegatecpm.com/77/8b/8c/778b8c911754911ff68964e9a6f72e06.js')),
-
-
-          SizedBox(
-            width: 300,
-            height: 250,
-            child: ad.NativeBannerAd(
-              scriptUrl:
-                  'https://pl28605019.effectivegatecpm.com/07b3366e08460cfc7ba1d4b71d138632/invoke.js',
-            ),
-          ),
-
-          ad.PopunderAd(
-            scriptUrl:
-                'https://pl28596510.effectivegatecpm.com/6e/a5/ab/6ea5ab45b5ba791550e1267dc350c274.js',
           ),
         ],
       ),
     );
   }
-}
-
-// Custom bullet item widget
-Widget bulletItem(String text) {
-  return Padding(
-    padding: const EdgeInsets.all(8.0),
-    child: Row(
-      mainAxisAlignment: MainAxisAlignment.center, // center row horizontally
-      children: [
-        const Text("➤ ", style: TextStyle(color: Colors.green, fontSize: 18)),
-        Flexible(
-          child: Text(
-            text,
-            textAlign: TextAlign.center,
-            style: const TextStyle(fontSize: 16, color: Colors.white),
-            overflow: TextOverflow.fade,
-          ),
-        ),
-      ],
-    ),
-  );
 }
