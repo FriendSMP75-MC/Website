@@ -26,7 +26,7 @@ class _SupportUsPageState extends State<SupportUsPage> {
       final iframe =
           web.document.createElement('iframe') as web.HTMLIFrameElement;
       iframe.src =
-          'https://shiny-fortune.com/dDm/F.zUdAG-NOwWZ/GzUb/Ketm/9huqZYUOl/kmPaT/YQ3NWLjXAF51NhDHIat/N/jzce2FMLDNkjJoEMGwD'; // 👈 your zone embed URL
+          'https://shiny-fortune.com/dDm/F.zUdAG-NOvWZ/GzUb/Ketm/9huqZYUOl/kmPaT/YQ3WNLjXAF5lNhDHIat/N/jZce2fMLDNkj0eMGwD'; // 👈 your zone embed URL
       iframe.style.border = 'none';
       iframe.style.width = '100%';
       iframe.style.height = '300px'; // explicit height
