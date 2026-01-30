@@ -20,19 +20,19 @@ class _SupportUsPageState extends State<SupportUsPage> {
     super.initState();
 
     // Register iframe view factory for HilltopAds zone
-    ui_web.platformViewRegistry.registerViewFactory(
-      'hilltop-video-zone',
-      (int viewId) {
-        final iframe = web.document.createElement('iframe') as web.HTMLIFrameElement;
-        iframe.src =
-            'https://shiny-fortune.com/dDm/F.zUdAG-NOwWZ/GzUb/Ketm/9huqZYUOl/kmPaT/YQ3NWLjXAF51NhDHIat/N/jzce2FMLDNkjJoEMGwD'; // 👈 your zone embed URL
-        iframe.style.border = 'none';
-        iframe.style.width = '100%';
-        iframe.style.height = '300px'; // explicit height
-        iframe.allow = "autoplay"; // allow video playback
-        return iframe;
-      },
-    );
+    ui_web.platformViewRegistry.registerViewFactory('hilltop-video-zone', (
+      int viewId,
+    ) {
+      final iframe =
+          web.document.createElement('iframe') as web.HTMLIFrameElement;
+      iframe.src =
+          'https://shiny-fortune.com/dDm/F.zUdAG-NOwWZ/GzUb/Ketm/9huqZYUOl/kmPaT/YQ3NWLjXAF51NhDHIat/N/jzce2FMLDNkjJoEMGwD'; // 👈 your zone embed URL
+      iframe.style.border = 'none';
+      iframe.style.width = '100%';
+      iframe.style.height = '300px'; // explicit height
+      iframe.allow = "autoplay"; // allow video playback
+      return iframe;
+    });
   }
 
   @override
@@ -58,12 +58,18 @@ class _SupportUsPageState extends State<SupportUsPage> {
           Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: const [
-              Text("➤ Allow us to maintain cost for hosting",
-                  style: TextStyle(color: Colors.white)),
-              Text("➤ Buy (or) Pay for plugins",
-                  style: TextStyle(color: Colors.white)),
-              Text("➤ Provide support instantly",
-                  style: TextStyle(color: Colors.white)),
+              Text(
+                "➤ Allow us to maintain cost for hosting",
+                style: TextStyle(color: Colors.white),
+              ),
+              Text(
+                "➤ Buy (or) Pay for plugins",
+                style: TextStyle(color: Colors.white),
+              ),
+              Text(
+                "➤ Provide support instantly",
+                style: TextStyle(color: Colors.white),
+              ),
             ],
           ),
           const SizedBox(height: 20),
