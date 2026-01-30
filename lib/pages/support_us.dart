@@ -19,20 +19,20 @@ class _SupportUsPageState extends State<SupportUsPage> {
   void initState() {
     super.initState();
 
-    // Register iframe view factory
-    ui_web.platformViewRegistry.registerViewFactory('hilltop-iframe', (
-      int viewId,
-    ) {
-      final iframe =
-          web.document.createElement('iframe') as web.HTMLIFrameElement;
-      iframe.src =
-          'https://shiny-fortune.com/dAm.FfzudTGnNIvyZ/G/Uh/ceJmL9JuBZsU/likaPFTwYq3qNIjeAr5aNiDoInt/Nej/cI2AMED/kC0wMRwJ';
-      iframe.style.border = 'none';
-      iframe.style.width = '100%';
-      iframe.style.height = '300px'; // 👈 Explicit height
-      iframe.allow = "autoplay"; // allow video playback
-      return iframe;
-    });
+    // Register iframe view factory for HilltopAds zone
+    ui_web.platformViewRegistry.registerViewFactory(
+      'hilltop-video-zone',
+      (int viewId) {
+        final iframe = web.document.createElement('iframe') as web.HTMLIFrameElement;
+        iframe.src =
+            'https://shiny-fortune.com/dDm/F.zUdAG-NOwWZ/GzUb/Ketm/9huqZYUOl/kmPaT/YQ3NWLjXAF51NhDHIat/N/jzce2FMLDNkjJoEMGwD'; // 👈 your zone embed URL
+        iframe.style.border = 'none';
+        iframe.style.width = '100%';
+        iframe.style.height = '300px'; // explicit height
+        iframe.allow = "autoplay"; // allow video playback
+        return iframe;
+      },
+    );
   }
 
   @override
@@ -42,7 +42,6 @@ class _SupportUsPageState extends State<SupportUsPage> {
       endDrawer: NavDrawer(currentPage: 'Support us', parentContext: context),
       body: Column(
         children: [
-          // Title
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: Center(
@@ -56,29 +55,18 @@ class _SupportUsPageState extends State<SupportUsPage> {
               ),
             ),
           ),
-
-          // Bullet points
           Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: const [
-              Text(
-                "➤ Allow us to maintain cost for hosting",
-                style: TextStyle(color: Colors.white),
-              ),
-              Text(
-                "➤ Buy (or) Pay for plugins",
-                style: TextStyle(color: Colors.white),
-              ),
-              Text(
-                "➤ Provide support instantly",
-                style: TextStyle(color: Colors.white),
-              ),
+              Text("➤ Allow us to maintain cost for hosting",
+                  style: TextStyle(color: Colors.white)),
+              Text("➤ Buy (or) Pay for plugins",
+                  style: TextStyle(color: Colors.white)),
+              Text("➤ Provide support instantly",
+                  style: TextStyle(color: Colors.white)),
             ],
           ),
-
           const SizedBox(height: 20),
-
-          // Button to trigger video ad
           ElevatedButton(
             onPressed: () {
               setState(() {
@@ -90,19 +78,13 @@ class _SupportUsPageState extends State<SupportUsPage> {
               style: TextStyle(color: Colors.blueAccent),
             ),
           ),
-
           const SizedBox(height: 20),
-
-          // Show iframe only after button click
           if (showAd)
             SizedBox(
-              height: 300, // 👈 Explicit height for platform view
-              child: HtmlElementView(viewType: 'hilltop-iframe'),
+              height: 300,
+              child: HtmlElementView(viewType: 'hilltop-video-zone'),
             ),
-
           const SizedBox(height: 20),
-
-          // Disclaimer
           Expanded(
             child: Markdown(
               data:
