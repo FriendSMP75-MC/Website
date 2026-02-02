@@ -146,7 +146,7 @@ class NavDrawer extends StatelessWidget {
                     textAlign: TextAlign.center,
                     style: TextStyle(color: Colors.white),
                   ),
-                  selected: currentPage == 'Support Us',
+                  selected: currentPage == 'Support us',
                   selectedTileColor: Colors.purpleAccent,
                   onTap: () {
                     _navigateSafely(const SupportUsPage());
