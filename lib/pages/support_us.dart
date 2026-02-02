@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:server_site/widgets/appbar.dart';
 import 'package:server_site/widgets/nav_drawer.dart';
-import 'package:web/web.dart' as web;
+import 'package:url_launcher/url_launcher.dart';
+import 'package:flutter_adsterra/flutter_adsterra.dart' as ad;
 
 class SupportUsPage extends StatefulWidget {
   const SupportUsPage({super.key});
@@ -11,27 +12,22 @@ class SupportUsPage extends StatefulWidget {
 }
 
 class _SupportUsPageState extends State<SupportUsPage> {
-  bool _scriptLoaded = false;
+  // Ad links / scripts
+  final String _smartlinkUrl =
+      'https://duepose.com/fdyxudzb52?key=c6b07a3f738ebead7c217a43e9b3c89a';
 
-  void lightboxAD() {
-    if (_scriptLoaded) return;
+  Future<void> _launchSmartlink() async {
+    final Uri url = Uri.parse(_smartlinkUrl);
 
-    final script = web.document.createElement('script') as web.HTMLScriptElement;
-    script.id = 'lightbox-ad-script';
-    script.src = '//dcbbwymp1bhlf.cloudfront.net/?wbbcd=1240703';
-    script.setAttribute('data-cfasync', 'false');
-
-    web.document.body?.append(script);
-    _scriptLoaded = true;
-  }
-
-  @override
-  void dispose() {
-    // Remove the script when leaving the page
-    final script = web.document.getElementById('lightbox-ad-script');
-    script?.remove();
-    _scriptLoaded = false;
-    super.dispose();
+    try {
+      await launchUrl(url, mode: LaunchMode.externalApplication);
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Thank you for supporting the SMP!')),
+      );
+    } catch (e) {
+      debugPrint('Could not launch smartlink: $e');
+    }
   }
 
   @override
@@ -39,37 +35,69 @@ class _SupportUsPageState extends State<SupportUsPage> {
     return Scaffold(
       appBar: AppbarPage(customTitle: 'FriendSMP75 - Support us'),
       endDrawer: NavDrawer(currentPage: 'Support us', parentContext: context),
-      body: Padding(
-        padding: const EdgeInsets.all(8.0),
+      body: SingleChildScrollView(
         child: Column(
           children: [
+            // Native ad at the top of the screen
+            SizedBox(height: 200,
+              child: ad.NativeBannerAd(
+                scriptUrl:
+                    "https://duepose.com/07b3366e08460cfc7ba1d4b71d138632/invoke.js",
+              ),
+            ),
+        
+            // Why support us
             Center(
               child: Text(
                 'Why support us?',
-                style: const TextStyle(
-                  fontSize: 30,
-                  color: Colors.blueAccent,
+                style: TextStyle(
+                  fontSize: 28,
                   fontWeight: FontWeight.bold,
+                  color: Colors.blue,
                 ),
               ),
             ),
-            const SizedBox(height: 10),
-            const Whylist(text: 'Pay for paid plugins'),
-            const Whylist(text: 'Maintain cost for server hosting'),
-            const SizedBox(height: 10),
+        
+            // List of reasons
+            const SizedBox(height: 20),
+            const Whylist(text: 'Server Hosting Costs'),
+            const Whylist(text: 'Buy/Pay for plugins'),
+            const Whylist(text: 'Support Developers / map makers'),
+            const Whylist(text: 'Keep server alive :>'),
+            const SizedBox(height: 30),
+        
+            // The Main Support Button
             ElevatedButton.icon(
+              // Button styles
               style: ElevatedButton.styleFrom(
-                shape: const RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(8)),
-                ),
                 backgroundColor: Colors.blue,
                 foregroundColor: Colors.white,
+                padding: EdgeInsets.all(16),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(8)),
+                ),
               ),
-              onPressed: () {
-                lightboxAD();
-              },
-              label: const Text('Click to load ad :)'),
+        
+              onPressed: _launchSmartlink, // Launch ad in new tab
               icon: const Icon(Icons.support),
+              label: const Text(
+                'Click to Support us :)',
+                style: TextStyle(fontSize: 20),
+              ),
+            ),
+        
+            const Padding(
+              padding: EdgeInsets.only(top: 10),
+              child: Text(
+                'Note: Supporting opens a sponsor page in a new tab. These are not under our control.',
+                style: TextStyle(fontSize: 12, color: Colors.grey),
+              ),
+            ),
+        
+            // Native ad at the bottom of the screen
+            ad.NativeBannerAd(
+              scriptUrl:
+                  'https://duepose.com/07b3366e08460cfc7ba1d4b71d138632/invoke.js',
             ),
           ],
         ),
@@ -85,10 +113,8 @@ class Whylist extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Center(
-        child: Text('➤ $text', style: const TextStyle(fontSize: 18)),
-      ),
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: Text('➤ $text', style: const TextStyle(fontSize: 18)),
     );
   }
 }
