@@ -198,6 +198,11 @@ class _HomeState extends State<Home> {
                   ''' If you are already loggind into server you can use /changepass <old_password> <new_password>. In case you forget your passward and can't login then create a ticket in our discord server and follow staff's instructions.
 ''',
             ),
+            Faq(
+              question: 'How old is the server',
+              answer: '''FriendSMP75 was founded on 2020, during COVID - 19''',
+            ),
+
           ],
         ),
       ),

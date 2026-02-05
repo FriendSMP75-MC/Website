@@ -45,7 +45,12 @@ class _AboutState extends State<About> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            Padding(padding: EdgeInsets.all(8.0),child: Text('latest Announcmement'),)
+           Padding(
+             padding: const EdgeInsets.all(8.0),
+             child: Center(
+              child: Text('About FriendSMP75',style: TextStyle(fontSize: 40),),
+             ),
+           )
           ],
         ),
       )

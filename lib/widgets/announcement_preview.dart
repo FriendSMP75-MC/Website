@@ -136,6 +136,8 @@ class AnnouncementPreview extends StatelessWidget {
   }
 }
 
+
+
 class LatestAnnouncementPreview extends StatelessWidget {
   final Map<String, dynamic> announcement;
   const LatestAnnouncementPreview({super.key, required this.announcement});
@@ -179,6 +181,7 @@ class LatestAnnouncementPreview extends StatelessWidget {
                   ),
                   color: Colors.white10,
                 ),
+                
                 child: SizedBox(
                   height: sizedBoxHeight,
                   width: sizedBoxWidth,
