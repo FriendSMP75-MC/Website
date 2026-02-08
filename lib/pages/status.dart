@@ -6,6 +6,8 @@ import 'package:server_site/widgets/nav_drawer.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:web/web.dart' as web;
 import 'dart:ui_web' as ui;
+// Import the package
+import 'package:pointer_interceptor/pointer_interceptor.dart';
 
 SupabaseClient get supabase => Supabase.instance.client;
 
@@ -18,7 +20,6 @@ class Status extends StatefulWidget {
 
 class _StatusState extends State<Status> {
   StreamSubscription<AuthState>? _authSub;
-  bool _isDrawerOpen = false;
 
   @override
   void initState() {
@@ -28,7 +29,7 @@ class _StatusState extends State<Status> {
       if (mounted) setState(() {});
     });
 
-    // Register both iframes
+    // Register iframes
     _registerIframe(
       'small-status',
       'https://friendsmp75.instatus.com/embed-status/fc41389b/dark-md',
@@ -37,22 +38,14 @@ class _StatusState extends State<Status> {
     _registerIframe('Detailed-status', 'https://friendsmp75.instatus.com/');
   }
 
-  void _registerIframe(
-    String viewType,
-    String src, {
-    String width = '100%',
-    String height = '100%',
-  }) {
+  void _registerIframe(String viewType, String src) {
     ui.platformViewRegistry.registerViewFactory(viewType, (int viewId) {
       final iframe = web.document.createElement('iframe') as web.HTMLIFrameElement;
       iframe.sandbox.value = 'allow-scripts allow-same-origin';
       iframe.src = src;
       iframe.style.border = 'none';
-      iframe.style.width = width;
-      iframe.style.height = height;
-      
-      // Fixes scrolling issues: allows the user to scroll even when hovering over the iframe
-      iframe.style.pointerEvents = 'auto'; 
+      iframe.style.width = '100%';
+      iframe.style.height = '100%';
       return iframe;
     });
   }
@@ -65,63 +58,48 @@ class _StatusState extends State<Status> {
 
   @override
   Widget build(BuildContext context) {
-    double width;
-    if (MediaQuery.widthOf(context) < 600) {
-      width = MediaQuery.widthOf(context) - 50;
-    } else {
-      width = MediaQuery.widthOf(context) - 200;
-    }
+    double width = MediaQuery.widthOf(context) < 600 
+        ? MediaQuery.widthOf(context) - 50 
+        : MediaQuery.widthOf(context) - 200;
 
     return Scaffold(
       appBar: AppbarPage(),
-      // Track drawer state to remove iframe
-      onEndDrawerChanged: (isOpened) {
-        setState(() {
-          _isDrawerOpen = isOpened;
-        });
-      },
-      endDrawer: NavDrawer(currentPage: 'Status', parentContext: context),
+     // Warping with pointer interceptor to keep end drawer on top layer
+      endDrawer: PointerInterceptor(
+        child: NavDrawer(currentPage: 'Status', parentContext: context),
+      ),
       body: SingleChildScrollView(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            // --- Small Status ---
+            const SizedBox(height: 20),
+            
+            // Small status - Widget
             Center(
               child: SizedBox(
                 width: width,
                 height: 61,
-                // If drawer is open, we destroy the iframe and show text
-                child: _isDrawerOpen 
-                  ? const Center(child: Text('Close menu to see status', style: TextStyle(color: Colors.grey)))
-                  : HtmlElementView(
-                      key: UniqueKey(), // Forces a clean mount/unmount
-                      viewType: 'small-status',
-                    ),
+                child: PointerInterceptor(
+                  child: HtmlElementView(viewType: 'small-status'),
+                ),
               ),
             ),
             
             const SizedBox(height: 20),
 
-            // --- Detailed Status ---
+            // Detailed status - Whole page
             Center(
               child: SizedBox(
                 width: width,
                 height: 500,
-                // Using a Ternary operator here is the only way to unblock the Navbar
-                child: _isDrawerOpen
-                  ? const Center(child: Text('Navigation Menu Open', style: TextStyle(color: Colors.grey)))
-                  : ClipRRect(
-                      borderRadius: const BorderRadius.all(Radius.circular(8)),
-                      child: HtmlElementView(
-                        key: UniqueKey(),
-                        viewType: 'Detailed-status',
-                      ),
-                    ),
+                child: ClipRRect(
+                  borderRadius: const BorderRadius.all(Radius.circular(8)),
+                  child: PointerInterceptor(
+                    child: HtmlElementView(viewType: 'Detailed-status'),
+                  ),
+                ),
               ),
             ),
 
-            // Footer
             const SizedBox(height: 100),
             const MyFooter(),
           ],
