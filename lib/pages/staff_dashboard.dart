@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:server_site/staff_sub_page/staff_announcement.dart';
 import 'package:server_site/staff_sub_page/staff_gallary.dart';
+import 'package:server_site/widgets/footer.dart';
 
 class StaffDashboard extends StatefulWidget {
   const StaffDashboard({super.key});
@@ -237,6 +238,10 @@ class _StaffDashboardState extends State<StaffDashboard> {
             },
           ),
         ),
+
+        // Footer
+        SizedBox(height: 50),
+        MyFooter(),
       ],
     );
   }

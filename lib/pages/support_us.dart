@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:server_site/widgets/appbar.dart';
+import 'package:server_site/widgets/footer.dart';
 import 'package:server_site/widgets/nav_drawer.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'dart:ui_web' as ui; 
+import 'dart:ui_web' as ui;
 import 'package:web/web.dart' as web;
 
 class SupportUsPage extends StatefulWidget {
@@ -13,27 +14,30 @@ class SupportUsPage extends StatefulWidget {
 }
 
 class _SupportUsPageState extends State<SupportUsPage> {
-  final String _smartlinkUrl = 'https://duepose.com/fdyxudzb52?key=c6b07a3f738ebead7c217a43e9b3c89a';
-  
+  final String _smartlinkUrl =
+      'https://duepose.com/fdyxudzb52?key=c6b07a3f738ebead7c217a43e9b3c89a';
+
   final String _adViewType = 'adsterra-native-bypass';
   final String _containerId = 'container-07b3366e08460cfc7ba1d4b71d138632';
 
   @override
   void initState() {
     super.initState();
-    
+
     // Register the View Factory
     ui.platformViewRegistry.registerViewFactory(_adViewType, (int viewId) {
       final div = web.document.createElement('div') as web.HTMLDivElement;
-      div.id = _containerId; 
-      
+      div.id = _containerId;
+
       div.style.setProperty('width', '100%');
       div.style.setProperty('height', '100%');
       div.style.setProperty('display', 'flex');
       div.style.setProperty('justify-content', 'center');
 
-      final script = web.document.createElement('script') as web.HTMLScriptElement;
-      script.src = 'https://duepose.com/07b3366e08460cfc7ba1d4b71d138632/invoke.js';
+      final script =
+          web.document.createElement('script') as web.HTMLScriptElement;
+      script.src =
+          'https://duepose.com/07b3366e08460cfc7ba1d4b71d138632/invoke.js';
       script.async = true;
       script.setAttribute('data-cfasync', 'false');
 
@@ -45,7 +49,7 @@ class _SupportUsPageState extends State<SupportUsPage> {
   @override
   void dispose() {
     final element = web.document.getElementById(_containerId);
-    element?.remove(); 
+    element?.remove();
     super.dispose();
   }
 
@@ -76,17 +80,21 @@ class _SupportUsPageState extends State<SupportUsPage> {
             // TOP AD
             Center(
               child: SizedBox(
-                height: 180, 
+                height: 180,
                 width: 320,
                 child: HtmlElementView(viewType: _adViewType),
               ),
             ),
-            
+
             const SizedBox(height: 20),
             const Center(
               child: Text(
                 'Why support us?',
-                style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.blue),
+                style: TextStyle(
+                  fontSize: 28,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.blue,
+                ),
               ),
             ),
 
@@ -101,12 +109,20 @@ class _SupportUsPageState extends State<SupportUsPage> {
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.blue,
                 foregroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 24,
+                  vertical: 16,
+                ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
               ),
               onPressed: _launchSmartlink,
               icon: const Icon(Icons.favorite),
-              label: const Text('Click to Support us :)', style: TextStyle(fontSize: 20)),
+              label: const Text(
+                'Click to Support us :)',
+                style: TextStyle(fontSize: 20),
+              ),
             ),
 
             const Padding(
@@ -118,15 +134,9 @@ class _SupportUsPageState extends State<SupportUsPage> {
               ),
             ),
 
-            // BOTTOM AD
-            Center(
-              child: SizedBox(
-                height: 250,
-                width: 300,
-                child: HtmlElementView(viewType: _adViewType),
-              ),
-            ),
-            const SizedBox(height: 20),
+            //Footer
+            SizedBox(height: 50),
+            MyFooter(),
           ],
         ),
       ),
@@ -142,7 +152,9 @@ class Whylist extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: Center(child: Text('➤ $text', style: const TextStyle(fontSize: 18))),
+      child: Center(
+        child: Text('➤ $text', style: const TextStyle(fontSize: 18)),
+      ),
     );
   }
 }

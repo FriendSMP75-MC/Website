@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:server_site/data/backend_config.dart';
+import 'package:server_site/pages/announcement.dart';
 import 'package:server_site/widgets/announcement_preview.dart';
 import 'package:server_site/widgets/appbar.dart';
+import 'package:server_site/widgets/footer.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:server_site/data/supabase_config.dart';
 import 'package:server_site/widgets/nav_drawer.dart';
@@ -44,10 +46,10 @@ class _HomeState extends State<Home> {
       SnackBar(
         content: Row(
           children: [
-            Icon(Icons.info, color: Colors.blue),
+            const Icon(Icons.info, color: Colors.blue),
             Padding(
               padding: const EdgeInsets.all(8.0),
-              child: Text('Copied to clipboard!'),
+              child: const Text('Copied to clipboard!'),
             ),
           ],
         ),
@@ -76,22 +78,21 @@ class _HomeState extends State<Home> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            SizedBox(height: 10),
+            // IP AND DISCORD
+            const SizedBox(height: 10),
             Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Column(
                   children: [
                     TextButton.icon(
-                      onPressed: () {
-                        copyIP();
-                      },
-                      icon: Icon(Icons.play_arrow_outlined),
+                      onPressed: () => copyIP(),
+                      icon: const Icon(Icons.play_arrow_outlined),
                       label: const Text(
                         'IP: FriendSMP75.mcgg.nl',
                         style: TextStyle(color: Colors.white),
                       ),
-                      style: ButtonStyle(
+                      style: const ButtonStyle(
                         overlayColor: WidgetStatePropertyAll(
                           Colors.transparent,
                         ),
@@ -99,10 +100,8 @@ class _HomeState extends State<Home> {
                     ),
                     Center(
                       child: InkWell(
-                        onTap: () {
-                          copyIP();
-                        },
-                        child: Text(
+                        onTap: () => copyIP(),
+                        child: const Text(
                           'Click to copy',
                           textAlign: TextAlign.center,
                           style: TextStyle(color: Colors.grey, fontSize: 12),
@@ -111,26 +110,18 @@ class _HomeState extends State<Home> {
                     ),
                   ],
                 ),
-                Spacer(),
+                const Spacer(),
                 Padding(
                   padding: const EdgeInsets.all(10),
                   child: Column(
                     children: [
                       Row(
                         children: [
-                          ClipOval(
-                            child: Image.network(
-                              'https://www.bing.com/th/id/OIP.DUC4e6UJ39Hi9rl8cZtzsgHaHa?w=193&h=193&c=8&rs=1&qlt=90&o=6&dpr=1.3&pid=3.1&rm=2',
-                              height: 24,
-                              width: 24,
-                            ),
-                          ),
+                          Icon(Icons.discord, color: Colors.indigoAccent),
                           InkWell(
-                            onTap: () {
-                              copyIP();
-                            },
-                            child: Padding(
-                              padding: const EdgeInsets.only(left: 10),
+                            onTap: () => copyIP(),
+                            child: const Padding(
+                              padding: EdgeInsets.only(left: 10),
                               child: Text('Discord server'),
                             ),
                           ),
@@ -149,7 +140,7 @@ class _HomeState extends State<Home> {
                               throw 'unable to open link';
                             }
                           },
-                          child: Text(
+                          child: const Text(
                             'Click to join!',
                             textAlign: TextAlign.right,
                             style: TextStyle(color: Colors.grey, fontSize: 12),
@@ -161,18 +152,17 @@ class _HomeState extends State<Home> {
                 ),
               ],
             ),
-            SizedBox(height: 10),
-            // Display latest announcement
-            Padding(
-              padding: const EdgeInsets.all(8.0),
+
+            // Show recent announcement
+            const SizedBox(height: 10),
+            const Padding(
+              padding: EdgeInsets.all(8.0),
               child: Text(
                 'Recent Announcement',
                 style: TextStyle(fontSize: 20),
                 textAlign: TextAlign.center,
               ),
             ),
-
-            // Show announcement
             if (announcement.isNotEmpty)
               LatestAnnouncementPreview(announcement: announcement)
             else
@@ -181,28 +171,69 @@ class _HomeState extends State<Home> {
                 child: CircularProgressIndicator(),
               ),
 
-            SizedBox(height: 30),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text('FAQs', style: TextStyle(fontSize: 20)),
-            ),
-            Faq(
-              question: 'How to claim land',
-              answer:
-                  '''To protect your builds, use a Golden Shovel to mark out a rectangular shape. Right‑click the ground at one corner, then walk to the opposite corner and right‑click again. The system will highlight the edges of your claim for a few seconds, showing the protected area. Inside this rectangle, only you can build or use containers unless you give access.
-''',
-            ),
-            Faq(
-              question: 'How to reset password',
-              answer:
-                  ''' If you are already loggind into server you can use /changepass <old_password> <new_password>. In case you forget your passward and can't login then create a ticket in our discord server and follow staff's instructions.
-''',
-            ),
-            Faq(
-              question: 'How old is the server',
-              answer: '''FriendSMP75 was founded on 2020, during COVID - 19''',
+            // Navigate to Announcment page
+            const SizedBox(height: 20),
+            TextButton.icon(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  PageRouteBuilder(
+                    pageBuilder: (context, animation, secondaryAnimation) =>
+                        const ListAnnouncements(),
+                    transitionDuration: Duration(seconds: 1),
+                    transitionsBuilder:
+                        (context, animation, secondaryAnimation, child) {
+                          return SlideTransition(
+                            position: Tween(
+                              begin: Offset(0, 1),
+                              end: Offset.zero,
+                            ).animate(CurvedAnimation(parent: animation, curve: Curves.easeOut)),
+                            child: child,
+                          );
+                        },
+                  ),
+                );
+              },
+              label: Text(
+                'Read older announcements',
+                style: TextStyle(color: Colors.white),
+              ),
+              icon: Icon(Icons.arrow_right_alt_sharp),
+              iconAlignment: IconAlignment.end,
+              style: ButtonStyle(
+                backgroundColor: WidgetStatePropertyAll(Colors.blue),
+                shape: WidgetStatePropertyAll(
+                  RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(8)),
+                  ),
+                ),
+                iconColor: WidgetStatePropertyAll(Colors.white),
+              ),
             ),
 
+            const SizedBox(height: 30),
+            const Padding(
+              padding: EdgeInsets.all(8.0),
+              child: Text('FAQs', style: TextStyle(fontSize: 20)),
+            ),
+            const Faq(
+              question: 'How to claim land',
+              answer:
+                  'To protect your builds, use a Golden Shovel to mark out a rectangle. Right-click the ground to set the first corner, then move to the opposite corner and right-click again to finalize the claim',
+            ),
+            const Faq(
+              question: 'How to reset password',
+              answer:
+                  'If you are already loggind into server you can use /changepass to change your password. If you are not loggined please contact us in ticket to assist you',
+            ),
+            const Faq(
+              question: 'How old is the server',
+              answer: 'FriendSMP75 was founded on 2020, during COVID - 19',
+            ),
+
+            // --- FOOTER ---
+            const SizedBox(height: 50),
+            const MyFooter(),
           ],
         ),
       ),
@@ -221,7 +252,9 @@ class Faq extends StatelessWidget {
       backgroundColor: Colors.white10,
       collapsedBackgroundColor: Colors.white10,
       title: Text(question),
-      children: [Padding(padding: EdgeInsets.all(8.0), child: Text(answer))],
+      children: [
+        Padding(padding: const EdgeInsets.all(8.0), child: Text(answer)),
+      ],
     );
   }
 }

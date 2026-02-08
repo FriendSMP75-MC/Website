@@ -11,42 +11,51 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 const backendUrl = 'https://key-backend-for-friendsmp75-website.onrender.com/';
 const accessToken = String.fromEnvironment("ACCESS_TOKEN");
 
-SupabaseClient get supabase => Supabase.instance.client;
-final user = SupabaseConfig.client.auth.currentUser;
-
 class BackendData {
-  // Get data from backend
-  static Future<dynamic> retrieveData(String endpoint) async {
+  // RESTORED: Static getter so 'staff_announcement.dart' can access the user for previews
+  static User? get user => Supabase.instance.client.auth.currentUser;
+
+  /// Helper to generate headers including the Supabase JWT for RLS
+  static Map<String, String> _getHeaders({bool includeAuth = true}) {
+    final headers = {
+      'Content-Type': 'application/json',
+      'X-Access-Token': accessToken,
+    };
+
+    if (includeAuth) {
+      // Fetch the current JWT session from Supabase
+      final String? jwt = Supabase.instance.client.auth.currentSession?.accessToken;
+      if (jwt != null) {
+        headers['Authorization'] = 'Bearer $jwt';
+      }
+    }
+    return headers;
+  }
+
+  // --- Base HTTP Methods ---
+
+  static Future<dynamic> retrieveData(String endpoint, {bool requireAuth = true}) async {
     try {
       final response = await http.get(
         Uri.parse(backendUrl + endpoint),
-        headers: {'X-Access-Token': accessToken},
+        headers: _getHeaders(includeAuth: requireAuth),
       );
       if (response.statusCode == 200) {
-        final data = jsonDecode(response.body);
-
-        return data;
+        return jsonDecode(response.body);
+      } else {
+        print("Backend error: ${response.statusCode} ${response.body}");
       }
     } catch (e) {
       print('Error Retrieving Data from backend $e');
     }
-
     return 'Error Retrieving Data';
   }
 
-  // Send data to backend
-
-  static Future<String?> sendData(
-    String endpoint,
-    Map<String, dynamic> content,
-  ) async {
+  static Future<String?> sendData(String endpoint, Map<String, dynamic> content) async {
     try {
       final response = await http.post(
         Uri.parse(backendUrl + endpoint),
-        headers: {
-          'Content-Type': 'application/json',
-          'X-Access-Token': accessToken,
-        },
+        headers: _getHeaders(includeAuth: true),
         body: jsonEncode(content),
       );
 
@@ -62,111 +71,81 @@ class BackendData {
     }
   }
 
-  // Request data to remove data from backend
   static Future<String?> removeData(String endpoint) async {
     try {
       final response = await http.delete(
         Uri.parse(backendUrl + endpoint),
-        headers: {
-          'Content-Type': 'application/json',
-          'X-Access-Token': accessToken,
-        },
+        headers: _getHeaders(includeAuth: true),
       );
       if (response.statusCode == 200) {
         return response.body;
       } else {
-        return ("Backend error: ${response.statusCode} ${response.body}");
+        print("Backend error: ${response.statusCode} ${response.body}");
+        return null;
       }
     } catch (e) {
-      return ("Error contacting backend! $e");
+      print("Error contacting backend! $e");
+      return null;
     }
   }
 
-  //Get
-
-  // Get owner ID
+  // --- Getters ---
 
   static Future<String?> getOwnerAuthID() async {
     try {
-      final data = await retrieveData('check-owner');
-      if (data != null) {
+      final data = await retrieveData('check-owner', requireAuth: false);
+      if (data != null && data is Map) {
         return data['UUID_ID'] as String?;
       }
     } catch (e) {
       print('Error getting owner auth id: $e');
     }
-
     return null;
   }
 
-  // Get UUID
   static Future<List<dynamic>?> getUUID() async {
     try {
-      final result = await retrieveData('get-staff-uuids');
-      if (result is List<dynamic>) {
-        return result;
-      }
-      return null;
+      final result = await retrieveData('get-staff-uuids', requireAuth: true);
+      if (result is List<dynamic>) return result;
     } catch (e) {
       print('Error when getting uuid $e');
-      return null;
     }
+    return null;
   }
 
-  // Get announcements
   static Future<List<dynamic>?> getAnnouncements() async {
     try {
-      final result = await retrieveData('/get-announcements');
-      if (result is List<dynamic>) {
-        return result;
-      }
-      return null;
+      final result = await retrieveData('get-announcements', requireAuth: false);
+      if (result is List<dynamic>) return result;
     } catch (e) {
       debugPrint('Error when getting announcements: $e');
     }
     return null;
   }
 
-  // Send
+  // --- Senders ---
 
-  //send UUID
   static Future<String?> sendUUID(String uuid, String nickname) async {
-    try {
-      final result = await sendData('add-uuid', {
-        'uuid': uuid,
-        'nickname': nickname,
-      });
-      return result;
-    } catch (e) {
-      return 'Error: $e';
-    }
+    return await sendData('add-uuid', {'uuid': uuid, 'nickname': nickname});
   }
 
-  // send announcement
   static Future<String?> newAnnouncement(String title, String body) async {
     try {
       final author = SupabaseConfig.getDisplayName(user);
       final authorUUID = SupabaseConfig.getSupabaseUUID(user);
-      final result = await sendData('new-announcements', {
+      
+      return await sendData('new-announcements', {
         'title': title,
         'body': body,
         'author': author,
         'author_uuid': authorUUID,
       });
-
-      return result;
     } catch (e) {
       return 'Error: $e';
     }
   }
 
-  // Delete UUID
   static Future<String?> deleteUUID(String uuid) async {
-    try {
-      final result = await removeData('delete-uuid/$uuid');
-      return result;
-    } catch (e) {
-      return 'Error deleting uuid: $e';
-    }
+    return await removeData('delete-uuid/$uuid');
   }
 }
