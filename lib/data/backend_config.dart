@@ -12,7 +12,7 @@ const backendUrl = 'https://key-backend-for-friendsmp75-website.onrender.com/';
 const accessToken = String.fromEnvironment("ACCESS_TOKEN");
 
 class BackendData {
-  // RESTORED: Static getter so 'staff_announcement.dart' can access the user for previews
+  
   static User? get user => Supabase.instance.client.auth.currentUser;
 
   /// Helper to generate headers including the Supabase JWT for RLS
@@ -147,5 +147,52 @@ class BackendData {
 
   static Future<String?> deleteUUID(String uuid) async {
     return await removeData('delete-uuid/$uuid');
+  }
+
+  // --- File Upload ---
+
+  static Future<String?> uploadImage({
+    required String filename,
+    required List<int> imageBytes,
+    required String takenDate,
+  }) async {
+    try {
+      final url = Uri.parse('${backendUrl}upload-image');
+      final request = http.MultipartRequest('POST', url);
+
+      // Get standard headers
+      final headers = _getHeaders(includeAuth: true);
+      
+      // MultipartRequest handles its own Content-Type, so remove the JSON one
+      headers.remove('Content-Type');
+      request.headers.addAll(headers);
+
+      // Add text fields
+      request.fields['author'] = SupabaseConfig.getDisplayName(user);
+      request.fields['author_uuid'] = SupabaseConfig.getSupabaseUUID(user).toString();
+      request.fields['taken_date'] = takenDate;
+
+      // Add image file bytes
+      request.files.add(
+        http.MultipartFile.fromBytes(
+          'image', // Must match 'image' in your Flask request.files
+          imageBytes,
+          filename: filename,
+        ),
+      );
+
+      final streamedResponse = await request.send();
+      final response = await http.Response.fromStream(streamedResponse);
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        return response.body;
+      } else {
+        print("Backend upload error: ${response.statusCode} ${response.body}");
+        return null;
+      }
+    } catch (e) {
+      print("Error uploading image to backend! $e");
+      return null;
+    }
   }
 }
