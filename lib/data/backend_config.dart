@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'dart:async';
+import 'package:http_parser/http_parser.dart'; // Required for MediaType
 
 import 'package:server_site/data/supabase_config.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -123,6 +124,17 @@ class BackendData {
     return null;
   }
 
+  /// Retrieves image metadata (author, taken date, etc.)
+  static Future<List<dynamic>?> getGalleryData() async {
+    try {
+      final result = await retrieveData('get-gallery-data', requireAuth: false);
+      if (result is List<dynamic>) return result;
+    } catch (e) {
+      debugPrint('Error fetching gallery data: $e');
+    }
+    return null;
+  }
+
   // --- Senders ---
 
   static Future<String?> sendUUID(String uuid, String nickname) async {
@@ -149,35 +161,41 @@ class BackendData {
     return await removeData('delete-uuid/$uuid');
   }
 
-  // --- File Upload ---
-
+  // --- UPLOAD METHOD (WEB ONLY) ---
+  /// Uses imageBytes because 'path' is null on Web. 
+  /// Sends as Multipart/form-data to satisfy Flask/Waitress.
   static Future<String?> uploadImage({
-    required String filename,
     required List<int> imageBytes,
+    required String filename,
     required String takenDate,
   }) async {
     try {
       final url = Uri.parse('${backendUrl}upload-image');
       final request = http.MultipartRequest('POST', url);
 
-      // Get standard headers
+      // Get standard headers (Token + JWT)
       final headers = _getHeaders(includeAuth: true);
       
-      // MultipartRequest handles its own Content-Type, so remove the JSON one
-      headers.remove('Content-Type');
+      // MultipartRequest sets its own Content-Type boundary, so remove the JSON one
+      headers.remove('Content-Type'); 
       request.headers.addAll(headers);
 
-      // Add text fields
+      // Metadata for the database row
       request.fields['author'] = SupabaseConfig.getDisplayName(user);
       request.fields['author_uuid'] = SupabaseConfig.getSupabaseUUID(user).toString();
       request.fields['taken_date'] = takenDate;
 
-      // Add image file bytes
+      // Determine MIME type for Supabase restriction (image/png or image/jpeg)
+      final ext = filename.split('.').last.toLowerCase();
+      final mimeType = (ext == 'jpg' || ext == 'jpeg') ? 'jpeg' : 'png';
+
+      // Attach image as bytes
       request.files.add(
         http.MultipartFile.fromBytes(
-          'image', // Must match 'image' in your Flask request.files
+          'image',
           imageBytes,
           filename: filename,
+          contentType: MediaType('image', mimeType),
         ),
       );
 
@@ -190,9 +208,11 @@ class BackendData {
         print("Backend upload error: ${response.statusCode} ${response.body}");
         return null;
       }
-    } catch (e) {
-      print("Error uploading image to backend! $e");
+    } catch (e) { 
+      print("Upload exception: $e"); 
       return null;
     }
   }
 }
+
+
