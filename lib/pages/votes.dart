@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:server_site/widgets/appbar.dart';
+import 'package:server_site/widgets/footer.dart';
 import 'package:server_site/widgets/nav_drawer.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -15,78 +16,75 @@ class VotePage extends StatelessWidget {
       endDrawer: NavDrawer(currentPage: 'Vote', parentContext: context),
       body: SingleChildScrollView(
         child: Center(
-          child: Wrap(
-            alignment: WrapAlignment.center,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(top: 40.0, bottom: 20.0),
-                    child: Text(
-                      'Voting Sites',
-                      style: TextStyle(
-                        fontSize: screenWidth > 600 ? 48 : 32,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.blueAccent,
+              Padding(
+                padding: const EdgeInsets.only(top: 40.0, bottom: 20.0),
+                child: Text(
+                  'Voting Sites',
+                  style: TextStyle(
+                    fontSize: screenWidth > 600 ? 48 : 32,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.blueAccent,
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Flex(
+                  direction: screenWidth > 1100
+                      ? Axis.horizontal
+                      : Axis.vertical,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: VoteButtons(
+                        siteName: 'Minecraft IP List',
+                        votingUrls:
+                            'https://www.minecraftiplist.com/server/FriendSMP75-39197',
                       ),
                     ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Flex(
-                      direction: screenWidth > 1100
-                          ? Axis.horizontal
-                          : Axis.vertical,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: VoteButtons(
-                            siteName: 'Minecraft IP List',
-                            votingUrls:
-                                'https://www.minecraftiplist.com/server/FriendSMP75-39197',
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: VoteButtons(
-                            siteName: 'PlanetMinecraft',
-                            votingUrls:
-                                'https://www.planetminecraft.com/server/friendsmp75/vote/',
-                          ),
-                        ),
-                      ],
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: VoteButtons(
+                        siteName: 'PlanetMinecraft',
+                        votingUrls:
+                            'https://www.planetminecraft.com/server/friendsmp75/vote/',
+                      ),
                     ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Flex(
-                      direction: screenWidth > 1100
-                          ? Axis.horizontal
-                          : Axis.vertical,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: VoteButtons(
-                            siteName: 'Minecraft List',
-                            votingUrls: 'https://minecraftlist.org/vote/34029',
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: VoteButtons(
-                            siteName: 'MC Rank',
-                            votingUrls: 'https://mcrank.com/server/friendsmp75',
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
+                  ],
+                ),
               ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Flex(
+                  direction: screenWidth > 1100
+                      ? Axis.horizontal
+                      : Axis.vertical,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: VoteButtons(
+                        siteName: 'Minecraft List',
+                        votingUrls: 'https://minecraftlist.org/vote/34029',
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: VoteButtons(
+                        siteName: 'MC Rank',
+                        votingUrls: 'https://mcrank.com/server/friendsmp75',
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(height: 10,),
+              MyFooter()
             ],
           ),
         ),
