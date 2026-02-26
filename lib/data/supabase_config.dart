@@ -117,7 +117,16 @@ class SupabaseConfig {
 
   /// Quick login/logout helpers
   static Future<void> loginWithDiscord() async {
-    await client.auth.signInWithOAuth(OAuthProvider.discord);
+    const String isDev = String.fromEnvironment("IS_DEV", defaultValue: "false");
+    
+    final String redirectUrl = isDev == "true" 
+      ? "http://localhost:8080/" 
+      : "https://friendsmp75.vercel.app/";
+    
+    await client.auth.signInWithOAuth(
+      OAuthProvider.discord, 
+      redirectTo: redirectUrl
+    );
   }
 
   static Future<void> logout() async {
