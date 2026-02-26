@@ -258,12 +258,20 @@ class _GalleryState extends State<Gallery> {
       context: context,
       builder: (context) => Dialog(
         backgroundColor: const Color(0xFF2D2D30),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+        ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Stack(
-              children: [
-                Image.network(image.publicUrl, fit: BoxFit.contain),
+            ClipRRect(
+              borderRadius: const BorderRadius.only(
+                topLeft: Radius.circular(16),
+                topRight: Radius.circular(16),
+              ),
+              child: Stack(
+                children: [
+                  Image.network(image.publicUrl, fit: BoxFit.contain),
                 Positioned(
                   top: 8,
                   right: 8,
@@ -276,12 +284,14 @@ class _GalleryState extends State<Gallery> {
                   ),
                 ),
               ],
+              ),
             ),
             Container(
               width: double.infinity,
               padding: const EdgeInsets.all(16),
               decoration: const BoxDecoration(
-                color: Color(0xFF5C1F1F),
+                borderRadius: BorderRadius.only(bottomLeft: Radius.circular(16), bottomRight: Radius.circular(16)),
+                color: Color.fromARGB(130, 195, 17, 17),
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
