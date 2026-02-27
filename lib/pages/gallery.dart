@@ -5,6 +5,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:server_site/data/supabase_config.dart';
 import 'package:server_site/data/backend_config.dart';
 import 'package:server_site/widgets/nav_drawer.dart';
+import 'package:server_site/widgets/footer.dart';
 
 SupabaseClient get supabase => Supabase.instance.client;
 
@@ -124,41 +125,70 @@ class _GalleryState extends State<Gallery> {
 
   Widget _buildBody() {
     if (_isLoading) {
-      return const Center(
-        child: CircularProgressIndicator(
-          color: Color(0xFF4A90E2),
-        ),
+      return Column(
+        children: const [
+          Expanded(
+            child: Center(
+              child: CircularProgressIndicator(
+                color: Color(0xFF4A90E2),
+              ),
+            ),
+          ),
+          MyFooter(),
+        ],
       );
     }
 
     if (_errorMessage != null) {
-      return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Icon(Icons.error_outline, size: 64, color: Colors.red),
-            const SizedBox(height: 16),
-            Text(
-              _errorMessage!,
-              style: const TextStyle(color: Colors.red),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: _fetchGalleryData,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF4A90E2),
-                foregroundColor: Colors.white,
+      return Column(
+        children: [
+          Expanded(
+            child: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Icon(Icons.error_outline, size: 64, color: Colors.red),
+                  const SizedBox(height: 16),
+                  Text(
+                    _errorMessage!,
+                    style: const TextStyle(color: Colors.red),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 16),
+                  ElevatedButton(
+                    onPressed: _fetchGalleryData,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFF4A90E2),
+                      foregroundColor: Colors.white,
+                    ),
+                    child: const Text('Retry'),
+                  ),
+                ],
               ),
-              child: const Text('Retry'),
             ),
-          ],
-        ),
+          ),
+          const MyFooter(),
+        ],
       );
     }
 
     if (_galleryImages == null || _galleryImages!.isEmpty) {
-      return const Center(child: Text('No images found in gallery'));
+      return Column(
+        children: const [
+          Expanded(
+            child: Center(
+              child: Padding(
+                padding: EdgeInsets.all(16.0),
+                child: Text(
+                  'No images found in gallery',
+                  style: TextStyle(fontSize: 16),
+                ),
+              ),
+            ),
+          ),
+          MyFooter(),
+        ],
+      );
     }
 
     return RefreshIndicator(
@@ -168,29 +198,75 @@ class _GalleryState extends State<Gallery> {
         builder: (context, constraints) {
           // Responsive grid columns based on screen width
           int crossAxisCount;
-          if (constraints.maxWidth > 1200) {
-            crossAxisCount = 4;
-          } else if (constraints.maxWidth > 800) {
-            crossAxisCount = 3;
-          } else if (constraints.maxWidth > 600) {
-            crossAxisCount = 2;
-          } else {
+          double childAspectRatio;
+          
+          if (constraints.maxWidth < 600) {
+            // Mobile
             crossAxisCount = 1;
+            childAspectRatio = 0.85;
+          } else if (constraints.maxWidth < 1000) {
+            // Tablet
+            crossAxisCount = 2;
+            childAspectRatio = 0.85;
+          } else {
+            // Desktop
+            crossAxisCount = 3;
+            childAspectRatio = 0.85;
           }
 
-          return GridView.builder(
-            padding: const EdgeInsets.all(16),
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: crossAxisCount,
-              crossAxisSpacing: 16,
-              mainAxisSpacing: 16,
-              childAspectRatio: 1.0,
-            ),
-            itemCount: _galleryImages!.length,
-            itemBuilder: (context, index) {
-              final image = _galleryImages![index];
-              return _buildGalleryItem(image);
-            },
+          return CustomScrollView(
+            slivers: [
+              const SliverToBoxAdapter(
+                child: Column(
+                  children: [
+                    SizedBox(height: 20),
+                    Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: Text(
+                        'Gallery',
+                        style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                    SizedBox(height: 10),
+                  ],
+                ),
+              ),
+              SliverPadding(
+                padding: const EdgeInsets.all(12),
+                sliver: SliverGrid(
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: crossAxisCount,
+                    crossAxisSpacing: 12,
+                    mainAxisSpacing: 12,
+                    childAspectRatio: childAspectRatio,
+                  ),
+                  delegate: SliverChildBuilderDelegate(
+                    (context, index) {
+                      final image = _galleryImages![index];
+                      return _buildGalleryItem(image);
+                    },
+                    childCount: _galleryImages!.length,
+                  ),
+                ),
+              ),
+              const SliverToBoxAdapter(
+                child: Column(
+                  children: [
+                    SizedBox(height: 40),
+                    Text(
+                      'Memories',
+                      style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                    ),
+                    SizedBox(height: 10),
+                    Text('Not implemented'),
+                    SizedBox(height: 40),
+                  ],
+                ),
+              ),
+              const SliverToBoxAdapter(
+                child: MyFooter(),
+              ),
+            ],
           );
         },
       ),
@@ -200,49 +276,120 @@ class _GalleryState extends State<Gallery> {
   Widget _buildGalleryItem(GalleryImage image) {
     return GestureDetector(
       onTap: () => _showImageDialog(image),
-      child: Card(
-        clipBehavior: Clip.antiAlias,
-        elevation: 4,
-        color: const Color(0xFF2D2D30),
-        child: Stack(
-          fit: StackFit.expand,
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
           children: [
-            Image.network(
-              image.publicUrl,
-              fit: BoxFit.cover,
-              loadingBuilder: (context, child, loadingProgress) {
-                if (loadingProgress == null) return child;
-                return Center(
-                  child: CircularProgressIndicator(
-                    color: const Color(0xFF4A90E2),
-                    value: loadingProgress.expectedTotalBytes != null
-                        ? loadingProgress.cumulativeBytesLoaded /
-                              loadingProgress.expectedTotalBytes!
-                        : null,
-                  ),
-                );
-              },
-              errorBuilder: (context, error, stackTrace) {
-                return const Center(
-                  child: Icon(Icons.broken_image, size: 48, color: Colors.grey),
-                );
-              },
-            ),
-            Positioned(
-              bottom: 0,
-              left: 0,
-              right: 0,
+            // Image Container
+            Expanded(
               child: Container(
-                padding: const EdgeInsets.all(8),
                 decoration: const BoxDecoration(
-                  color: Color(0xFF5C1F1F),
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(8),
+                    topRight: Radius.circular(8),
+                  ),
+                  color: Colors.white10,
                 ),
-                child: Text(
-                  _formatDate(image.createdAt),
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 12,
-                    fontWeight: FontWeight.w500,
+                child: ClipRRect(
+                  borderRadius: const BorderRadius.only(
+                    topLeft: Radius.circular(8),
+                    topRight: Radius.circular(8),
+                  ),
+                  child: Stack(
+                    fit: StackFit.expand,
+                    children: [
+                      Image.network(
+                        image.publicUrl,
+                        fit: BoxFit.cover,
+                        loadingBuilder: (context, child, loadingProgress) {
+                          if (loadingProgress == null) return child;
+                          return Center(
+                            child: CircularProgressIndicator(
+                              color: const Color(0xFF4A90E2),
+                              value: loadingProgress.expectedTotalBytes != null
+                                  ? loadingProgress.cumulativeBytesLoaded /
+                                      loadingProgress.expectedTotalBytes!
+                                  : null,
+                            ),
+                          );
+                        },
+                        errorBuilder: (context, error, stackTrace) {
+                          return const Center(
+                            child: Icon(
+                              Icons.broken_image,
+                              size: 48,
+                              color: Colors.grey,
+                            ),
+                          );
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            // View Button
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  elevation: 0,
+                  backgroundColor: Colors.blueAccent,
+                  shape: const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.zero,
+                  ),
+                  padding: const EdgeInsets.symmetric(vertical: 12),
+                ),
+                onPressed: () => _showImageDialog(image),
+                child: const Text(
+                  'View Image',
+                  style: TextStyle(color: Colors.white),
+                ),
+              ),
+            ),
+            // Author details
+            Container(
+              decoration: const BoxDecoration(
+                borderRadius: BorderRadius.only(
+                  bottomLeft: Radius.circular(8),
+                  bottomRight: Radius.circular(8),
+                ),
+                color: Color.fromARGB(130, 195, 17, 17),
+              ),
+              child: SizedBox(
+                height: 60,
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text(
+                            'Uploaded By',
+                            style: TextStyle(fontSize: 12),
+                          ),
+                          Text(
+                            image.uploadName,
+                            style: const TextStyle(fontWeight: FontWeight.w500),
+                          ),
+                        ],
+                      ),
+                      const Spacer(),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          const Text(
+                            'Posted on',
+                            style: TextStyle(fontSize: 12),
+                          ),
+                          Text(
+                            _formatDate(image.createdAt),
+                            style: const TextStyle(fontWeight: FontWeight.w500),
+                          ),
+                        ],
+                      ),
+                    ],
                   ),
                 ),
               ),
@@ -261,114 +408,136 @@ class _GalleryState extends State<Gallery> {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16),
         ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            ClipRRect(
-              borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(16),
-                topRight: Radius.circular(16),
-              ),
-              child: Stack(
-                children: [
-                  Image.network(image.publicUrl, fit: BoxFit.contain),
-                Positioned(
-                  top: 8,
-                  right: 8,
-                  child: IconButton(
-                    icon: const Icon(Icons.close, color: Colors.white),
-                    onPressed: () => Navigator.pop(context),
-                    style: IconButton.styleFrom(
-                      backgroundColor: const Color(0xFF4A90E2),
-                    ),
-                  ),
+        child: ConstrainedBox(
+          constraints: BoxConstraints(
+            maxWidth: MediaQuery.of(context).size.width * 0.9,
+            maxHeight: MediaQuery.of(context).size.height * 0.9,
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ClipRRect(
+                borderRadius: const BorderRadius.only(
+                  topLeft: Radius.circular(16),
+                  topRight: Radius.circular(16),
                 ),
-              ],
+                child: Stack(
+                  children: [
+                    Image.network(
+                      image.publicUrl,
+                      fit: BoxFit.contain,
+                      errorBuilder: (context, error, stackTrace) {
+                        return const Padding(
+                          padding: EdgeInsets.all(48.0),
+                          child: Icon(
+                            Icons.broken_image,
+                            size: 64,
+                            color: Colors.grey,
+                          ),
+                        );
+                      },
+                    ),
+                    Positioned(
+                      top: 8,
+                      right: 8,
+                      child: IconButton(
+                        icon: const Icon(Icons.close, color: Colors.white),
+                        onPressed: () => Navigator.pop(context),
+                        style: IconButton.styleFrom(
+                          backgroundColor: const Color(0xFF4A90E2),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(16),
-              decoration: const BoxDecoration(
-                borderRadius: BorderRadius.only(bottomLeft: Radius.circular(16), bottomRight: Radius.circular(16)),
-                color: Color.fromARGB(130, 195, 17, 17),
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(16),
+                decoration: const BoxDecoration(
+                  borderRadius: BorderRadius.only(
+                    bottomLeft: Radius.circular(16),
+                    bottomRight: Radius.circular(16),
+                  ),
+                  color: Color.fromARGB(130, 195, 17, 17),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        const Text(
+                          'Authored By',
+                          style: TextStyle(
+                            color: Colors.white70,
+                            fontSize: 12,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          image.uploadName,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ],
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        const Text(
+                          'Created on',
+                          style: TextStyle(
+                            color: Colors.white70,
+                            fontSize: 12,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          _formatDate(image.createdAt),
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ],
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        const Text(
+                          'Taken on',
+                          style: TextStyle(
+                            color: Colors.white70,
+                            fontSize: 12,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          _formatDate(image.imageTakenDate),
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      const Text(
-                        'Authored By',
-                        style: TextStyle(
-                          color: Colors.white70,
-                          fontSize: 12,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        image.uploadName,
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 14,
-                          fontWeight: FontWeight.w500,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                    ],
-                  ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      const Text(
-                        'Created on',
-                        style: TextStyle(
-                          color: Colors.white70,
-                          fontSize: 12,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        _formatDate(image.createdAt),
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 14,
-                          fontWeight: FontWeight.w500,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                    ],
-                  ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      const Text(
-                        'Taken on',
-                        style: TextStyle(
-                          color: Colors.white70,
-                          fontSize: 12,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        _formatDate(image.imageTakenDate),
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 14,
-                          fontWeight: FontWeight.w500,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

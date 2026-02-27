@@ -47,7 +47,7 @@ class _AboutState extends State<About> {
         child: Column(
           children: [
             Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: const EdgeInsets.all(16.0),
               child: Center(
                 child: Text(
                   'About FriendSMP75',
@@ -62,7 +62,7 @@ class _AboutState extends State<About> {
             ),
 
             Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: const EdgeInsets.all(16.0),
               child: SelectableText(
                 '''FriendSMP75 is a friendly Minecraft community Built on trust and respect. Our main goal To be given a safe community And a peaceful environment Where you can relax and enjoy the game without any worries.
 
@@ -73,9 +73,8 @@ While PVP Admittedly, we are not a PVP oriented community. We prefer a supportiv
               ),
             ),
 
-            // Footer
-            SizedBox(height: 50),
-            MyFooter(),
+            SizedBox(height: 140),
+            const MyFooter(),
           ],
         ),
       ),
