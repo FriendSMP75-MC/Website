@@ -223,7 +223,7 @@ class _GalleryState extends State<Gallery> {
                     Padding(
                       padding: EdgeInsets.all(8.0),
                       child: Text(
-                        'Gallery',
+                        'Group Photos',
                         style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
                       ),
                     ),
