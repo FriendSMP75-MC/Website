@@ -50,14 +50,11 @@ class AnnouncementPreview extends StatelessWidget {
                   ),
                   SizedBox(height: 10),
                   Expanded(
-                    child: OverflowBox(
-                      maxHeight: 400,
-                      child: markdown.Markdown(
-                        physics: NeverScrollableScrollPhysics(),
-                        data: body,
-                        selectable: true,
-                        shrinkWrap: true,
-                      ),
+                    child: markdown.Markdown(
+                      physics: NeverScrollableScrollPhysics(),
+                      data: body,
+                      selectable: true,
+                      shrinkWrap: true,
                     ),
                   ),
                 ],
@@ -160,11 +157,11 @@ class LatestAnnouncementPreview extends StatelessWidget {
         if (constraints.maxWidth < 600) {
           padding = 8.0;
           sizedBoxWidth = MediaQuery.widthOf(context);
-          sizedBoxHeight = 400;
+          sizedBoxHeight = 300;
         } else {
           padding = 10.0;
           sizedBoxWidth = MediaQuery.widthOf(context) - 200;
-          sizedBoxHeight = 400;
+          sizedBoxHeight = 300;
         }
 
         return Padding(
