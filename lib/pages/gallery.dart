@@ -119,7 +119,29 @@ class _GalleryState extends State<Gallery> {
     return Scaffold(
       appBar: AppbarPage(customTitle: 'FriendSMP75 - Gallery'),
       endDrawer: NavDrawer(currentPage: 'Gallery', parentContext: context),
-      body: _buildBody(),
+      body: Column(
+        children: [
+          Container(
+            color: Colors.blueAccent,
+            child: Row(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Icon(Icons.warning, color: Colors.yellowAccent),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    'Users from india can\'t able to view images due error with isp ',
+                    style: TextStyle(color: Colors.black),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Expanded(child: _buildBody()),
+        ],
+      ),
     );
   }
 
@@ -129,9 +151,7 @@ class _GalleryState extends State<Gallery> {
         children: const [
           Expanded(
             child: Center(
-              child: CircularProgressIndicator(
-                color: Color(0xFF4A90E2),
-              ),
+              child: CircularProgressIndicator(color: Color(0xFF4A90E2)),
             ),
           ),
           MyFooter(),
@@ -199,7 +219,7 @@ class _GalleryState extends State<Gallery> {
           // Responsive grid columns based on screen width
           int crossAxisCount;
           double childAspectRatio;
-          
+
           if (constraints.maxWidth < 600) {
             // Mobile
             crossAxisCount = 1;
@@ -224,7 +244,10 @@ class _GalleryState extends State<Gallery> {
                       padding: EdgeInsets.all(8.0),
                       child: Text(
                         'Group Photos',
-                        style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                          fontSize: 28,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
                     SizedBox(height: 10),
@@ -240,13 +263,10 @@ class _GalleryState extends State<Gallery> {
                     mainAxisSpacing: 12,
                     childAspectRatio: childAspectRatio,
                   ),
-                  delegate: SliverChildBuilderDelegate(
-                    (context, index) {
-                      final image = _galleryImages![index];
-                      return _buildGalleryItem(image);
-                    },
-                    childCount: _galleryImages!.length,
-                  ),
+                  delegate: SliverChildBuilderDelegate((context, index) {
+                    final image = _galleryImages![index];
+                    return _buildGalleryItem(image);
+                  }, childCount: _galleryImages!.length),
                 ),
               ),
               const SliverToBoxAdapter(
@@ -255,7 +275,10 @@ class _GalleryState extends State<Gallery> {
                     SizedBox(height: 40),
                     Text(
                       'Memories',
-                      style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                     SizedBox(height: 10),
                     Text('Not implemented'),
@@ -263,9 +286,7 @@ class _GalleryState extends State<Gallery> {
                   ],
                 ),
               ),
-              const SliverToBoxAdapter(
-                child: MyFooter(),
-              ),
+              const SliverToBoxAdapter(child: MyFooter()),
             ],
           );
         },
@@ -308,7 +329,7 @@ class _GalleryState extends State<Gallery> {
                               color: const Color(0xFF4A90E2),
                               value: loadingProgress.expectedTotalBytes != null
                                   ? loadingProgress.cumulativeBytesLoaded /
-                                      loadingProgress.expectedTotalBytes!
+                                        loadingProgress.expectedTotalBytes!
                                   : null,
                             ),
                           );
@@ -405,9 +426,7 @@ class _GalleryState extends State<Gallery> {
       context: context,
       builder: (context) => Dialog(
         backgroundColor: const Color(0xFF2D2D30),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         child: ConstrainedBox(
           constraints: BoxConstraints(
             maxWidth: MediaQuery.of(context).size.width * 0.9,
@@ -469,10 +488,7 @@ class _GalleryState extends State<Gallery> {
                       children: [
                         const Text(
                           'Authored By',
-                          style: TextStyle(
-                            color: Colors.white70,
-                            fontSize: 12,
-                          ),
+                          style: TextStyle(color: Colors.white70, fontSize: 12),
                           textAlign: TextAlign.center,
                         ),
                         const SizedBox(height: 4),
@@ -492,10 +508,7 @@ class _GalleryState extends State<Gallery> {
                       children: [
                         const Text(
                           'Created on',
-                          style: TextStyle(
-                            color: Colors.white70,
-                            fontSize: 12,
-                          ),
+                          style: TextStyle(color: Colors.white70, fontSize: 12),
                           textAlign: TextAlign.center,
                         ),
                         const SizedBox(height: 4),
@@ -515,10 +528,7 @@ class _GalleryState extends State<Gallery> {
                       children: [
                         const Text(
                           'Taken on',
-                          style: TextStyle(
-                            color: Colors.white70,
-                            fontSize: 12,
-                          ),
+                          style: TextStyle(color: Colors.white70, fontSize: 12),
                           textAlign: TextAlign.center,
                         ),
                         const SizedBox(height: 4),
