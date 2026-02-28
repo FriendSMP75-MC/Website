@@ -132,7 +132,7 @@ class _GalleryState extends State<Gallery> {
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Text(
-                    'Users from india can\'t able to view images due error with isp ',
+                    'Users from india may not be able to view images due to error with isp(s) ',
                     style: TextStyle(color: Colors.black),
                   ),
                 ),
