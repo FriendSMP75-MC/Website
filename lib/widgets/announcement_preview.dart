@@ -136,8 +136,6 @@ class AnnouncementPreview extends StatelessWidget {
   }
 }
 
-
-
 class LatestAnnouncementPreview extends StatelessWidget {
   final Map<String, dynamic> announcement;
   const LatestAnnouncementPreview({super.key, required this.announcement});
@@ -166,7 +164,7 @@ class LatestAnnouncementPreview extends StatelessWidget {
         } else {
           padding = 10.0;
           sizedBoxWidth = MediaQuery.widthOf(context) - 200;
-          sizedBoxHeight = 200;
+          sizedBoxHeight = 400;
         }
 
         return Padding(
@@ -181,7 +179,7 @@ class LatestAnnouncementPreview extends StatelessWidget {
                   ),
                   color: Colors.white10,
                 ),
-                
+
                 child: SizedBox(
                   height: sizedBoxHeight,
                   width: sizedBoxWidth,
@@ -202,14 +200,11 @@ class LatestAnnouncementPreview extends StatelessWidget {
                       ),
                       SizedBox(height: 10),
                       Expanded(
-                        child: OverflowBox(
-                          maxHeight: 400,
-                          child: markdown.Markdown(
-                            physics: NeverScrollableScrollPhysics(),
-                            data: body,
-                            selectable: true,
-                            shrinkWrap: true,
-                          ),
+                        child: markdown.Markdown(
+                          physics: NeverScrollableScrollPhysics(),
+                          data: body,
+                          selectable: true,
+                          shrinkWrap: true,
                         ),
                       ),
                     ],
