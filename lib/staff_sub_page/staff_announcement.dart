@@ -329,7 +329,7 @@ class _StaffannouncementsState extends State<Staffannouncements> {
                                         CrossAxisAlignment.start,
                                     children: [
                                       Text('Authored By'),
-                                      Text(SupabaseConfig.getDisplayName(user)),
+                                      Text(SupabaseConfig.getDisplayName(BackendData.user)),
                                     ],
                                   ),
                                   Spacer(),
@@ -458,7 +458,7 @@ class _StaffannouncementsState extends State<Staffannouncements> {
                                         CrossAxisAlignment.start,
                                     children: [
                                       Text('Authored By'),
-                                      Text(SupabaseConfig.getDisplayName(user)),
+                                      Text(SupabaseConfig.getDisplayName(BackendData.user)),
                                     ],
                                   ),
                                   Spacer(),

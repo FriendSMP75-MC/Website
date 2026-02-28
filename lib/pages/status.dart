@@ -1,9 +1,13 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:server_site/widgets/appbar.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:server_site/data/supabase_config.dart';
+import 'package:server_site/widgets/footer.dart';
 import 'package:server_site/widgets/nav_drawer.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:web/web.dart' as web;
+import 'dart:ui_web' as ui;
+// Import the package
+import 'package:pointer_interceptor/pointer_interceptor.dart';
 
 SupabaseClient get supabase => Supabase.instance.client;
 
@@ -20,7 +24,30 @@ class _StatusState extends State<Status> {
   @override
   void initState() {
     super.initState();
-    _authSub = supabase.auth.onAuthStateChange.listen((data) {});
+
+    _authSub = supabase.auth.onAuthStateChange.listen((data) {
+      if (mounted) setState(() {});
+    });
+
+    // Register iframes
+    _registerIframe(
+      'small-status',
+      'https://friendsmp75.instatus.com/embed-status/fc41389b/dark-md',
+    );
+
+    _registerIframe('Detailed-status', 'https://friendsmp75.instatus.com/');
+  }
+
+  void _registerIframe(String viewType, String src) {
+    ui.platformViewRegistry.registerViewFactory(viewType, (int viewId) {
+      final iframe = web.document.createElement('iframe') as web.HTMLIFrameElement;
+      iframe.sandbox.value = 'allow-scripts allow-same-origin';
+      iframe.src = src;
+      iframe.style.border = 'none';
+      iframe.style.width = '100%';
+      iframe.style.height = '100%';
+      return iframe;
+    });
   }
 
   @override
@@ -31,14 +58,53 @@ class _StatusState extends State<Status> {
 
   @override
   Widget build(BuildContext context) {
-    final user = SupabaseConfig.client.auth.currentUser;
-    SupabaseConfig.getUserName(user);
+    double width = MediaQuery.widthOf(context) < 600 
+        ? MediaQuery.widthOf(context) - 50 
+        : MediaQuery.widthOf(context) - 200;
 
     return Scaffold(
       appBar: AppbarPage(),
-      endDrawer: NavDrawer(currentPage: 'Status', parentContext: context),
+     // Warping with pointer interceptor to keep end drawer on top layer
+      endDrawer: PointerInterceptor(
+        child: NavDrawer(currentPage: 'Status', parentContext: context),
+      ),
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            const SizedBox(height: 20),
+            
+            // Small status - Widget
+            Center(
+              child: SizedBox(
+                width: width,
+                height: 61,
+                child: PointerInterceptor(
+                  child: HtmlElementView(viewType: 'small-status'),
+                ),
+              ),
+            ),
+            
+            const SizedBox(height: 20),
 
-      body: const Center(child: Text('Welcome to the Status app!')),
+            // Detailed status - Whole page
+            Center(
+              child: SizedBox(
+                width: width,
+                height: 500,
+                child: ClipRRect(
+                  borderRadius: const BorderRadius.all(Radius.circular(8)),
+                  child: PointerInterceptor(
+                    child: HtmlElementView(viewType: 'Detailed-status'),
+                  ),
+                ),
+              ),
+            ),
+
+            const SizedBox(height: 100),
+            const MyFooter(),
+          ],
+        ),
+      ),
     );
   }
 }
