@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart' as markdown;
-import 'package:server_site/sub_page/view_announcements.dart';
 
 class AnnouncementPreview extends StatelessWidget {
   final Map<String, dynamic> announcement;
@@ -76,23 +76,7 @@ class AnnouncementPreview extends StatelessWidget {
                 ),
               ),
               onPressed: () {
-                Navigator.push(
-                  context,
-                  PageRouteBuilder(
-                    pageBuilder: (context, animation, secondaryAnimation) =>
-                        ViewAnnouncement(title: title, body: body),
-                    transitionsBuilder:
-                        (context, animation, secondaryAnimation, child) {
-                          return SlideTransition(
-                            position: Tween(
-                              begin: Offset(1, 0),
-                              end: Offset.zero,
-                            ).animate(animation),
-                            child: child,
-                          );
-                        },
-                  ),
-                );
+                context.push('/announcement/${Uri.encodeComponent(title)}', extra: {'body': body});
               },
               child: Text('Read more!', style: TextStyle(color: Colors.white)),
             ),
@@ -223,23 +207,7 @@ class LatestAnnouncementPreview extends StatelessWidget {
                     ),
                   ),
                   onPressed: () {
-                    Navigator.push(
-                      context,
-                      PageRouteBuilder(
-                        pageBuilder: (context, animation, secondaryAnimation) =>
-                            ViewAnnouncement(title: title, body: body),
-                        transitionsBuilder:
-                            (context, animation, secondaryAnimation, child) {
-                              return SlideTransition(
-                                position: Tween(
-                                  begin: Offset(1, 0),
-                                  end: Offset.zero,
-                                ).animate(animation),
-                                child: child,
-                              );
-                            },
-                      ),
-                    );
+                    context.push('/announcement/${Uri.encodeComponent(title)}', extra: {'body': body});
                   },
                   child: Text(
                     'Read more!',

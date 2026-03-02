@@ -1,15 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:pointer_interceptor/pointer_interceptor.dart';
-import 'package:server_site/pages/announcement.dart';
-import 'package:server_site/pages/dashboard.dart';
-import 'package:server_site/pages/support_us.dart';
-import 'package:server_site/pages/votes.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:server_site/data/supabase_config.dart';
-import 'package:server_site/pages/home.dart';
-import 'package:server_site/pages/about.dart';
-import 'package:server_site/pages/status.dart';
-import 'package:server_site/pages/gallery.dart';
 
 SupabaseClient get supabase => Supabase.instance.client;
 
@@ -24,18 +17,13 @@ class NavDrawer extends StatelessWidget {
   });
 
   // Navigation helper
-  Future<void> _navigateSafely(Widget page) async {
+  void _navigateSafely(BuildContext context, String route) {
     Navigator.pop(parentContext);
-    await Future.delayed(const Duration(milliseconds: 200));
-    if (!parentContext.mounted) return;
-    Navigator.pushReplacement(
-      parentContext,
-      PageRouteBuilder(
-        pageBuilder: (context, animation, secondaryAnimation) => page,
-        transitionDuration: const Duration(seconds: 15),
-        reverseTransitionDuration: const Duration(seconds: 2),
-      ),
-    );
+    Future.delayed(const Duration(milliseconds: 200), () {
+      if (parentContext.mounted) {
+        context.go(route);
+      }
+    });
   }
 
   @override
@@ -76,7 +64,7 @@ class NavDrawer extends StatelessWidget {
                     selected: currentPage == 'Home',
                     selectedTileColor: Colors.purpleAccent,
                     onTap: () {
-                      _navigateSafely(const Home());
+                      _navigateSafely(context, '/');
                     },
                   ),
                   ListTile(
@@ -91,7 +79,7 @@ class NavDrawer extends StatelessWidget {
                     selectedTileColor: Colors.purpleAccent,
                     onTap: () {
                       if (currentPage != 'About') {
-                        _navigateSafely(const About());
+                        _navigateSafely(context, '/about');
                       } else {
                         Navigator.pop(parentContext);
                       }
@@ -108,7 +96,7 @@ class NavDrawer extends StatelessWidget {
                     selected: currentPage == 'Status',
                     selectedTileColor: Colors.purpleAccent,
                     onTap: () {
-                      _navigateSafely(const Status());
+                      _navigateSafely(context, '/status');
                     },
                   ),
                   ListTile(
@@ -122,7 +110,7 @@ class NavDrawer extends StatelessWidget {
                     selected: currentPage == 'Gallery',
                     selectedTileColor: Colors.purpleAccent,
                     onTap: () {
-                      _navigateSafely(const Gallery());
+                      _navigateSafely(context, '/gallery');
                     },
                   ),
 
@@ -137,7 +125,7 @@ class NavDrawer extends StatelessWidget {
                     selected: currentPage == 'Announcements',
                     selectedTileColor: Colors.purpleAccent,
                     onTap: () {
-                      _navigateSafely(const ListAnnouncements());
+                      _navigateSafely(context, '/announcements');
                     },
                   ),
 
@@ -152,7 +140,7 @@ class NavDrawer extends StatelessWidget {
                     selected: currentPage == 'Support us',
                     selectedTileColor: Colors.purpleAccent,
                     onTap: () {
-                      _navigateSafely(const SupportUsPage());
+                      _navigateSafely(context, '/support');
                     },
                   ),
 
@@ -167,7 +155,7 @@ class NavDrawer extends StatelessWidget {
                     selected: currentPage == 'Vote',
                     selectedTileColor: Colors.purpleAccent,
                     onTap: () {
-                      _navigateSafely(const VotePage());
+                      _navigateSafely(context, '/votes');
                     },
                   ),
                 ],
@@ -190,7 +178,7 @@ class NavDrawer extends StatelessWidget {
                     selected: currentPage == 'Dashboard',
                     selectedTileColor: Colors.purpleAccent,
                     onTap: () {
-                      _navigateSafely(const Dashboard());
+                      _navigateSafely(context, '/dashboard');
                     },
                   ),
 

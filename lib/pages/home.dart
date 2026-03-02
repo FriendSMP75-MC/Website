@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:go_router/go_router.dart';
 import 'package:server_site/data/backend_config.dart';
-import 'package:server_site/pages/announcement.dart';
 import 'package:server_site/widgets/announcement_preview.dart';
 import 'package:server_site/widgets/appbar.dart';
 import 'package:server_site/widgets/footer.dart';
@@ -175,24 +175,7 @@ class _HomeState extends State<Home> {
             const SizedBox(height: 20),
             TextButton.icon(
               onPressed: () {
-                Navigator.push(
-                  context,
-                  PageRouteBuilder(
-                    pageBuilder: (context, animation, secondaryAnimation) =>
-                        const ListAnnouncements(),
-                    transitionDuration: Duration(seconds: 1),
-                    transitionsBuilder:
-                        (context, animation, secondaryAnimation, child) {
-                          return SlideTransition(
-                            position: Tween(
-                              begin: Offset(0, 1),
-                              end: Offset.zero,
-                            ).animate(CurvedAnimation(parent: animation, curve: Curves.easeOut)),
-                            child: child,
-                          );
-                        },
-                  ),
-                );
+                context.push('/announcements');
               },
               label: Text(
                 'Read older announcements',

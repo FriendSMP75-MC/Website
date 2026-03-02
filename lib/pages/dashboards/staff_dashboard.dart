@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:server_site/staff_sub_page/staff_announcement.dart';
-import 'package:server_site/staff_sub_page/staff_gallary.dart';
 import 'package:server_site/widgets/footer.dart';
 
 class StaffDashboard extends StatefulWidget {
@@ -132,30 +132,8 @@ class _StaffDashboardState extends State<StaffDashboard> {
                     DashboardTiles(
                       title: 'Gallery',
                       color: Colors.transparent,
-                      onTap: () async {
-                        await Navigator.push(
-                          context,
-                          PageRouteBuilder(
-                            pageBuilder:
-                                (context, animation, secondaryAnimation) =>
-                                    StaffGallary(),
-                            transitionsBuilder:
-                                (
-                                  context,
-                                  animation,
-                                  secondaryAnimation,
-                                  child,
-                                ) {
-                                  return SlideTransition(
-                                    position: Tween(
-                                      begin: const Offset(1, 0),
-                                      end: Offset.zero,
-                                    ).animate(animation),
-                                    child: child,
-                                  );
-                                },
-                          ),
-                        );
+                      onTap: () {
+                        context.push('/staff/gallery');
                       },
                       subText: 'Ready to make or upload an Group Photo?',
                     ),
@@ -174,30 +152,8 @@ class _StaffDashboardState extends State<StaffDashboard> {
                       color: Colors.transparent,
                       subText:
                           'Ready to make or manage an announcement? Lets inform players about new updates!',
-                      onTap: () async {
-                        await Navigator.push(
-                          context,
-                          PageRouteBuilder(
-                            pageBuilder:
-                                (context, animation, secondaryAnimation) =>
-                                    Staffannouncements(),
-                            transitionsBuilder:
-                                (
-                                  context,
-                                  animation,
-                                  secondaryAnimation,
-                                  child,
-                                ) {
-                                  return SlideTransition(
-                                    position: Tween(
-                                      begin: const Offset(1, 0),
-                                      end: Offset.zero,
-                                    ).animate(animation),
-                                    child: child,
-                                  );
-                                },
-                          ),
-                        );
+                      onTap: () {
+                        context.push('/staff/announcements');
                       },
                     ),
 
@@ -205,30 +161,8 @@ class _StaffDashboardState extends State<StaffDashboard> {
                     DashboardTiles(
                       title: 'Gallery',
                       color: Colors.transparent,
-                      onTap: () async {
-                        await Navigator.push(
-                          context,
-                          PageRouteBuilder(
-                            pageBuilder:
-                                (context, animation, secondaryAnimation) =>
-                                    StaffGallary(),
-                            transitionsBuilder:
-                                (
-                                  context,
-                                  animation,
-                                  secondaryAnimation,
-                                  child,
-                                ) {
-                                  return SlideTransition(
-                                    position: Tween(
-                                      begin: const Offset(1, 0),
-                                      end: Offset.zero,
-                                    ).animate(animation),
-                                    child: child,
-                                  );
-                                },
-                          ),
-                        );
+                      onTap: () {
+                        context.push('/staff/gallery');
                       },
                       subText: 'Ready to make or upload an Group Photo?',
                     ),
