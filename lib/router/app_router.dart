@@ -8,8 +8,8 @@ import 'package:server_site/pages/gallery.dart';
 import 'package:server_site/pages/status.dart';
 import 'package:server_site/pages/support_us.dart';
 import 'package:server_site/pages/votes.dart';
-import 'package:server_site/staff_sub_page/staff_announcement.dart';
-import 'package:server_site/staff_sub_page/staff_gallary.dart';
+import 'package:server_site/pages/dashboards/subpage/staff/staff_announcement.dart';
+import 'package:server_site/pages/dashboards/subpage/staff/staff_gallary.dart';
 import 'package:server_site/sub_page/view_announcements.dart';
 
 class AppRouter {
