@@ -121,24 +121,6 @@ class _GalleryState extends State<Gallery> {
       endDrawer: NavDrawer(currentPage: 'Gallery', parentContext: context),
       body: Column(
         children: [
-          Container(
-            color: Colors.blueAccent,
-            child: Row(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Icon(Icons.warning, color: Colors.yellowAccent),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text(
-                    'Users from india may not be able to view images due to error with isp(s) ',
-                    style: TextStyle(color: Colors.black),
-                  ),
-                ),
-              ],
-            ),
-          ),
           Expanded(child: _buildBody()),
         ],
       ),
