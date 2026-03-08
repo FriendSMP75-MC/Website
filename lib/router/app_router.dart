@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:server_site/pages/dashboards/subpage/member/memories_request.dart';
 import 'package:server_site/pages/home.dart';
 import 'package:server_site/pages/about.dart';
 import 'package:server_site/pages/announcement.dart';
@@ -71,23 +72,23 @@ class AppRouter {
         path: '/announcement/:title',
         name: 'view-announcement',
         pageBuilder: (context, state) {
-          final title = Uri.decodeComponent(state.pathParameters['title'] ?? '');
+          final title = Uri.decodeComponent(
+            state.pathParameters['title'] ?? '',
+          );
           final body = (state.extra as Map<String, String>?)?['body'] ?? '';
           return CustomTransitionPage(
             key: state.pageKey,
-            child: ViewAnnouncement(
-              title: title,
-              body: body,
-            ),
-            transitionsBuilder: (context, animation, secondaryAnimation, child) {
-              return SlideTransition(
-                position: Tween<Offset>(
-                  begin: const Offset(1, 0),
-                  end: Offset.zero,
-                ).animate(animation),
-                child: child,
-              );
-            },
+            child: ViewAnnouncement(title: title, body: body),
+            transitionsBuilder:
+                (context, animation, secondaryAnimation, child) {
+                  return SlideTransition(
+                    position: Tween<Offset>(
+                      begin: const Offset(1, 0),
+                      end: Offset.zero,
+                    ).animate(animation),
+                    child: child,
+                  );
+                },
           );
         },
       ),
@@ -199,6 +200,23 @@ class AppRouter {
         pageBuilder: (context, state) => CustomTransitionPage(
           key: state.pageKey,
           child: const StaffGallary(),
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            return SlideTransition(
+              position: Tween<Offset>(
+                begin: const Offset(1, 0),
+                end: Offset.zero,
+              ).animate(animation),
+              child: child,
+            );
+          },
+        ),
+      ),
+      GoRoute(
+        path: '/memories-request',
+        name: 'memories-request',
+        pageBuilder: (context, state) => CustomTransitionPage(
+          key: state.pageKey,
+          child: const MemoriesRequest(),
           transitionsBuilder: (context, animation, secondaryAnimation, child) {
             return SlideTransition(
               position: Tween<Offset>(

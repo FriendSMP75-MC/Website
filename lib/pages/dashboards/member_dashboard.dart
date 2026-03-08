@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:server_site/widgets/dashboardtitles.dart';
 import 'package:server_site/widgets/footer.dart';
 
@@ -36,7 +37,9 @@ class _MemberDashboardState extends State<MemberDashboard> {
                     DashboardTiles(
                       title: 'Memories upload request',
                       color: Colors.transparent,
-                      onTap: () {},
+                      onTap: () {
+                        context.go('/memories-request');
+                      },
                       subText: 'Request staff member to add memory to gallery page',
                     ),
                   ],
@@ -51,7 +54,9 @@ class _MemberDashboardState extends State<MemberDashboard> {
                     DashboardTiles(
                       title: 'Memories upload request',
                       color: Colors.transparent,
-                      onTap: () {},
+                      onTap: () {
+                        context.go('/memories-request');
+                      },
                       subText: 'Request staff member to add memory to gallery page',
                     ),
                   ],
