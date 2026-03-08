@@ -121,7 +121,6 @@ class _GalleryState extends State<Gallery> {
       endDrawer: NavDrawer(currentPage: 'Gallery', parentContext: context),
       body: Column(
         children: [
-          
           Expanded(child: _buildBody()),
         ],
       ),
