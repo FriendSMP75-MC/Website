@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:server_site/data/backend_config.dart';
 import 'package:server_site/data/supabase_config.dart';
-import 'package:server_site/sub_page/view_announcements.dart';
 import 'package:server_site/widgets/appbar.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart' as markdown;
@@ -287,20 +287,9 @@ class _StaffannouncementsState extends State<Staffannouncements> {
                               ),
                             ),
                             onPressed: () {
-                              Navigator.of(context).push(
-                                PageRouteBuilder(
-                                  pageBuilder:
-                                      (
-                                        context,
-                                        animation,
-                                        secondaryAnimation,
-                                      ) => ViewAnnouncement(
-                                        title:
-                                            _announcementTitleController.text,
-                                        body: _announcementBodyContoller.text,
-                                      ),
-                                ),
-                              );
+                              final title = _announcementTitleController.text;
+                              final body = _announcementBodyContoller.text;
+                              context.push('/announcement/${Uri.encodeComponent(title)}', extra: {'body': body});
                             },
                             child: Text(
                               'Read more!',
@@ -416,20 +405,9 @@ class _StaffannouncementsState extends State<Staffannouncements> {
                               ),
                             ),
                             onPressed: () {
-                              Navigator.of(context).push(
-                                PageRouteBuilder(
-                                  pageBuilder:
-                                      (
-                                        context,
-                                        animation,
-                                        secondaryAnimation,
-                                      ) => ViewAnnouncement(
-                                        title:
-                                            _announcementTitleController.text,
-                                        body: _announcementBodyContoller.text,
-                                      ),
-                                ),
-                              );
+                              final title = _announcementTitleController.text;
+                              final body = _announcementBodyContoller.text;
+                              context.push('/announcement/${Uri.encodeComponent(title)}', extra: {'body': body});
                             },
                             child: Text(
                               'Read more!',

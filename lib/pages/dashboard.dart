@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:server_site/data/backend_config.dart';
-import 'package:server_site/pages/staff_dashboard.dart';
+import 'package:server_site/pages/dashboards/staff_dashboard.dart';
+import 'package:server_site/pages/dashboards/member_dashboard.dart';
 import 'package:server_site/widgets/appbar.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:server_site/data/supabase_config.dart';
@@ -375,8 +376,9 @@ class _DashboardState extends State<Dashboard> {
                     child: StaffDashboard(),
                   );
                 }
-                return Text(
-                  'Hello there! \n unfortunately you don\'t have access to this page :(',
+                return SizedBox(
+                  height: MediaQuery.of(context).size.height,
+                  child: MemberDashboard(),
                 );
               },
             ),
