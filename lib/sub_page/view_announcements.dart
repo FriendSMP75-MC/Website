@@ -37,7 +37,16 @@ class ViewAnnouncement extends StatelessWidget {
                   ),
                 ),
                 SizedBox(height: 10),
-                Expanded(child: Markdown(data: body)),
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Markdown(
+                      data: body,
+                      selectable: true,
+                      shrinkWrap: true,
+                    ),
+                  ),
+                ),
               ],
             );
           } else {
