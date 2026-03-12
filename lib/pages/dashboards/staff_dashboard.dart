@@ -33,6 +33,7 @@ class _StaffDashboardState extends State<StaffDashboard> {
                   crossAxisCount: 1,
                   crossAxisSpacing: 16,
                   mainAxisSpacing: 16,
+                  childAspectRatio: 2.2,
                   padding: const EdgeInsets.all(8),
                   children: [
                     // Announcment App
@@ -100,6 +101,7 @@ class _StaffDashboardState extends State<StaffDashboard> {
                   crossAxisCount: 3,
                   crossAxisSpacing: 16,
                   mainAxisSpacing: 16,
+                  childAspectRatio: 1.75,
                   padding: const EdgeInsets.all(8),
                   children: [
                     //Announcment App

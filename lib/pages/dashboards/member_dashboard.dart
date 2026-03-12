@@ -32,6 +32,7 @@ class _MemberDashboardState extends State<MemberDashboard> {
                   crossAxisCount: 1,
                   crossAxisSpacing: 16,
                   mainAxisSpacing: 16,
+                  childAspectRatio: 2.2,
                   padding: const EdgeInsets.all(8),
                   children: [
                     DashboardTiles(
@@ -49,9 +50,10 @@ class _MemberDashboardState extends State<MemberDashboard> {
                 );
               } else {
                 return GridView.count(
-                  crossAxisCount: 3,
+                  crossAxisCount: 1,
                   crossAxisSpacing: 16,
                   mainAxisSpacing: 16,
+                  childAspectRatio: 3.6,
                   padding: const EdgeInsets.all(8),
                   children: [
                     DashboardTiles(
