@@ -36,11 +36,14 @@ class _MemberDashboardState extends State<MemberDashboard> {
                   children: [
                     DashboardTiles(
                       title: 'Memories upload request',
-                      color: Colors.transparent,
+                      color: const Color(0xFF198A8E),
+                      icon: Icons.auto_stories_rounded,
+                      actionLabel: 'Request',
                       onTap: () {
                         context.go('/memories-request');
                       },
-                      subText: 'Request staff member to add memory to gallery page',
+                      subText:
+                          'Request staff member to add memory to gallery page',
                     ),
                   ],
                 );
@@ -53,11 +56,14 @@ class _MemberDashboardState extends State<MemberDashboard> {
                   children: [
                     DashboardTiles(
                       title: 'Memories upload request',
-                      color: Colors.transparent,
+                      color: const Color(0xFF198A8E),
+                      icon: Icons.auto_stories_rounded,
+                      actionLabel: 'Request',
                       onTap: () {
                         context.go('/memories-request');
                       },
-                      subText: 'Request staff member to add memory to gallery page',
+                      subText:
+                          'Request staff member to add memory to gallery page',
                     ),
                   ],
                 );
