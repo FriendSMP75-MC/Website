@@ -13,7 +13,6 @@ const backendUrl = 'https://key-backend-for-friendsmp75-website.onrender.com/';
 const accessToken = String.fromEnvironment("ACCESS_TOKEN");
 
 class BackendData {
-  
   static User? get user => Supabase.instance.client.auth.currentUser;
 
   /// Helper to generate headers including the Supabase JWT for RLS
@@ -25,7 +24,8 @@ class BackendData {
 
     if (includeAuth) {
       // Fetch the current JWT session from Supabase
-      final String? jwt = Supabase.instance.client.auth.currentSession?.accessToken;
+      final String? jwt =
+          Supabase.instance.client.auth.currentSession?.accessToken;
       if (jwt != null) {
         headers['Authorization'] = 'Bearer $jwt';
       }
@@ -35,7 +35,10 @@ class BackendData {
 
   // --- Base HTTP Methods ---
 
-  static Future<dynamic> retrieveData(String endpoint, {bool requireAuth = true}) async {
+  static Future<dynamic> retrieveData(
+    String endpoint, {
+    bool requireAuth = true,
+  }) async {
     try {
       final response = await http.get(
         Uri.parse(backendUrl + endpoint),
@@ -52,7 +55,10 @@ class BackendData {
     return 'Error Retrieving Data';
   }
 
-  static Future<String?> sendData(String endpoint, Map<String, dynamic> content) async {
+  static Future<String?> sendData(
+    String endpoint,
+    Map<String, dynamic> content,
+  ) async {
     try {
       final response = await http.post(
         Uri.parse(backendUrl + endpoint),
@@ -116,7 +122,10 @@ class BackendData {
 
   static Future<List<dynamic>?> getAnnouncements() async {
     try {
-      final result = await retrieveData('get-announcements', requireAuth: false);
+      final result = await retrieveData(
+        'get-announcements',
+        requireAuth: false,
+      );
       if (result is List<dynamic>) return result;
     } catch (e) {
       debugPrint('Error when getting announcements: $e');
@@ -145,7 +154,7 @@ class BackendData {
     try {
       final author = SupabaseConfig.getDisplayName(user);
       final authorUUID = SupabaseConfig.getSupabaseUUID(user);
-      
+
       return await sendData('new-announcements', {
         'title': title,
         'body': body,
@@ -162,7 +171,7 @@ class BackendData {
   }
 
   // --- UPLOAD METHOD (WEB ONLY) ---
-  /// Uses imageBytes because 'path' is null on Web. 
+  /// Uses imageBytes because 'path' is null on Web.
   /// Sends as Multipart/form-data to satisfy Flask/Waitress.
   static Future<String?> uploadImage({
     required List<int> imageBytes,
@@ -175,14 +184,16 @@ class BackendData {
 
       // Get standard headers (Token + JWT)
       final headers = _getHeaders(includeAuth: true);
-      
+
       // MultipartRequest sets its own Content-Type boundary, so remove the JSON one
-      headers.remove('Content-Type'); 
+      headers.remove('Content-Type');
       request.headers.addAll(headers);
 
       // Metadata for the database row
       request.fields['author'] = SupabaseConfig.getDisplayName(user);
-      request.fields['author_uuid'] = SupabaseConfig.getSupabaseUUID(user).toString();
+      request.fields['author_uuid'] = SupabaseConfig.getSupabaseUUID(
+        user,
+      ).toString();
       request.fields['taken_date'] = takenDate;
 
       // Determine MIME type for Supabase restriction (image/png or image/jpeg)
@@ -208,8 +219,27 @@ class BackendData {
         print("Backend upload error: ${response.statusCode} ${response.body}");
         return null;
       }
-    } catch (e) { 
-      print("Upload exception: $e"); 
+    } catch (e) {
+      print("Upload exception: $e");
+      return null;
+    }
+  }
+
+  static Future<String?> powerAction(String action) async {
+    try {
+      return await sendData('server-$action', {'value': null});
+    } catch (e) {
+      return null;
+    }
+  }
+
+  static Future<Map<String, dynamic>?> serverStatus() async {
+    try {
+      final response = await retrieveData('server-status');
+      if (response == null) return null;
+      if (response is Map<String, dynamic>) return response;
+      return null;
+    } catch (e) {
       return null;
     }
   }

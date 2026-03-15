@@ -11,7 +11,6 @@ class StaffDashboard extends StatefulWidget {
   State<StaffDashboard> createState() => _StaffDashboardState();
 }
 
-
 class _StaffDashboardState extends State<StaffDashboard> {
   @override
   Widget build(BuildContext context) {
@@ -34,12 +33,15 @@ class _StaffDashboardState extends State<StaffDashboard> {
                   crossAxisCount: 1,
                   crossAxisSpacing: 16,
                   mainAxisSpacing: 16,
+                  childAspectRatio: 2.2,
                   padding: const EdgeInsets.all(8),
                   children: [
                     // Announcment App
                     DashboardTiles(
                       title: 'Announcement',
-                      color: Colors.transparent,
+                      color: const Color(0xFF5B3FD6),
+                      icon: Icons.campaign_rounded,
+                      actionLabel: 'Manage',
                       subText:
                           'Ready to make or manage an announcement? Lets inform players about new updates!',
                       onTap: () async {
@@ -72,11 +74,25 @@ class _StaffDashboardState extends State<StaffDashboard> {
                     // Gallery App
                     DashboardTiles(
                       title: 'Gallery',
-                      color: Colors.transparent,
+                      color: const Color(0xFF1F7BD9),
+                      icon: Icons.photo_library_rounded,
+                      actionLabel: 'Upload',
                       onTap: () {
                         context.push('/staff/gallery');
                       },
                       subText: 'Ready to make or upload an Group Photo?',
+                    ),
+
+                    DashboardTiles(
+                      title: 'Approve Gallery Request',
+                      color: const Color(0xFF228B63),
+                      icon: Icons.fact_check_rounded,
+                      actionLabel: 'Review',
+                      onTap: () {
+                        context.push('/staff/gallery-requests');
+                      },
+                      subText:
+                          'Review and approve members\' gallery memory requests.',
                     ),
                   ],
                 );
@@ -85,12 +101,15 @@ class _StaffDashboardState extends State<StaffDashboard> {
                   crossAxisCount: 3,
                   crossAxisSpacing: 16,
                   mainAxisSpacing: 16,
+                  childAspectRatio: 1.75,
                   padding: const EdgeInsets.all(8),
                   children: [
                     //Announcment App
                     DashboardTiles(
                       title: 'Announcement',
-                      color: Colors.transparent,
+                      color: const Color(0xFF5B3FD6),
+                      icon: Icons.campaign_rounded,
+                      actionLabel: 'Manage',
                       subText:
                           'Ready to make or manage an announcement? Lets inform players about new updates!',
                       onTap: () {
@@ -101,11 +120,38 @@ class _StaffDashboardState extends State<StaffDashboard> {
                     // Gallery App
                     DashboardTiles(
                       title: 'Gallery',
-                      color: Colors.transparent,
+                      color: const Color(0xFF1F7BD9),
+                      icon: Icons.photo_library_rounded,
+                      actionLabel: 'Upload',
                       onTap: () {
                         context.push('/staff/gallery');
                       },
                       subText: 'Ready to make or upload an Group Photo?',
+                    ),
+
+                    DashboardTiles(
+                      title: 'Approve Gallery Request',
+                      color: const Color(0xFF228B63),
+                      icon: Icons.fact_check_rounded,
+                      actionLabel: 'Review',
+                      onTap: () {
+                        context.push('/staff/gallery-requests');
+                      },
+                      subText:
+                          'Review and approve members\' gallery memory requests.',
+                    ),
+
+                    DashboardTiles(
+                      title: 'Server access',
+                      color: Colors.redAccent,
+                      icon: Icons.verified_user_outlined,
+                      actionLabel: 'Server Access',
+                      onTap: () {
+                        context.push('/staff/server-access');
+                      },
+                      subText: 'Access permission to Start/restart/stop server',
+      
+                      
                     ),
                   ],
                 );

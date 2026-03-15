@@ -32,32 +32,40 @@ class _MemberDashboardState extends State<MemberDashboard> {
                   crossAxisCount: 1,
                   crossAxisSpacing: 16,
                   mainAxisSpacing: 16,
+                  childAspectRatio: 2.2,
                   padding: const EdgeInsets.all(8),
                   children: [
                     DashboardTiles(
                       title: 'Memories upload request',
-                      color: Colors.transparent,
+                      color: const Color(0xFF198A8E),
+                      icon: Icons.auto_stories_rounded,
+                      actionLabel: 'Request',
                       onTap: () {
                         context.go('/memories-request');
                       },
-                      subText: 'Request staff member to add memory to gallery page',
+                      subText:
+                          'Request staff member to add memory to gallery page',
                     ),
                   ],
                 );
               } else {
                 return GridView.count(
-                  crossAxisCount: 3,
+                  crossAxisCount: 1,
                   crossAxisSpacing: 16,
                   mainAxisSpacing: 16,
+                  childAspectRatio: 3.6,
                   padding: const EdgeInsets.all(8),
                   children: [
                     DashboardTiles(
                       title: 'Memories upload request',
-                      color: Colors.transparent,
+                      color: const Color(0xFF198A8E),
+                      icon: Icons.auto_stories_rounded,
+                      actionLabel: 'Request',
                       onTap: () {
                         context.go('/memories-request');
                       },
-                      subText: 'Request staff member to add memory to gallery page',
+                      subText:
+                          'Request staff member to add memory to gallery page',
                     ),
                   ],
                 );

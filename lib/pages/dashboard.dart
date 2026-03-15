@@ -21,6 +21,7 @@ class _DashboardState extends State<Dashboard> {
   StreamSubscription<AuthState>? _authSub;
   bool? _isOwner;
   List<dynamic> users = [];
+  bool _showMemberViewForStaff = false;
 
   @override
   void initState() {
@@ -373,7 +374,50 @@ class _DashboardState extends State<Dashboard> {
                 if (snapshot.data == true) {
                   return SizedBox(
                     height: MediaQuery.of(context).size.height,
-                    child: StaffDashboard(),
+                    child: Column(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 8,
+                            vertical: 4,
+                          ),
+                          child: ToggleButtons(
+                            isSelected: [
+                              !_showMemberViewForStaff,
+                              _showMemberViewForStaff,
+                            ],
+                            onPressed: (index) {
+                              setState(() {
+                                _showMemberViewForStaff = index == 1;
+                              });
+                            },
+                            borderRadius: BorderRadius.circular(8),
+                            selectedColor: Colors.white,
+                            fillColor: Colors.purple,
+                            color: Colors.white70,
+                            constraints: const BoxConstraints(
+                              minHeight: 38,
+                              minWidth: 130,
+                            ),
+                            children: const [
+                              Padding(
+                                padding: EdgeInsets.symmetric(horizontal: 12),
+                                child: Text('Staff Dashboard'),
+                              ),
+                              Padding(
+                                padding: EdgeInsets.symmetric(horizontal: 12),
+                                child: Text('Member Dashboard'),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Expanded(
+                          child: _showMemberViewForStaff
+                              ? MemberDashboard()
+                              : StaffDashboard(),
+                        ),
+                      ],
+                    ),
                   );
                 }
                 return SizedBox(

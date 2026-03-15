@@ -55,11 +55,14 @@ class Gallery extends StatefulWidget {
   State<Gallery> createState() => _GalleryState();
 }
 
+enum GallerySection { groupPhotos, memories }
+
 class _GalleryState extends State<Gallery> {
   StreamSubscription<AuthState>? _authSub;
   List<GalleryImage>? _galleryImages;
   bool _isLoading = true;
   String? _errorMessage;
+  GallerySection _selectedSection = GallerySection.groupPhotos;
 
   @override
   void initState() {
@@ -119,11 +122,7 @@ class _GalleryState extends State<Gallery> {
     return Scaffold(
       appBar: AppbarPage(customTitle: 'FriendSMP75 - Gallery'),
       endDrawer: NavDrawer(currentPage: 'Gallery', parentContext: context),
-      body: Column(
-        children: [
-          Expanded(child: _buildBody()),
-        ],
-      ),
+      body: Column(children: [Expanded(child: _buildBody())]),
     );
   }
 
@@ -198,80 +197,116 @@ class _GalleryState extends State<Gallery> {
       color: const Color(0xFF4A90E2),
       child: LayoutBuilder(
         builder: (context, constraints) {
-          // Responsive grid columns based on screen width
           int crossAxisCount;
           double childAspectRatio;
 
           if (constraints.maxWidth < 600) {
-            // Mobile
             crossAxisCount = 1;
-            childAspectRatio = 0.85;
+            childAspectRatio = 1.2;
           } else if (constraints.maxWidth < 1000) {
-            // Tablet
             crossAxisCount = 2;
-            childAspectRatio = 0.85;
+            childAspectRatio = 1.1;
           } else {
-            // Desktop
             crossAxisCount = 3;
-            childAspectRatio = 0.85;
+            childAspectRatio = 1.0;
           }
 
           return CustomScrollView(
             slivers: [
-              const SliverToBoxAdapter(
+              SliverToBoxAdapter(
                 child: Column(
                   children: [
-                    SizedBox(height: 20),
-                    Padding(
-                      padding: EdgeInsets.all(8.0),
-                      child: Text(
-                        'Group Photos',
+                    const SizedBox(height: 20),
+                    _buildSectionSwitcher(),
+                    const SizedBox(height: 10),
+                  ],
+                ),
+              ),
+              if (_selectedSection == GallerySection.groupPhotos) ...[
+                const SliverToBoxAdapter(
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 8),
+                    child: Text(
+                      'Group Photos',
+                      style: TextStyle(
+                        fontSize: 28,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                ),
+                SliverPadding(
+                  padding: const EdgeInsets.all(12),
+                  sliver: SliverGrid(
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: crossAxisCount,
+                      crossAxisSpacing: 12,
+                      mainAxisSpacing: 12,
+                      childAspectRatio: childAspectRatio,
+                    ),
+                    delegate: SliverChildBuilderDelegate((context, index) {
+                      final image = _galleryImages![index];
+                      return _buildGalleryItem(image);
+                    }, childCount: _galleryImages!.length),
+                  ),
+                ),
+              ] else ...[
+                const SliverToBoxAdapter(
+                  child: Column(
+                    children: [
+                      SizedBox(height: 40),
+                      Text(
+                        'Memories',
                         style: TextStyle(
-                          fontSize: 28,
+                          fontSize: 24,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                    ),
-                    SizedBox(height: 10),
-                  ],
-                ),
-              ),
-              SliverPadding(
-                padding: const EdgeInsets.all(12),
-                sliver: SliverGrid(
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: crossAxisCount,
-                    crossAxisSpacing: 12,
-                    mainAxisSpacing: 12,
-                    childAspectRatio: childAspectRatio,
+                      SizedBox(height: 10),
+                      Text('Not implemented'),
+                      SizedBox(height: 40),
+                    ],
                   ),
-                  delegate: SliverChildBuilderDelegate((context, index) {
-                    final image = _galleryImages![index];
-                    return _buildGalleryItem(image);
-                  }, childCount: _galleryImages!.length),
                 ),
-              ),
-              const SliverToBoxAdapter(
-                child: Column(
-                  children: [
-                    SizedBox(height: 40),
-                    Text(
-                      'Memories',
-                      style: TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    SizedBox(height: 10),
-                    Text('Not implemented'),
-                    SizedBox(height: 40),
-                  ],
-                ),
-              ),
+              ],
               const SliverToBoxAdapter(child: MyFooter()),
             ],
           );
         },
+      ),
+    );
+  }
+
+  Widget _buildSectionSwitcher() {
+    return Center(
+      child: ToggleButtons(
+        isSelected: [
+          _selectedSection == GallerySection.groupPhotos,
+          _selectedSection == GallerySection.memories,
+        ],
+        onPressed: (index) {
+          setState(() {
+            _selectedSection = index == 0
+                ? GallerySection.groupPhotos
+                : GallerySection.memories;
+          });
+        },
+        borderRadius: BorderRadius.circular(10),
+        selectedColor: Colors.white,
+        fillColor: const Color(0xFF4A90E2),
+        color: Colors.white70,
+        constraints: const BoxConstraints(minHeight: 42, minWidth: 140),
+        children: const [
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 12),
+            child: Text('Group Photos'),
+          ),
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 12),
+            child: Text('Memories'),
+          ),
+        ],
       ),
     );
   }
@@ -283,8 +318,9 @@ class _GalleryState extends State<Gallery> {
         padding: const EdgeInsets.all(8.0),
         child: Column(
           children: [
-            // Image Container
-            Expanded(
+            SizedBox(
+              height: 170,
+              width: double.infinity,
               child: Container(
                 decoration: const BoxDecoration(
                   borderRadius: BorderRadius.only(
@@ -331,7 +367,6 @@ class _GalleryState extends State<Gallery> {
                 ),
               ),
             ),
-            // View Button
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
@@ -341,7 +376,7 @@ class _GalleryState extends State<Gallery> {
                   shape: const RoundedRectangleBorder(
                     borderRadius: BorderRadius.zero,
                   ),
-                  padding: const EdgeInsets.symmetric(vertical: 12),
+                  padding: const EdgeInsets.symmetric(vertical: 10),
                 ),
                 onPressed: () => _showImageDialog(image),
                 child: const Text(
@@ -350,7 +385,6 @@ class _GalleryState extends State<Gallery> {
                 ),
               ),
             ),
-            // Author details
             Container(
               decoration: const BoxDecoration(
                 borderRadius: BorderRadius.only(
@@ -360,7 +394,7 @@ class _GalleryState extends State<Gallery> {
                 color: Color.fromARGB(130, 195, 17, 17),
               ),
               child: SizedBox(
-                height: 60,
+                height: 58,
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Row(
