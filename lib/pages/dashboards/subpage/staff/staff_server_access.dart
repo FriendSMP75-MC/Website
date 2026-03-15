@@ -138,7 +138,7 @@ class _StaffServerAccessState extends State<StaffServerAccess> {
     }
 
     return Scaffold(
-      appBar: AppbarPage(),
+      appBar: AppbarPage(backArrow: true),
       endDrawer: NavDrawer(currentPage: 'Dashboard', parentContext: context),
       body: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
