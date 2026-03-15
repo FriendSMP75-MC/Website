@@ -140,6 +140,19 @@ class _StaffDashboardState extends State<StaffDashboard> {
                       subText:
                           'Review and approve members\' gallery memory requests.',
                     ),
+
+                    DashboardTiles(
+                      title: 'Server access',
+                      color: Colors.redAccent,
+                      icon: Icons.verified_user_outlined,
+                      actionLabel: 'Server Access',
+                      onTap: () {
+                        context.push('/staff/server-access');
+                      },
+                      subText: 'Access permission to Start/restart/stop server',
+      
+                      
+                    ),
                   ],
                 );
               }

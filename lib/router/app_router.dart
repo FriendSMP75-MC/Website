@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:server_site/pages/dashboards/subpage/member/memories_request.dart';
+import 'package:server_site/pages/dashboards/subpage/staff/staff_server_access.dart';
 import 'package:server_site/pages/home.dart';
 import 'package:server_site/pages/about.dart';
 import 'package:server_site/pages/announcement.dart';
@@ -235,6 +236,24 @@ class AppRouter {
         pageBuilder: (context, state) => CustomTransitionPage(
           key: state.pageKey,
           child: const MemoriesRequest(),
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            return SlideTransition(
+              position: Tween<Offset>(
+                begin: const Offset(1, 0),
+                end: Offset.zero,
+              ).animate(animation),
+              child: child,
+            );
+          },
+        ),
+      ),
+
+      GoRoute(
+        path: '/staff/server-access',
+        name: 'server-access',
+        pageBuilder: (context, state) => CustomTransitionPage(
+          key: state.pageKey,
+          child: const StaffServerAccess(),
           transitionsBuilder: (context, animation, secondaryAnimation, child) {
             return SlideTransition(
               position: Tween<Offset>(
