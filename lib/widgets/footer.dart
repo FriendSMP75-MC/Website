@@ -1,19 +1,73 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class MyFooter extends StatelessWidget {
   const MyFooter({super.key});
 
-  Future<void> _launchUrl(String link) async {
+  Future<void> _launchUrl(BuildContext context, String link) async {
     final Uri url = Uri.parse(link);
 
     try {
-      if (await canLaunchUrl(url)) {
-        await launchUrl(url);
+      final bool launched;
+
+      if (url.scheme == 'mailto') {
+        launched = kIsWeb
+            ? await launchUrl(url, webOnlyWindowName: '_self')
+            : await launchUrl(url, mode: LaunchMode.externalApplication);
       } else {
-        throw 'Could not launch $link';
+        launched = await launchUrl(url, mode: LaunchMode.platformDefault);
+      }
+
+      if (!launched) {
+        if (url.scheme == 'mailto') {
+          await Clipboard.setData(ClipboardData(text: url.path));
+          if (!context.mounted) return;
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Row(
+                children: [
+                  const Icon(Icons.info, color: Colors.white),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      'Could not open mail app. Email copied: ${url.path}',
+                      style: const TextStyle(color: Colors.white),
+                    ),
+                  ),
+                ],
+              ),
+              backgroundColor: Colors.purpleAccent[100],
+              behavior: SnackBarBehavior.floating,
+            ),
+          );
+        }
+        debugPrint('Could not launch $link');
       }
     } catch (e) {
+      if (url.scheme == 'mailto') {
+        await Clipboard.setData(ClipboardData(text: url.path));
+        if (!context.mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Row(
+              children: [
+                const Icon(Icons.info, color: Colors.white),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    'Could not open mail app. Email copied: ${url.path}',
+                    style: const TextStyle(color: Colors.white),
+                  ),
+                ),
+              ],
+            ),
+            backgroundColor: Colors.purpleAccent[100],
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+      }
       debugPrint('Error launching URL: $e');
     }
   }
@@ -92,20 +146,21 @@ class MyFooter extends StatelessWidget {
                     label: 'YouTube',
                     color: Colors.red,
                     onTap: () =>
-                        _launchUrl('https://www.youtube.com/@FriendSMP75'),
+                        _launchUrl(context, 'https://www.youtube.com/@FriendSMP75'),
                   ),
                   _SocialLink(
                     icon: Icons.discord,
                     label: 'Discord',
                     color: Colors.indigoAccent,
                     onTap: () =>
-                        _launchUrl('https://discord.com/invite/K8ucVvjfge'),
+                        _launchUrl(context, 'https://discord.com/invite/K8ucVvjfge'),
                   ),
                   _SocialLink(
                     icon: Icons.email,
                     label: 'Email',
                     color: Colors.green,
-                    onTap: () => _launchUrl('mailto:friendsmp75@outlook.com'),
+                    onTap: () =>
+                        _launchUrl(context, 'mailto:friendsmp75@outlook.com'),
                   ),
                 ],
               ),

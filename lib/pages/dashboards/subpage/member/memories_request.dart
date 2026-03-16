@@ -39,79 +39,92 @@ class _MemoriesRequestState extends State<MemoriesRequest> {
     return Scaffold(
       appBar: AppbarPage(),
       endDrawer: NavDrawer(currentPage: 'Dashboard', parentContext: context),
-      body: user == null
-          ? Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    Icons.lock_outline,
-                    size: 64,
-                    color: Colors.grey,
-                  ),
-                  SizedBox(height: 16),
-                  Text(
-                    'Authentication Required',
-                    style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  SizedBox(height: 8),
-                  Text(
-                    'Please log in with Discord to access this page',
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: Colors.grey,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                  SizedBox(height: 24),
-                  ElevatedButton.icon(
-                    onPressed: () async {
-                      await SupabaseConfig.loginWithDiscord();
-                    },
-                    icon: Icon(Icons.login),
-                    label: Text('Login with Discord'),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.deepPurple,
-                      foregroundColor: Colors.white,
-                      padding: EdgeInsets.symmetric(
-                        horizontal: 32,
-                        vertical: 16,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            )
-          : Center(
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(16),
+
+        child: user == null
+            ? Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
+                    Icon(Icons.lock_outline, size: 64, color: Colors.grey),
+                    SizedBox(height: 16),
                     Text(
-                      'Welcome, $username!',
+                      'Authentication Required',
                       style: TextStyle(
                         fontSize: 24,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    SizedBox(height: 16),
-                    Text(
-                      'Memories Request Page',
-                      style: TextStyle(fontSize: 18),
-                    ),
                     SizedBox(height: 8),
                     Text(
-                      'Content coming soon...',
-                      style: TextStyle(color: Colors.grey),
+                      'Please log in with Discord to access this page',
+                      style: TextStyle(fontSize: 16, color: Colors.grey),
+                      textAlign: TextAlign.center,
+                    ),
+                    SizedBox(height: 24),
+                    ElevatedButton.icon(
+                      onPressed: () async {
+                        await SupabaseConfig.loginWithDiscord();
+                      },
+                      icon: Icon(Icons.login),
+                      label: Text('Login with Discord'),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.deepPurple,
+                        foregroundColor: Colors.white,
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 32,
+                          vertical: 16,
+                        ),
+                      ),
                     ),
                   ],
                 ),
-              ),
+              )
+            : Column(
+              mainAxisAlignment: MainAxisAlignment.center,   
+              children: [
+                Center(
+                  child: Text(
+                    'Welcome, $username!',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+                SizedBox(height: 16),
+                Center(
+                  child: ConstrainedBox(
+                    constraints: const BoxConstraints(maxWidth: 700),
+                    child: Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.all(16),
+                      decoration: const BoxDecoration(
+                        color: Colors.white10,
+                        borderRadius: BorderRadius.all(Radius.circular(16)),
+                      ),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Padding(
+                            padding: EdgeInsets.only(right: 10, top: 2),
+                            child: Icon(Icons.info, color: Colors.blue),
+                          ),
+                          Expanded(
+                            child: Text(
+                              'This page allows members to post memories that happened on the server.',
+                              softWrap: true,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
+      ),
     );
   }
 }
