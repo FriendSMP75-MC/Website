@@ -1,6 +1,7 @@
 // ignore_for_file: avoid_print
 
 import 'dart:convert';
+import 'package:dio/dio.dart' as dio;
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'dart:async';
@@ -177,50 +178,129 @@ class BackendData {
     required List<int> imageBytes,
     required String filename,
     required String takenDate,
+    void Function(double progress)? onProgress,
   }) async {
     try {
-      final url = Uri.parse('${backendUrl}upload-image');
-      final request = http.MultipartRequest('POST', url);
-
-      // Get standard headers (Token + JWT)
       final headers = _getHeaders(includeAuth: true);
-
-      // MultipartRequest sets its own Content-Type boundary, so remove the JSON one
       headers.remove('Content-Type');
-      request.headers.addAll(headers);
 
-      // Metadata for the database row
-      request.fields['author'] = SupabaseConfig.getDisplayName(user);
-      request.fields['author_uuid'] = SupabaseConfig.getSupabaseUUID(
-        user,
-      ).toString();
-      request.fields['taken_date'] = takenDate;
-
-      // Determine MIME type for Supabase restriction (image/png or image/jpeg)
       final ext = filename.split('.').last.toLowerCase();
       final mimeType = (ext == 'jpg' || ext == 'jpeg') ? 'jpeg' : 'png';
 
-      // Attach image as bytes
-      request.files.add(
-        http.MultipartFile.fromBytes(
-          'image',
+      final dioClient = dio.Dio(
+        dio.BaseOptions(
+          baseUrl: backendUrl,
+          headers: headers,
+          responseType: dio.ResponseType.plain,
+        ),
+      );
+
+      final formData = dio.FormData.fromMap({
+        'author': SupabaseConfig.getDisplayName(user),
+        'author_uuid': SupabaseConfig.getSupabaseUUID(user).toString(),
+        'taken_date': takenDate,
+        'image': dio.MultipartFile.fromBytes(
           imageBytes,
           filename: filename,
           contentType: MediaType('image', mimeType),
         ),
+      });
+
+      final response = await dioClient.post(
+        'upload-image',
+        data: formData,
+        onSendProgress: (sent, total) {
+          if (onProgress != null && total > 0) {
+            onProgress(sent / total);
+          }
+        },
       );
 
-      final streamedResponse = await request.send();
-      final response = await http.Response.fromStream(streamedResponse);
-
       if (response.statusCode == 200 || response.statusCode == 201) {
-        return response.body;
-      } else {
-        print("Backend upload error: ${response.statusCode} ${response.body}");
-        return null;
+        return response.data?.toString();
       }
+
+      print('Backend upload error: ${response.statusCode} ${response.data}');
+      return null;
     } catch (e) {
       print("Upload exception: $e");
+      return null;
+    }
+  }
+
+  static Future<String?> addMemoryRequest({
+    required List<int> imageBytes,
+    required String filename,
+    required String uuid,
+    required String displayName,
+    required String timeTaken,
+    String? title,
+    void Function(double progress)? onProgress,
+  }) async {
+    try {
+      final normalizedTitle = title?.trim() ?? '';
+      if (normalizedTitle.isEmpty) {
+        print('Memory request validation error: title is required.');
+        return null;
+      }
+
+      final headers = _getHeaders(includeAuth: true);
+      headers.remove('Content-Type');
+      final ext = filename.split('.').last.toLowerCase();
+      final mimeType = (ext == 'jpg' || ext == 'jpeg') ? 'jpeg' : 'png';
+
+      final dioClient = dio.Dio(
+        dio.BaseOptions(
+          baseUrl: backendUrl,
+          headers: headers,
+          responseType: dio.ResponseType.plain,
+          validateStatus: (status) => status != null && status < 500,
+        ),
+      );
+
+      final formDataMap = <String, dynamic>{
+        'uuid': uuid,
+        'author_uuid': uuid,
+        'display_name': displayName,
+        'displayname': displayName,
+        'author': displayName,
+        'time_taken': timeTaken,
+        'date_taken': timeTaken,
+        'taken_date': timeTaken,
+        'title': normalizedTitle,
+        'image': dio.MultipartFile.fromBytes(
+          imageBytes,
+          filename: filename,
+          contentType: MediaType('image', mimeType),
+        ),
+      };
+
+      final response = await dioClient.post(
+        'memory-request-add',
+        data: dio.FormData.fromMap(formDataMap),
+        onSendProgress: (sent, total) {
+          if (onProgress != null && total > 0) {
+            onProgress(sent / total);
+          }
+        },
+      );
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        return response.data?.toString();
+      }
+
+      print(
+        'Memory request upload error: ${response.statusCode} ${response.data}',
+      );
+      return null;
+    } catch (e) {
+      if (e is dio.DioException) {
+        print(
+          'Memory request upload exception: ${e.response?.statusCode} ${e.response?.data}',
+        );
+      } else {
+        print('Memory request upload exception: $e');
+      }
       return null;
     }
   }

@@ -6,7 +6,7 @@ import 'package:server_site/router/app_router.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await SupabaseConfig.init();
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 SupabaseClient get supabase => Supabase.instance.client;

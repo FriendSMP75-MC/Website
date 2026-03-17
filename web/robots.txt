@@ -1,4 +1,33 @@
+# FriendSMP75 SEO Robots Configuration
+# Allow all crawlers full access
+User-agent: *
+Allow: /
+Disallow: 
+
+# Specific crawler optimizations
+User-agent: Googlebot
+Allow: /
+Crawl-delay: 0
+
+User-agent: Bingbot
+Allow: /
+Crawl-delay: 0
+
+User-agent: Slurp
+Allow: /
+
+# Prevent crawling of unnecessary paths
+User-agent: *
+Disallow: /build/
+Disallow: /*.map
+
+# Sitemap location for all crawlers
+Sitemap: https://friendsmp75.vercel.app/sitemap.xml
+Sitemap: https://friendsmp75.vercel.app/sitemap.xml
+
+# Search engine directives
 User-agent: *
 Allow: /
 
-Sitemap: https://friendsmp75.vercel.app/sitemap.xml
+# Crawl-delay and request-rate (in requests/sec)
+Request-rate: 1/1
