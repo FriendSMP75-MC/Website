@@ -145,6 +145,239 @@ class BackendData {
     return null;
   }
 
+  static Future<List<Map<String, dynamic>>?> getPublicApprovedImages() async {
+    try {
+      final result = await retrieveData(
+        'public-approved-images',
+        requireAuth: false,
+      );
+
+      if (result is List) {
+        return result.whereType<Map>().map((item) {
+          return item.map((key, value) => MapEntry(key.toString(), value));
+        }).toList();
+      }
+    } catch (e) {
+      debugPrint('Error fetching public approved images: $e');
+    }
+    return null;
+  }
+
+  static Future<List<Map<String, dynamic>>?> getMemberMemoryRequests({
+    required String memberUuid,
+  }) async {
+    try {
+      final uri = Uri.parse(
+        '${backendUrl}member-memory-requests',
+      ).replace(queryParameters: {'uuid': memberUuid});
+
+      final response = await http.get(
+        uri,
+        headers: _getHeaders(includeAuth: true),
+      );
+
+      if (response.statusCode != 200) {
+        print(
+          'Member memory requests error: ${response.statusCode} ${response.body}',
+        );
+        return null;
+      }
+
+      final data = jsonDecode(response.body);
+      if (data is List) {
+        return data.whereType<Map>().map((item) {
+          return item.map((key, value) => MapEntry(key.toString(), value));
+        }).toList();
+      }
+
+      return const [];
+    } catch (e) {
+      print('Error fetching member memory requests: $e');
+      return null;
+    }
+  }
+
+  static Future<List<Map<String, dynamic>>?> getStaffMemoryRequests() async {
+    try {
+      final response = await http.get(
+        Uri.parse('${backendUrl}staff-memory-requests'),
+        headers: _getHeaders(includeAuth: true),
+      );
+
+      if (response.statusCode != 200) {
+        print(
+          'Staff memory requests error: ${response.statusCode} ${response.body}',
+        );
+        return null;
+      }
+
+      final data = jsonDecode(response.body);
+      if (data is List) {
+        return data.whereType<Map>().map((item) {
+          return item.map((key, value) => MapEntry(key.toString(), value));
+        }).toList();
+      }
+
+      return const [];
+    } catch (e) {
+      print('Error fetching staff memory requests: $e');
+      return null;
+    }
+  }
+
+  static Future<bool> updateMemoryRequestStatus({
+    required Map<String, dynamic> request,
+    required bool approved,
+  }) async {
+    try {
+      final headers = _getHeaders(includeAuth: true);
+      final status = approved ? 'approved' : 'rejected';
+      final action = approved ? 'approve' : 'reject';
+
+      final requestId =
+          request['id'] ?? request['request_id'] ?? request['uuid'];
+      final title =
+          request['title'] ?? request['memory_title'] ?? request['name'];
+      final memberUuid =
+          request['author_uuid'] ?? request['member_uuid'] ?? request['uuid'];
+
+      final payload = <String, dynamic>{
+        'status': status,
+        'request_status': status,
+        'action': action,
+        'approved': approved,
+        if (requestId != null) ...{'id': requestId, 'request_id': requestId},
+        if (title != null) ...{'title': title, 'memory_title': title},
+        if (memberUuid != null) ...{
+          'member_uuid': memberUuid,
+          'author_uuid': memberUuid,
+          'uuid': memberUuid,
+        },
+      };
+
+      final endpointAttempts = <Map<String, String>>[
+        {'method': 'PATCH', 'endpoint': 'staff-memory-requests'},
+        {'method': 'POST', 'endpoint': 'staff-memory-requests'},
+        {'method': 'PATCH', 'endpoint': 'staff-memory-request-action'},
+        {'method': 'POST', 'endpoint': 'staff-memory-request-action'},
+        {'method': 'PATCH', 'endpoint': 'memory-request-action'},
+        {'method': 'POST', 'endpoint': 'memory-request-action'},
+        {'method': 'PATCH', 'endpoint': 'memory-request-status'},
+        {'method': 'POST', 'endpoint': 'memory-request-status'},
+        {'method': 'POST', 'endpoint': 'memory-request-$action'},
+      ];
+
+      for (final attempt in endpointAttempts) {
+        final endpoint = attempt['endpoint']!;
+        final method = attempt['method']!;
+        final uri = Uri.parse('$backendUrl$endpoint');
+
+        http.Response response;
+        if (method == 'PATCH') {
+          response = await http.patch(
+            uri,
+            headers: headers,
+            body: jsonEncode(payload),
+          );
+        } else {
+          response = await http.post(
+            uri,
+            headers: headers,
+            body: jsonEncode(payload),
+          );
+        }
+
+        if (response.statusCode == 200 || response.statusCode == 201) {
+          return true;
+        }
+      }
+
+      print('Failed to update memory request status on all known endpoints.');
+      return false;
+    } catch (e) {
+      print('Error updating memory request status: $e');
+      return false;
+    }
+  }
+
+  static Future<bool> deleteMemoryRequest({
+    required Map<String, dynamic> request,
+  }) async {
+    try {
+      final headers = _getHeaders(includeAuth: true);
+      final requestId =
+          request['id'] ?? request['request_id'] ?? request['uuid'];
+
+      if (requestId == null) {
+        print('Delete memory request failed: missing request id.');
+        return false;
+      }
+
+      final payload = <String, dynamic>{
+        'id': requestId,
+        'request_id': requestId,
+      };
+
+      final pathDeleteAttempts = <String>[
+        'staff-memory-requests/$requestId',
+        'staff-memory-request/$requestId',
+        'memory-request/$requestId',
+        'memory-requests/$requestId',
+        'member-memory-requests/$requestId',
+      ];
+
+      for (final endpoint in pathDeleteAttempts) {
+        final response = await http.delete(
+          Uri.parse('$backendUrl$endpoint'),
+          headers: headers,
+        );
+        if (response.statusCode == 200 || response.statusCode == 204) {
+          return true;
+        }
+      }
+
+      final bodyDeleteAttempts = <String>[
+        'staff-memory-requests',
+        'staff-memory-request-delete',
+        'memory-request-delete',
+        'member-memory-request-delete',
+      ];
+
+      for (final endpoint in bodyDeleteAttempts) {
+        final response = await http.delete(
+          Uri.parse('$backendUrl$endpoint'),
+          headers: headers,
+          body: jsonEncode(payload),
+        );
+        if (response.statusCode == 200 || response.statusCode == 204) {
+          return true;
+        }
+      }
+
+      final postDeleteAttempts = <String>[
+        'staff-memory-request-delete',
+        'memory-request-delete',
+      ];
+
+      for (final endpoint in postDeleteAttempts) {
+        final response = await http.post(
+          Uri.parse('$backendUrl$endpoint'),
+          headers: headers,
+          body: jsonEncode(payload),
+        );
+        if (response.statusCode == 200 || response.statusCode == 204) {
+          return true;
+        }
+      }
+
+      print('Failed to delete memory request on all known endpoints.');
+      return false;
+    } catch (e) {
+      print('Error deleting memory request: $e');
+      return false;
+    }
+  }
+
   // --- Senders ---
 
   static Future<String?> sendUUID(String uuid, String nickname) async {
@@ -324,5 +557,3 @@ class BackendData {
     }
   }
 }
-
-

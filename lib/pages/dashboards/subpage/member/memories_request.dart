@@ -22,10 +22,208 @@ class _MemoriesRequestState extends State<MemoriesRequest> {
   StreamSubscription<AuthState>? _authSub;
   DateTime? _memoryTakenDate;
   PlatformFile? _pickedFile;
-  final TextEditingController _memoryTitleController =
-      TextEditingController();
+  final TextEditingController _memoryTitleController = TextEditingController();
   bool _isSubmitting = false;
   double _uploadProgress = 0.0;
+  bool _isLoadingMyRequests = false;
+  String? _requestsError;
+  List<Map<String, dynamic>> _myRequests = [];
+
+  String _readString(
+    Map<String, dynamic> request,
+    List<String> possibleKeys,
+    String fallback,
+  ) {
+    for (final key in possibleKeys) {
+      final value = request[key];
+      if (value != null && value.toString().trim().isNotEmpty) {
+        return value.toString();
+      }
+    }
+    return fallback;
+  }
+
+  String _formatDateTimeForCard(String rawValue) {
+    if (rawValue.trim().isEmpty || rawValue == '-') {
+      return '-';
+    }
+
+    final parsed = DateTime.tryParse(rawValue);
+    if (parsed == null) {
+      return rawValue;
+    }
+
+    final localDateTime = parsed.toLocal();
+    return DateFormat('hh:mm a, dd MMMM yyyy').format(localDateTime);
+  }
+
+  String _formatDateForCard(String rawValue) {
+    if (rawValue.trim().isEmpty || rawValue == '-') {
+      return '-';
+    }
+
+    final parsed = DateTime.tryParse(rawValue);
+    if (parsed == null) {
+      return rawValue;
+    }
+
+    return DateFormat('dd MMMM yyyy').format(parsed.toLocal());
+  }
+
+  String _readRequestId(Map<String, dynamic> request) {
+    final rawId = _readString(
+      request,
+      const ['id', 'request_id', 'memory_id'],
+      '-',
+    );
+    return rawId;
+  }
+
+  String? _extractUrlString(dynamic value) {
+    if (value is String && value.trim().isNotEmpty) {
+      return value.trim();
+    }
+
+    if (value is Map) {
+      const nestedKeys = [
+        'public_url',
+        'publicUrl',
+        'url',
+        'signed_url',
+        'signedUrl',
+        'src',
+        'path',
+      ];
+      for (final key in nestedKeys) {
+        final nestedValue = value[key];
+        if (nestedValue is String && nestedValue.trim().isNotEmpty) {
+          return nestedValue.trim();
+        }
+      }
+    }
+
+    return null;
+  }
+
+  bool _isAbsoluteUrl(String value) {
+    return value.startsWith('http://') || value.startsWith('https://');
+  }
+
+  String? _buildStoragePublicUrl(String? rawPath) {
+    if (rawPath == null || rawPath.trim().isEmpty) {
+      return null;
+    }
+
+    final normalizedPath =
+        rawPath.startsWith('/') ? rawPath.substring(1) : rawPath;
+    if (normalizedPath.isEmpty) {
+      return null;
+    }
+
+    return SupabaseConfig.client.storage
+        .from('members_memories_request')
+        .getPublicUrl(normalizedPath);
+  }
+
+  String? _resolveImageUrl(Map<String, dynamic> request) {
+    const urlKeys = [
+      'public_url',
+      'publicUrl',
+      'image_public_url',
+      'signed_url',
+      'signedUrl',
+      'image_url',
+      'imageUrl',
+      'url',
+      'file_url',
+      'photo_url',
+    ];
+
+    for (final key in urlKeys) {
+      final resolved = _extractUrlString(request[key]);
+      if (resolved != null && _isAbsoluteUrl(resolved)) {
+        return resolved;
+      }
+    }
+
+    final storagePath = _extractUrlString(request['storage_path']) ??
+        _extractUrlString(request['image_location']) ??
+        _extractUrlString(request['path']) ??
+        _extractUrlString(request['image']) ??
+        _extractUrlString(request['photo']) ??
+        _extractUrlString(request['file']);
+
+    final storagePublicUrl = _buildStoragePublicUrl(storagePath);
+    if (storagePublicUrl != null) {
+      return storagePublicUrl;
+    }
+
+    return null;
+  }
+
+  Widget _buildRequestPreview(Map<String, dynamic> request) {
+    final imageUrl = _resolveImageUrl(request);
+    if (imageUrl == null) {
+      return const Icon(Icons.photo_library_outlined);
+    }
+
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(8),
+      child: Image.network(
+        imageUrl,
+        width: 56,
+        height: 56,
+        fit: BoxFit.cover,
+        errorBuilder: (_, __, ___) {
+          return Container(
+            width: 56,
+            height: 56,
+            color: const Color(0xFFE0E0E0),
+            alignment: Alignment.center,
+            child: const Icon(Icons.broken_image_outlined, size: 20),
+          );
+        },
+      ),
+    );
+  }
+
+  Future<void> _loadMyMemoryRequests() async {
+    final user = SupabaseConfig.client.auth.currentUser;
+    if (user == null) {
+      if (!mounted) return;
+      setState(() {
+        _isLoadingMyRequests = false;
+        _requestsError = null;
+        _myRequests = [];
+      });
+      return;
+    }
+
+    final memberUuid = SupabaseConfig.getSupabaseUUID(user).toString();
+    setState(() {
+      _isLoadingMyRequests = true;
+      _requestsError = null;
+    });
+
+    final result = await BackendData.getMemberMemoryRequests(
+      memberUuid: memberUuid,
+    );
+
+    if (!mounted) return;
+    if (result == null) {
+      setState(() {
+        _isLoadingMyRequests = false;
+        _requestsError = 'Failed to load your memory requests.';
+      });
+      return;
+    }
+
+    setState(() {
+      _isLoadingMyRequests = false;
+      _requestsError = null;
+      _myRequests = result;
+    });
+  }
 
   Future<void> _pickImage() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles(
@@ -62,9 +260,9 @@ class _MemoriesRequestState extends State<MemoriesRequest> {
   }
 
   void _showSnackBar(String message, Color color) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(message), backgroundColor: color),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(message), backgroundColor: color));
   }
 
   Future<void> _submitMemoryRequest() async {
@@ -118,6 +316,7 @@ class _MemoriesRequestState extends State<MemoriesRequest> {
         _memoryTitleController.clear();
         _uploadProgress = 0.0;
       });
+      await _loadMyMemoryRequests();
     } else {
       setState(() => _uploadProgress = 0.0);
       _showSnackBar('Failed to send memory request.', Colors.red);
@@ -128,8 +327,12 @@ class _MemoriesRequestState extends State<MemoriesRequest> {
   void initState() {
     super.initState();
     _memoryTitleController.addListener(_handleTitleChanged);
+    _loadMyMemoryRequests();
     _authSub = supabase.auth.onAuthStateChange.listen((data) {
-      if (mounted) setState(() {});
+      if (mounted) {
+        _loadMyMemoryRequests();
+        setState(() {});
+      }
     });
   }
 
@@ -150,7 +353,9 @@ class _MemoriesRequestState extends State<MemoriesRequest> {
       appBar: AppbarPage(customTitle: 'Memories Request', backArrow: true),
       endDrawer: NavDrawer(currentPage: 'Dashboard', parentContext: context),
       body: SingleChildScrollView(
-        child: user == null ? _buildAuthRequired() : _buildRequestScreen(username),
+        child: user == null
+            ? _buildAuthRequired()
+            : _buildRequestScreen(username),
       ),
     );
   }
@@ -393,10 +598,7 @@ class _MemoriesRequestState extends State<MemoriesRequest> {
                                                     'dd-MM-yyyy',
                                                   ).format(_memoryTakenDate!),
                                           ),
-                                          _infoItem(
-                                            'Uploaded on',
-                                            'Today',
-                                          ),
+                                          _infoItem('Uploaded on', 'Today'),
                                         ],
                                       ),
                                     ),
@@ -464,6 +666,99 @@ class _MemoriesRequestState extends State<MemoriesRequest> {
                           ),
                           child: const Text('Send Memory Request'),
                         ),
+                  const SizedBox(height: 28),
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      'Your submissions',
+                      style: Theme.of(context).textTheme.titleLarge,
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  if (_isLoadingMyRequests)
+                    const Padding(
+                      padding: EdgeInsets.symmetric(vertical: 12),
+                      child: Center(child: CircularProgressIndicator()),
+                    )
+                  else if (_requestsError != null)
+                    Card(
+                      child: Padding(
+                        padding: const EdgeInsets.all(12),
+                        child: Row(
+                          children: [
+                            Expanded(child: Text(_requestsError!)),
+                            const SizedBox(width: 12),
+                            OutlinedButton.icon(
+                              onPressed: _loadMyMemoryRequests,
+                              icon: const Icon(Icons.refresh),
+                              label: const Text('Retry'),
+                            ),
+                          ],
+                        ),
+                      ),
+                    )
+                  else if (_myRequests.isEmpty)
+                    Card(
+                      child: Padding(
+                        padding: const EdgeInsets.all(12),
+                        child: Row(
+                          children: const [
+                            Icon(Icons.inbox_outlined),
+                            SizedBox(width: 8),
+                            Expanded(
+                              child: Text('No memory requests submitted yet.'),
+                            ),
+                          ],
+                        ),
+                      ),
+                    )
+                  else
+                    Column(
+                      children: _myRequests.map((request) {
+                        final title = _readString(request, const [
+                          'title',
+                          'memory_title',
+                          'name',
+                        ], 'Untitled request');
+                        final submittedAtRaw = _readString(request, const [
+                          'created_at',
+                          'submitted_at',
+                          'date',
+                        ], '-');
+                        final takenDateRaw = _readString(request, const [
+                          'time_taken',
+                          'taken_date',
+                          'date_taken',
+                        ], '-');
+                        final requestId = _readRequestId(request);
+                        final submittedAt = _formatDateTimeForCard(
+                          submittedAtRaw,
+                        );
+                        final takenDate = _formatDateForCard(takenDateRaw);
+                        final status = _readString(request, const [
+                          'status',
+                          'request_status',
+                        ], 'pending');
+
+                        return Card(
+                          margin: const EdgeInsets.only(bottom: 10),
+                          child: ListTile(
+                            leading: _buildRequestPreview(request),
+                            title: Text(title),
+                            subtitle: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text('ID: $requestId'),
+                                Text('Taken: $takenDate'),
+                                Text('Submitted: $submittedAt'),
+                                Text('Status: $status'),
+                              ],
+                            ),
+                          ),
+                        );
+                      }).toList(),
+                    ),
                 ],
               ),
             ),
@@ -533,7 +828,6 @@ class _MemoriesRequestState extends State<MemoriesRequest> {
       ),
     );
   }
-
 
   Widget _infoItem(String title, String value) {
     return Column(
