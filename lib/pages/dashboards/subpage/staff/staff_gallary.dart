@@ -22,6 +22,7 @@ class _StaffGallaryState extends State<StaffGallary> {
 
   // Loading state to show a spinner during upload
   bool _isLoading = false;
+  double _uploadProgress = 0.0;
 
   @override
   void dispose() {
@@ -62,16 +63,28 @@ class _StaffGallaryState extends State<StaffGallary> {
       return;
     }
 
-    setState(() => _isLoading = true);
+    setState(() {
+      _isLoading = true;
+      _uploadProgress = 0.0;
+    });
 
     // 2. Call Backend
     final result = await BackendData.uploadImage(
       filename: _fileNameController.text.trim(),
       imageBytes: pickedFile!.bytes!,
       takenDate: imageTakenDate!.toIso8601String(),
+      onProgress: (progress) {
+        if (!mounted) return;
+        setState(() {
+          _uploadProgress = progress.clamp(0.0, 1.0);
+        });
+      },
     );
 
-    setState(() => _isLoading = false);
+    setState(() {
+      _isLoading = false;
+      _uploadProgress = 0.0;
+    });
 
     // 3. Handle Result
     if (result != null) {
@@ -328,7 +341,18 @@ class _StaffGallaryState extends State<StaffGallary> {
 
             // Final Upload Button with Loading Logic
             _isLoading
-                ? const CircularProgressIndicator()
+                ? SizedBox(
+                    width: 260,
+                    child: Column(
+                      children: [
+                        LinearProgressIndicator(value: _uploadProgress),
+                        const SizedBox(height: 8),
+                        Text(
+                          'Uploading... ${(_uploadProgress * 100).toStringAsFixed(0)}%',
+                        ),
+                      ],
+                    ),
+                  )
                 : ElevatedButton(
                     onPressed: _handleUpload,
                     style: ElevatedButton.styleFrom(

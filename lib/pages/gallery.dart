@@ -30,18 +30,60 @@ class GalleryImage {
     required this.rawData,
   });
 
+  static String _readString(
+    Map<String, dynamic> json,
+    List<String> keys,
+    String fallback,
+  ) {
+    for (final key in keys) {
+      final value = json[key];
+      if (value != null && value.toString().trim().isNotEmpty) {
+        return value.toString();
+      }
+    }
+    return fallback;
+  }
+
+  static DateTime _readDateTime(
+    Map<String, dynamic> json,
+    List<String> keys,
+  ) {
+    for (final key in keys) {
+      final raw = json[key];
+      if (raw == null) {
+        continue;
+      }
+      final parsed = DateTime.tryParse(raw.toString());
+      if (parsed != null) {
+        return parsed;
+      }
+    }
+    return DateTime.now();
+  }
+
   factory GalleryImage.fromJson(Map<String, dynamic> json) {
     return GalleryImage(
       id: json['id'] ?? 0,
-      location: json['location'] ?? '',
-      publicUrl: json['public_url'] ?? '',
-      uploadUuid: json['upload_uuid'] ?? '',
-      uploadName: json['upload_name'] ?? 'Unknown',
-      createdAt: DateTime.parse(
-        json['created_at'] ?? DateTime.now().toIso8601String(),
+      location: _readString(json, const ['location', 'storage_path'], ''),
+      publicUrl: _readString(
+        json,
+        const ['public_url', 'image_url', 'url'],
+        '',
       ),
-      imageTakenDate: DateTime.parse(
-        json['image_taken_date'] ?? DateTime.now().toIso8601String(),
+      uploadUuid: _readString(
+        json,
+        const ['upload_uuid', 'author_uuid', 'request_uuid'],
+        '',
+      ),
+      uploadName: _readString(
+        json,
+        const ['upload_name', 'author', 'display_name'],
+        'Unknown',
+      ),
+      createdAt: _readDateTime(json, const ['created_at', 'submitted_at']),
+      imageTakenDate: _readDateTime(
+        json,
+        const ['image_taken_date', 'time_taken', 'taken_date', 'date_taken'],
       ),
       rawData: json,
     );
@@ -63,6 +105,85 @@ class _GalleryState extends State<Gallery> {
   bool _isLoading = true;
   String? _errorMessage;
   GallerySection _selectedSection = GallerySection.groupPhotos;
+
+  String _readRawString(
+    Map<String, dynamic> data,
+    List<String> keys,
+    String fallback,
+  ) {
+    for (final key in keys) {
+      final value = data[key];
+      if (value != null && value.toString().trim().isNotEmpty) {
+        return value.toString();
+      }
+    }
+    return fallback;
+  }
+
+  bool _isMemoryImage(GalleryImage image) {
+    final typeValue = _readRawString(
+      image.rawData,
+      const ['section', 'gallery_section', 'image_type', 'category', 'source'],
+      '',
+    ).toLowerCase();
+
+    if (typeValue.contains('memory')) {
+      return true;
+    }
+    if (typeValue.contains('group')) {
+      return false;
+    }
+
+    final status = _readRawString(
+      image.rawData,
+      const ['status', 'request_status'],
+      '',
+    ).toLowerCase();
+    if (status == 'approved') {
+      return true;
+    }
+
+    return image.rawData.containsKey('request_uuid') ||
+        image.rawData.containsKey('request_id') ||
+        image.rawData.containsKey('time_taken');
+  }
+
+  bool _isApprovedMemoryImage(GalleryImage image) {
+    final status = _readRawString(
+      image.rawData,
+      const ['status', 'request_status'],
+      '',
+    ).toLowerCase();
+
+    if (_isMemoryImage(image) && status.isEmpty) {
+      return true;
+    }
+
+    return _isMemoryImage(image) && status == 'approved';
+  }
+
+  List<GalleryImage> _groupPhotoImages() {
+    final images = _galleryImages ?? const <GalleryImage>[];
+    return images.where((image) => !_isMemoryImage(image)).toList();
+  }
+
+  List<GalleryImage> _approvedMemoryImages() {
+    final images = _galleryImages ?? const <GalleryImage>[];
+    return images.where(_isApprovedMemoryImage).toList();
+  }
+
+  String _dedupeKey(GalleryImage image) {
+    final idPart = image.id > 0 ? image.id.toString() : 'none';
+    final locationPart = image.location.trim().isNotEmpty
+        ? image.location.trim()
+        : 'none';
+    final urlPart = image.publicUrl.trim().isNotEmpty
+        ? image.publicUrl.trim()
+        : 'none';
+    final sourcePart = _isMemoryImage(image) ? 'memory' : 'gallery';
+
+    return '$sourcePart|$idPart|$locationPart|$urlPart';
+  }
 
   @override
   void initState() {
@@ -87,15 +208,40 @@ class _GalleryState extends State<Gallery> {
       });
 
       final response = await BackendData.getGalleryData();
+      final approvedMemoriesResponse =
+          await BackendData.getPublicApprovedImages();
 
       if (response == null) {
         throw Exception('Failed to fetch gallery data from backend');
       }
 
       final List<GalleryImage> imageList = [];
+      final Set<String> seenKeys = <String>{};
 
       for (var item in response) {
-        imageList.add(GalleryImage.fromJson(item as Map<String, dynamic>));
+        final image = GalleryImage.fromJson(item as Map<String, dynamic>);
+        final key = _dedupeKey(image);
+        if (seenKeys.add(key)) {
+          imageList.add(image);
+        }
+      }
+
+      if (approvedMemoriesResponse != null) {
+        for (final item in approvedMemoriesResponse) {
+          final normalized = Map<String, dynamic>.from(item)
+            ..putIfAbsent('status', () => 'Approved')
+            ..putIfAbsent('section', () => 'memories');
+
+          final image = GalleryImage.fromJson(normalized);
+          if (image.publicUrl.trim().isEmpty) {
+            continue;
+          }
+
+          final key = _dedupeKey(image);
+          if (seenKeys.add(key)) {
+            imageList.add(image);
+          }
+        }
       }
 
       if (mounted) {
@@ -197,6 +343,8 @@ class _GalleryState extends State<Gallery> {
       color: const Color(0xFF4A90E2),
       child: LayoutBuilder(
         builder: (context, constraints) {
+          final groupPhotos = _groupPhotoImages();
+          final approvedMemories = _approvedMemoryImages();
           int crossAxisCount;
           double childAspectRatio;
 
@@ -238,36 +386,65 @@ class _GalleryState extends State<Gallery> {
                 ),
                 SliverPadding(
                   padding: const EdgeInsets.all(12),
-                  sliver: SliverGrid(
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: crossAxisCount,
-                      crossAxisSpacing: 12,
-                      mainAxisSpacing: 12,
-                      childAspectRatio: childAspectRatio,
-                    ),
-                    delegate: SliverChildBuilderDelegate((context, index) {
-                      final image = _galleryImages![index];
-                      return _buildGalleryItem(image);
-                    }, childCount: _galleryImages!.length),
-                  ),
+                  sliver: groupPhotos.isEmpty
+                      ? const SliverToBoxAdapter(
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(vertical: 28),
+                            child: Center(
+                              child: Text('No group photos available.'),
+                            ),
+                          ),
+                        )
+                      : SliverGrid(
+                          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: crossAxisCount,
+                            crossAxisSpacing: 12,
+                            mainAxisSpacing: 12,
+                            childAspectRatio: childAspectRatio,
+                          ),
+                          delegate: SliverChildBuilderDelegate((context, index) {
+                            final image = groupPhotos[index];
+                            return _buildGalleryItem(image);
+                          }, childCount: groupPhotos.length),
+                        ),
                 ),
               ] else ...[
                 const SliverToBoxAdapter(
-                  child: Column(
-                    children: [
-                      SizedBox(height: 40),
-                      Text(
-                        'Memories',
-                        style: TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
-                        ),
+                  child: Padding(
+                    padding: EdgeInsets.only(top: 40),
+                    child: Text(
+                      'Memories',
+                      style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
                       ),
-                      SizedBox(height: 10),
-                      Text('Not implemented'),
-                      SizedBox(height: 40),
-                    ],
+                      textAlign: TextAlign.center,
+                    ),
                   ),
+                ),
+                SliverPadding(
+                  padding: const EdgeInsets.fromLTRB(12, 10, 12, 12),
+                  sliver: approvedMemories.isEmpty
+                      ? const SliverToBoxAdapter(
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(vertical: 28),
+                            child: Center(
+                              child: Text('No approved memories available yet.'),
+                            ),
+                          ),
+                        )
+                      : SliverGrid(
+                          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: crossAxisCount,
+                            crossAxisSpacing: 12,
+                            mainAxisSpacing: 12,
+                            childAspectRatio: childAspectRatio,
+                          ),
+                          delegate: SliverChildBuilderDelegate((context, index) {
+                            final image = approvedMemories[index];
+                            return _buildGalleryItem(image);
+                          }, childCount: approvedMemories.length),
+                        ),
                 ),
               ],
               const SliverToBoxAdapter(child: MyFooter()),
@@ -503,7 +680,7 @@ class _GalleryState extends State<Gallery> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         const Text(
-                          'Authored By',
+                          'Uploaded By',
                           style: TextStyle(color: Colors.white70, fontSize: 12),
                           textAlign: TextAlign.center,
                         ),
