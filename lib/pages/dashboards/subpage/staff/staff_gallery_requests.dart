@@ -402,7 +402,7 @@ class _StaffGalleryRequestsPageState extends State<StaffGalleryRequestsPage> {
               height: 170,
               width: double.infinity,
               fit: BoxFit.cover,
-              errorBuilder: (_, __, ___) {
+              errorBuilder: (_, _, _) {
                 return Container(
                   height: 170,
                   width: double.infinity,
@@ -462,7 +462,7 @@ class _StaffGalleryRequestsPageState extends State<StaffGalleryRequestsPage> {
                       child: Image.network(
                         imageUrl,
                         fit: BoxFit.contain,
-                        errorBuilder: (_, __, ___) {
+                        errorBuilder: (_, _, _) {
                           return const Icon(
                             Icons.broken_image_outlined,
                             color: Colors.white,

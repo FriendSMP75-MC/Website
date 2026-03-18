@@ -41,7 +41,7 @@ class _MemberDashboardState extends State<MemberDashboard> {
                       icon: Icons.auto_stories_rounded,
                       actionLabel: 'Request',
                       onTap: () {
-                        context.push('/memories-request');
+                        context.push('/memories_request');
                       },
                       subText:
                           'Request staff member to add memory to gallery page',
@@ -62,7 +62,7 @@ class _MemberDashboardState extends State<MemberDashboard> {
                       icon: Icons.auto_stories_rounded,
                       actionLabel: 'Request',
                       onTap: () {
-                        context.push('/memories-request');
+                        context.push('/memories_request');
                       },
                       subText:
                           'Request staff member to add memory to gallery page',

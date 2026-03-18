@@ -231,8 +231,8 @@ class AppRouter {
         ),
       ),
       GoRoute(
-        path: '/memories-request',
-        name: 'memories-request',
+        path: '/memories_request',
+        name: 'memories_request',
         pageBuilder: (context, state) => CustomTransitionPage(
           key: state.pageKey,
           child: const MemoriesRequest(),

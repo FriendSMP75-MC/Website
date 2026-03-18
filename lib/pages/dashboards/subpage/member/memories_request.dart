@@ -174,7 +174,7 @@ class _MemoriesRequestState extends State<MemoriesRequest> {
         width: 56,
         height: 56,
         fit: BoxFit.cover,
-        errorBuilder: (_, __, ___) {
+        errorBuilder: (_, _, _) {
           return Container(
             width: 56,
             height: 56,
