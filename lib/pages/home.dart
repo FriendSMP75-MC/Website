@@ -85,6 +85,7 @@ class _HomeState extends State<Home> {
               children: [
                 Column(
                   children: [
+                    
                     TextButton.icon(
                       onPressed: () => copyIP(),
                       icon: const Icon(Icons.play_arrow_outlined),

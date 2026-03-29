@@ -16,7 +16,6 @@ class ViewAnnouncement extends StatelessWidget {
     final String safeTitle = title?.toString() ?? "Announcement";
     final String safeBody = body?.toString() ?? "";
     
-    final bool hasBody = safeBody.trim().isNotEmpty;
     final double screenWidth = MediaQuery.sizeOf(context).width;
 
     return Scaffold(
@@ -25,68 +24,13 @@ class ViewAnnouncement extends StatelessWidget {
         currentPage: 'Announcements',
         parentContext: context,
       ),
-      body: hasBody
-          ? LayoutBuilder(
-              builder: (context, constraints) {
-                bool isMobile = constraints.maxWidth < 600;
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          bool isMobile = constraints.maxWidth < 600;
 
-                return Column(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 8.0),
-                      child: Center(
-                        child: Text(
-                          safeTitle,
-                          textAlign: TextAlign.center,
-                          style: const TextStyle(
-                            fontSize: 24,
-                            color: Colors.blue,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                    ),
-                    Expanded(
-                      child: Padding(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: isMobile ? 12.0 : 40.0,
-                          vertical: 10.0,
-                        ),
-                        child: Center(
-                          child: Container(
-                            // Prevents negative width crashes on ultra-small screens
-                            width: isMobile 
-                                ? screenWidth * 0.95 
-                                : (screenWidth > 1000 ? 800 : screenWidth - 100),
-                            decoration: BoxDecoration(
-                              border: Border.all(width: 1.5, color: Colors.white24),
-                              borderRadius: const BorderRadius.all(Radius.circular(12)),
-                              color: Colors.white.withOpacity(0.05),
-                            ),
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(12),
-                              child: Markdown(
-                                data: safeBody,
-                                selectable: true,
-                                shrinkWrap: false, // Critical for performance inside Expanded
-                                padding: const EdgeInsets.all(20),
-                                styleSheet: MarkdownStyleSheet(
-                                  h1: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-                                  h3: const TextStyle(color: Colors.blueAccent, fontWeight: FontWeight.w600),
-                                  p: const TextStyle(fontSize: 16, height: 1.5, color: Colors.white),
-                                  listBullet: const TextStyle(fontSize: 16, color: Colors.white),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                );
-              },
-            )
-          : Center(
+          if (safeBody.trim().isEmpty) {
+            // Show a friendly message if the announcement body is empty
+            return Center(
               child: Padding(
                 padding: const EdgeInsets.all(32.0),
                 child: Column(
@@ -95,14 +39,72 @@ class ViewAnnouncement extends StatelessWidget {
                     Icon(Icons.error_outline, color: Colors.red, size: 64),
                     SizedBox(height: 16),
                     Text(
-                      'Announcement content unavailable.\nPlease try again later.',
+                      'This announcement has no content.\nPlease check back later or contact the admin.',
                       style: TextStyle(fontSize: 18, color: Colors.red),
                       textAlign: TextAlign.center,
                     ),
                   ],
                 ),
               ),
-            ),
+            );
+          }
+
+          return Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 8.0),
+                child: Center(
+                  child: Text(
+                    safeTitle,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      fontSize: 24,
+                      color: Colors.blue,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ),
+              Expanded(
+                child: Padding(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: isMobile ? 12.0 : 40.0,
+                    vertical: 10.0,
+                  ),
+                  child: Center(
+                    child: Container(
+                      // Prevents negative width crashes on ultra-small screens
+                      width: isMobile 
+                          ? screenWidth * 0.95 
+                          : (screenWidth > 1000 ? 800 : screenWidth - 100),
+                      decoration: BoxDecoration(
+                        border: Border.all(width: 1.5, color: Colors.white24),
+                        borderRadius: const BorderRadius.all(Radius.circular(12)),
+                        color: Colors.white.withOpacity(0.05),
+                      ),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(12),
+                        child: Markdown(
+                          data: safeBody,
+                          selectable: true,
+                          shrinkWrap: false, // Critical for performance inside Expanded
+                          padding: const EdgeInsets.all(20),
+                          styleSheet: MarkdownStyleSheet(
+                            h1: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                            h3: const TextStyle(color: Colors.blueAccent, fontWeight: FontWeight.w600),
+                            p: const TextStyle(fontSize: 16, height: 1.5, color: Colors.white),
+                            listBullet: const TextStyle(fontSize: 16, color: Colors.white),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          );
+        },
+      ),
     );
   }
 }
