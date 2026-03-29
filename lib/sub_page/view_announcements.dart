@@ -85,7 +85,7 @@ class ViewAnnouncement extends StatelessWidget {
                         borderRadius: const BorderRadius.all(
                           Radius.circular(12),
                         ),
-                        color: Colors.blueGrey,
+                        color: Colors.grey,
                       ),
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(12),
