@@ -85,7 +85,7 @@ class ViewAnnouncement extends StatelessWidget {
                         borderRadius: const BorderRadius.all(
                           Radius.circular(12),
                         ),
-                        color: Colors.white,
+                        color: Colors.blueGrey,
                       ),
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(12),
@@ -97,7 +97,7 @@ class ViewAnnouncement extends StatelessWidget {
                           padding: const EdgeInsets.all(20),
                           styleSheet: MarkdownStyleSheet(
                             h1: const TextStyle(
-                              color: Colors.white,
+                              color: Colors.blueGrey,
                               fontWeight: FontWeight.bold,
                             ),
                             h3: const TextStyle(
@@ -107,11 +107,11 @@ class ViewAnnouncement extends StatelessWidget {
                             p: const TextStyle(
                               fontSize: 16,
                               height: 1.5,
-                              color: Colors.white,
+                              color: Colors.blueGrey,
                             ),
                             listBullet: const TextStyle(
                               fontSize: 16,
-                              color: Colors.white,
+                              color: Colors.blueGrey,
                             ),
                           ),
                         ),
