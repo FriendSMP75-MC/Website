@@ -4,14 +4,19 @@ import 'package:server_site/widgets/appbar.dart';
 import 'package:server_site/widgets/nav_drawer.dart';
 
 class ViewAnnouncement extends StatelessWidget {
-  final String title;
-  final String body;
+  // Use dynamic to prevent "minified type" errors on Web/Vercel
+  final dynamic title;
+  final dynamic body;
 
   const ViewAnnouncement({super.key, required this.title, required this.body});
 
   @override
   Widget build(BuildContext context) {
-    final bool hasBody = body.trim().isNotEmpty;
+    // Safely cast to String. If null, use a fallback to prevent .trim() crashes.
+    final String safeTitle = title?.toString() ?? "Announcement";
+    final String safeBody = body?.toString() ?? "";
+    
+    final bool hasBody = safeBody.trim().isNotEmpty;
     final double screenWidth = MediaQuery.sizeOf(context).width;
 
     return Scaffold(
@@ -23,7 +28,6 @@ class ViewAnnouncement extends StatelessWidget {
       body: hasBody
           ? LayoutBuilder(
               builder: (context, constraints) {
-                // Determine layout based on width
                 bool isMobile = constraints.maxWidth < 600;
 
                 return Column(
@@ -32,10 +36,10 @@ class ViewAnnouncement extends StatelessWidget {
                       padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 8.0),
                       child: Center(
                         child: Text(
-                          title,
+                          safeTitle,
                           textAlign: TextAlign.center,
                           style: const TextStyle(
-                            fontSize: 24, // Increased size for title
+                            fontSize: 24,
                             color: Colors.blue,
                             fontWeight: FontWeight.bold,
                           ),
@@ -50,27 +54,27 @@ class ViewAnnouncement extends StatelessWidget {
                         ),
                         child: Center(
                           child: Container(
-                            // Safe width calculation to prevent layout crashes
-                            width: isMobile ? screenWidth : (screenWidth > 1000 ? 800 : screenWidth - 100),
+                            // Prevents negative width crashes on ultra-small screens
+                            width: isMobile 
+                                ? screenWidth * 0.95 
+                                : (screenWidth > 1000 ? 800 : screenWidth - 100),
                             decoration: BoxDecoration(
                               border: Border.all(width: 1.5, color: Colors.white24),
                               borderRadius: const BorderRadius.all(Radius.circular(12)),
                               color: Colors.white.withOpacity(0.05),
                             ),
-                            // Using Markdown inside Expanded without shrinkWrap 
-                            // allows the internal scrollview to work correctly.
                             child: ClipRRect(
                               borderRadius: BorderRadius.circular(12),
                               child: Markdown(
-                                data: body,
+                                data: safeBody,
                                 selectable: true,
-                                shrinkWrap: false, // Critical: Set to false inside Expanded
+                                shrinkWrap: false, // Critical for performance inside Expanded
                                 padding: const EdgeInsets.all(20),
                                 styleSheet: MarkdownStyleSheet(
                                   h1: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
                                   h3: const TextStyle(color: Colors.blueAccent, fontWeight: FontWeight.w600),
-                                  p: const TextStyle(fontSize: 16, height: 1.5),
-                                  listBullet: const TextStyle(fontSize: 16),
+                                  p: const TextStyle(fontSize: 16, height: 1.5, color: Colors.white),
+                                  listBullet: const TextStyle(fontSize: 16, color: Colors.white),
                                 ),
                               ),
                             ),
@@ -91,7 +95,7 @@ class ViewAnnouncement extends StatelessWidget {
                     Icon(Icons.error_outline, color: Colors.red, size: 64),
                     SizedBox(height: 16),
                     Text(
-                      'Announcement content unavailable.\nPlease use the Announcements page to access announcements.',
+                      'Announcement content unavailable.\nPlease try again later.',
                       style: TextStyle(fontSize: 18, color: Colors.red),
                       textAlign: TextAlign.center,
                     ),
