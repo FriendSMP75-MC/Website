@@ -15,7 +15,7 @@ class ViewAnnouncement extends StatelessWidget {
     // Safely cast to String. If null, use a fallback to prevent .trim() crashes.
     final String safeTitle = title?.toString() ?? "Announcement";
     final String safeBody = body?.toString() ?? "";
-    
+
     final double screenWidth = MediaQuery.sizeOf(context).width;
 
     return Scaffold(
@@ -52,7 +52,10 @@ class ViewAnnouncement extends StatelessWidget {
           return Column(
             children: [
               Padding(
-                padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 8.0),
+                padding: const EdgeInsets.symmetric(
+                  vertical: 20.0,
+                  horizontal: 8.0,
+                ),
                 child: Center(
                   child: Text(
                     safeTitle,
@@ -74,26 +77,42 @@ class ViewAnnouncement extends StatelessWidget {
                   child: Center(
                     child: Container(
                       // Prevents negative width crashes on ultra-small screens
-                      width: isMobile 
-                          ? screenWidth * 0.95 
+                      width: isMobile
+                          ? screenWidth * 0.95
                           : (screenWidth > 1000 ? 800 : screenWidth - 100),
                       decoration: BoxDecoration(
                         border: Border.all(width: 1.5, color: Colors.white24),
-                        borderRadius: const BorderRadius.all(Radius.circular(12)),
-                        color: Colors.white.withOpacity(0.05),
+                        borderRadius: const BorderRadius.all(
+                          Radius.circular(12),
+                        ),
+                        color: Colors.white,
                       ),
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(12),
                         child: Markdown(
                           data: safeBody,
                           selectable: true,
-                          shrinkWrap: false, // Critical for performance inside Expanded
+                          shrinkWrap:
+                              false, // Critical for performance inside Expanded
                           padding: const EdgeInsets.all(20),
                           styleSheet: MarkdownStyleSheet(
-                            h1: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-                            h3: const TextStyle(color: Colors.blueAccent, fontWeight: FontWeight.w600),
-                            p: const TextStyle(fontSize: 16, height: 1.5, color: Colors.white),
-                            listBullet: const TextStyle(fontSize: 16, color: Colors.white),
+                            h1: const TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                            ),
+                            h3: const TextStyle(
+                              color: Colors.blueAccent,
+                              fontWeight: FontWeight.w600,
+                            ),
+                            p: const TextStyle(
+                              fontSize: 16,
+                              height: 1.5,
+                              color: Colors.white,
+                            ),
+                            listBullet: const TextStyle(
+                              fontSize: 16,
+                              color: Colors.white,
+                            ),
                           ),
                         ),
                       ),
