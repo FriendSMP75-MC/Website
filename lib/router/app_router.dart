@@ -77,7 +77,18 @@ class AppRouter {
           final title = Uri.decodeComponent(
             state.pathParameters['title'] ?? '',
           );
-          final body = (state.extra as Map<String, String>?)?['body'] ?? '';
+          // Accept Map<String, dynamic> for extra, fallback to empty string if not present
+          String body = '';
+          if (state.extra != null) {
+            if (state.extra is Map) {
+              final map = state.extra as Map;
+              if (map['body'] is String) {
+                body = map['body'] as String;
+              }
+            } else if (state.extra is String) {
+              body = state.extra as String;
+            }
+          }
           return CustomTransitionPage(
             key: state.pageKey,
             child: ViewAnnouncement(title: title, body: body),
