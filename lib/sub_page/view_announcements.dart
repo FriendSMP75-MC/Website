@@ -11,13 +11,15 @@ class ViewAnnouncement extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final bool hasBody = body.trim().isNotEmpty;
     return Scaffold(
       appBar: AppbarPage(customTitle: 'Announcements', backArrow: true),
       endDrawer: NavDrawer(
         currentPage: 'Announcements',
         parentContext: context,
       ),
-      body: LayoutBuilder(
+      body: hasBody
+          ? LayoutBuilder(
               builder: (context, constraints) {
                 if (constraints.maxWidth < 600) {
                   return Column(
