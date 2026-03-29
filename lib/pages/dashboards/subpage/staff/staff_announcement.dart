@@ -289,7 +289,7 @@ class _StaffannouncementsState extends State<Staffannouncements> {
                             onPressed: () {
                               final title = _announcementTitleController.text;
                               final body = _announcementBodyContoller.text;
-                              context.push('/announcement/${Uri.encodeComponent(title)}', extra: {'body': body});
+                              context.push('/announcements/${Uri.encodeComponent(title)}', extra: {'body': body});
                             },
                             child: Text(
                               'Read more!',
