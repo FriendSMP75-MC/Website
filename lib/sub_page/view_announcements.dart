@@ -95,31 +95,14 @@ class ViewAnnouncement extends StatelessWidget {
                           shrinkWrap:
                               false, // Critical for performance inside Expanded
                           padding: const EdgeInsets.all(20),
-                          styleSheet: MarkdownStyleSheet(
-                            h1: const TextStyle(
-                              color: Colors.blueGrey,
-                              fontWeight: FontWeight.bold,
-                            ),
-                            h3: const TextStyle(
-                              color: Colors.blueAccent,
-                              fontWeight: FontWeight.w600,
-                            ),
-                            p: const TextStyle(
-                              fontSize: 16,
-                              height: 1.5,
-                              color: Colors.blueGrey,
-                            ),
-                            listBullet: const TextStyle(
-                              fontSize: 16,
-                              color: Colors.blueGrey,
-                            ),
+                         
                           ),
                         ),
                       ),
                     ),
                   ),
                 ),
-              ),
+              
             ],
           );
         },
