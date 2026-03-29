@@ -12,6 +12,8 @@ class ViewAnnouncement extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final bool hasBody = body.trim().isNotEmpty;
+    final double screenWidth = MediaQuery.sizeOf(context).width;
+
     return Scaffold(
       appBar: AppbarPage(customTitle: 'Announcements', backArrow: true),
       endDrawer: NavDrawer(
@@ -21,68 +23,63 @@ class ViewAnnouncement extends StatelessWidget {
       body: hasBody
           ? LayoutBuilder(
               builder: (context, constraints) {
-                if (constraints.maxWidth < 600) {
-                  return Column(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
+                // Determine layout based on width
+                bool isMobile = constraints.maxWidth < 600;
+
+                return Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 8.0),
+                      child: Center(
+                        child: Text(
+                          title,
+                          textAlign: TextAlign.center,
+                          style: const TextStyle(
+                            fontSize: 24, // Increased size for title
+                            color: Colors.blue,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: isMobile ? 12.0 : 40.0,
+                          vertical: 10.0,
+                        ),
                         child: Center(
-                          child: Text(
-                            title,
-                            style: TextStyle(
-                              fontSize: 20,
-                              color: Colors.blue,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: 10),
-                      Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Markdown(
-                            data: body,
-                            selectable: true,
-                            shrinkWrap: true,
-                          ),
-                        ),
-                      ),
-                    ],
-                  );
-                } else {
-                  return Column(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Center(
-                          child: Text(
-                            title,
-                            style: TextStyle(
-                              fontSize: 20,
-                              color: Colors.blue,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                      ),
-                      Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.all(20.0),
                           child: Container(
-                            width: MediaQuery.widthOf(context) - 200,
+                            // Safe width calculation to prevent layout crashes
+                            width: isMobile ? screenWidth : (screenWidth > 1000 ? 800 : screenWidth - 100),
                             decoration: BoxDecoration(
-                              border: Border.all(width: 2),
-                              borderRadius: BorderRadius.all(Radius.circular(8)),
-                              color: Colors.white10,
+                              border: Border.all(width: 1.5, color: Colors.white24),
+                              borderRadius: const BorderRadius.all(Radius.circular(12)),
+                              color: Colors.white.withOpacity(0.05),
                             ),
-                            child: Markdown(data: body,selectable: true,shrinkWrap: true,),
+                            // Using Markdown inside Expanded without shrinkWrap 
+                            // allows the internal scrollview to work correctly.
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(12),
+                              child: Markdown(
+                                data: body,
+                                selectable: true,
+                                shrinkWrap: false, // Critical: Set to false inside Expanded
+                                padding: const EdgeInsets.all(20),
+                                styleSheet: MarkdownStyleSheet(
+                                  h1: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                                  h3: const TextStyle(color: Colors.blueAccent, fontWeight: FontWeight.w600),
+                                  p: const TextStyle(fontSize: 16, height: 1.5),
+                                  listBullet: const TextStyle(fontSize: 16),
+                                ),
+                              ),
+                            ),
                           ),
                         ),
                       ),
-                    ],
-                  );
-                }
+                    ),
+                  ],
+                );
               },
             )
           : Center(
@@ -90,7 +87,7 @@ class ViewAnnouncement extends StatelessWidget {
                 padding: const EdgeInsets.all(32.0),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
+                  children: const [
                     Icon(Icons.error_outline, color: Colors.red, size: 64),
                     SizedBox(height: 16),
                     Text(
