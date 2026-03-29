@@ -17,74 +17,89 @@ class ViewAnnouncement extends StatelessWidget {
         currentPage: 'Announcements',
         parentContext: context,
       ),
-
       body: LayoutBuilder(
-        builder: (context, constraints) {
-          if (constraints.maxWidth < 600) {
-            return Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Center(
-                    child: Text(
-                      title,
-                      style: TextStyle(
-                        fontSize: 20,
-                        color: Colors.blue,
-                        fontWeight: FontWeight.bold,
+              builder: (context, constraints) {
+                if (constraints.maxWidth < 600) {
+                  return Column(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Center(
+                          child: Text(
+                            title,
+                            style: TextStyle(
+                              fontSize: 20,
+                              color: Colors.blue,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
                       ),
-                    ),
-                  ),
-                ),
-                SizedBox(height: 10),
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Markdown(
-                      data: body,
-                      selectable: true,
-                      shrinkWrap: true,
-                    ),
-                  ),
-                ),
-              ],
-            );
-          } else {
-            return Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Center(
-                    child: Text(
-                      title,
-                      style: TextStyle(
-                        fontSize: 20,
-                        color: Colors.blue,
-                        fontWeight: FontWeight.bold,
+                      SizedBox(height: 10),
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Markdown(
+                            data: body,
+                            selectable: true,
+                            shrinkWrap: true,
+                          ),
+                        ),
                       ),
-                    ),
-                  ),
-                ),
-
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.all(20.0),
-                    child: Container(
-                      width: MediaQuery.widthOf(context) - 200,
-                      decoration: BoxDecoration(
-                        border: Border.all(width: 2),
-                        borderRadius: BorderRadius.all(Radius.circular(8)),
-                        color: Colors.white10,
+                    ],
+                  );
+                } else {
+                  return Column(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Center(
+                          child: Text(
+                            title,
+                            style: TextStyle(
+                              fontSize: 20,
+                              color: Colors.blue,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
                       ),
-                      child: Markdown(data: body,selectable: true,shrinkWrap: true,),
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.all(20.0),
+                          child: Container(
+                            width: MediaQuery.widthOf(context) - 200,
+                            decoration: BoxDecoration(
+                              border: Border.all(width: 2),
+                              borderRadius: BorderRadius.all(Radius.circular(8)),
+                              color: Colors.white10,
+                            ),
+                            child: Markdown(data: body,selectable: true,shrinkWrap: true,),
+                          ),
+                        ),
+                      ),
+                    ],
+                  );
+                }
+              },
+            )
+          : Center(
+              child: Padding(
+                padding: const EdgeInsets.all(32.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(Icons.error_outline, color: Colors.red, size: 64),
+                    SizedBox(height: 16),
+                    Text(
+                      'Announcement content unavailable.\nPlease use the Announcements page to access announcements.',
+                      style: TextStyle(fontSize: 18, color: Colors.red),
+                      textAlign: TextAlign.center,
                     ),
-                  ),
+                  ],
                 ),
-              ],
-            );
-          }
-        },
-      ),
+              ),
+            ),
     );
   }
 }
