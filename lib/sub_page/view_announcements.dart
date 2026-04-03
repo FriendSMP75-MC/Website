@@ -96,13 +96,12 @@ class ViewAnnouncement extends StatelessWidget {
                               false, // Critical for performance inside Expanded
                           padding: const EdgeInsets.all(20),
                          
-                          ),
                         ),
                       ),
                     ),
                   ),
                 ),
-              
+              ),
             ],
           );
         },

@@ -76,7 +76,10 @@ class AnnouncementPreview extends StatelessWidget {
                 ),
               ),
               onPressed: () {
-                context.push('/announcement/${Uri.encodeComponent(title)}', extra: {'body': body});
+                context.push(
+                  '/announcement/${Uri.encodeComponent(title)}',
+                  extra: {'body': body},
+                );
               },
               child: Text('Read more!', style: TextStyle(color: Colors.white)),
             ),
@@ -207,7 +210,10 @@ class LatestAnnouncementPreview extends StatelessWidget {
                     ),
                   ),
                   onPressed: () {
-                    context.push('/announcement/${Uri.encodeComponent(title)}', extra: {'body': body});
+                    context.push(
+                      '/announcement/${Uri.encodeComponent(title)}',
+                      extra: {'body': body},
+                    );
                   },
                   child: Text(
                     'Read more!',

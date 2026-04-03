@@ -289,7 +289,10 @@ class _StaffannouncementsState extends State<Staffannouncements> {
                             onPressed: () {
                               final title = _announcementTitleController.text;
                               final body = _announcementBodyContoller.text;
-                              context.push('/announcements/${Uri.encodeComponent(title)}', extra: {'body': body});
+                              context.push(
+                                '/announcements/${Uri.encodeComponent(title)}',
+                                extra: {'body': body},
+                              );
                             },
                             child: Text(
                               'Read more!',
@@ -318,7 +321,11 @@ class _StaffannouncementsState extends State<Staffannouncements> {
                                         CrossAxisAlignment.start,
                                     children: [
                                       Text('Authored By'),
-                                      Text(SupabaseConfig.getDisplayName(BackendData.user)),
+                                      Text(
+                                        SupabaseConfig.getDisplayName(
+                                          BackendData.user,
+                                        ),
+                                      ),
                                     ],
                                   ),
                                   Spacer(),
@@ -407,7 +414,10 @@ class _StaffannouncementsState extends State<Staffannouncements> {
                             onPressed: () {
                               final title = _announcementTitleController.text;
                               final body = _announcementBodyContoller.text;
-                              context.push('/announcement/${Uri.encodeComponent(title)}', extra: {'body': body});
+                              context.push(
+                                '/announcement/${Uri.encodeComponent(title)}',
+                                extra: {'body': body},
+                              );
                             },
                             child: Text(
                               'Read more!',
@@ -436,7 +446,11 @@ class _StaffannouncementsState extends State<Staffannouncements> {
                                         CrossAxisAlignment.start,
                                     children: [
                                       Text('Authored By'),
-                                      Text(SupabaseConfig.getDisplayName(BackendData.user)),
+                                      Text(
+                                        SupabaseConfig.getDisplayName(
+                                          BackendData.user,
+                                        ),
+                                      ),
                                     ],
                                   ),
                                   Spacer(),
