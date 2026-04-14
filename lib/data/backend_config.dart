@@ -400,6 +400,82 @@ class BackendData {
     }
   }
 
+  static Future<String?> sendDiscordWebhook({
+    required String content,
+    String? username,
+    String? avatarUrl,
+    List<Map<String, dynamic>>? embeds,
+    Map<String, dynamic>? extra,
+  }) async {
+    final payload = <String, dynamic>{'content': content};
+
+    if (username != null && username.trim().isNotEmpty) {
+      payload['username'] = username.trim();
+    }
+
+    if (avatarUrl != null && avatarUrl.trim().isNotEmpty) {
+      payload['avatar_url'] = avatarUrl.trim();
+    }
+
+    if (embeds != null) {
+      payload['embeds'] = embeds;
+    }
+
+    if (extra != null && extra.isNotEmpty) {
+      payload.addAll(extra);
+    }
+
+    return await sendData('discord-webhook', payload);
+  }
+
+  static Future<String?> notifyDiscordAnnouncement({
+    required String title,
+    required String body,
+    required String author,
+    required String authorUuid,
+  }) async {
+    return await sendDiscordWebhook(
+      content: '📢 New announcement posted by $author',
+      embeds: [
+        {
+          'title': title,
+          'description': body,
+          'color': 3447003,
+          'fields': [
+            {'name': 'Author', 'value': author, 'inline': true},
+            {'name': 'Author UUID', 'value': authorUuid, 'inline': true},
+          ],
+        },
+      ],
+    );
+  }
+
+  static Future<String?> notifyDiscordMemoryRequest({
+    required String displayName,
+    required String uuid,
+    required String title,
+    required String dateTaken,
+  }) async {
+    final messageTitle = title.trim().isNotEmpty
+        ? title.trim()
+        : 'Member memory request submitted';
+
+    return await sendDiscordWebhook(
+      content: '🖼️ New member memory request received',
+      embeds: [
+        {
+          'title': messageTitle,
+          'color': 15844367,
+          'fields': [
+            {'name': 'Display Name', 'value': displayName, 'inline': true},
+            {'name': 'UUID', 'value': uuid, 'inline': true},
+            {'name': 'Date Taken', 'value': dateTaken, 'inline': true},
+          ],
+        },
+      ],
+    );
+  }
+
   static Future<String?> deleteUUID(String uuid) async {
     return await removeData('delete-uuid/$uuid');
   }

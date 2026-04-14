@@ -74,95 +74,121 @@ class MyFooter extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Check if the screen is narrow (Mobile/Small Tablet)
     final bool isSmallScreen = MediaQuery.of(context).size.width < 700;
 
     return Container(
       width: double.infinity,
-      color: Colors.grey[900],
-      padding: const EdgeInsets.symmetric(vertical: 60, horizontal: 40),
+      margin: const EdgeInsets.only(top: 24),
+      decoration: const BoxDecoration(
+        border: Border(top: BorderSide(color: Colors.white12)),
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [Color(0xFF101B30), Color(0xFF0A1220)],
+        ),
+      ),
+      padding: const EdgeInsets.symmetric(vertical: 56, horizontal: 22),
       child: Center(
-        child: SizedBox(
-          width: double.infinity,
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 1100),
           child: Wrap(
-            spacing: 80, // Horizontal space between blocks
-            runSpacing: 40, // Vertical space when wrapped
+            spacing: 24,
+            runSpacing: 18,
             alignment: isSmallScreen
                 ? WrapAlignment.center
                 : WrapAlignment.spaceBetween,
-            crossAxisAlignment: WrapCrossAlignment.start,
             children: [
-              // Non affiliated info
-              SizedBox(
-                width: 300,
+              Container(
+                width: isSmallScreen ? double.infinity : 540,
+                padding: const EdgeInsets.all(20),
+                decoration: BoxDecoration(
+                  color: Colors.white.withValues(alpha: 0.05),
+                  borderRadius: BorderRadius.circular(18),
+                  border: Border.all(color: Colors.white12),
+                ),
                 child: Column(
-                  crossAxisAlignment: isSmallScreen
-                      ? CrossAxisAlignment.center
-                      : CrossAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
-                      'FriendSMP75',
-                      style: TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                        letterSpacing: 1.2,
-                      ),
+                    const Row(
+                      children: [
+                        Icon(Icons.terrain_rounded, color: Color(0xFF43D3E2)),
+                        SizedBox(width: 10),
+                        Text(
+                          'FriendSMP75',
+                          style: TextStyle(
+                            fontSize: 22,
+                            fontWeight: FontWeight.w700,
+                            letterSpacing: 0.3,
+                          ),
+                        ),
+                      ],
                     ),
                     const SizedBox(height: 12),
                     Text(
-                      'We are not affiliated with Minecraft or Mojang AB.',
-                      textAlign: isSmallScreen
-                          ? TextAlign.center
-                          : TextAlign.start,
+                      'A peaceful, community-first Minecraft server where collaboration matters more than competition.',
                       style: TextStyle(
-                        color: Colors.grey[500],
-                        fontSize: 14,
-                        height: 1.5,
+                        color: Colors.blueGrey[100],
+                        height: 1.45,
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    Text(
+                      'We are not affiliated with Minecraft or Mojang AB.',
+                      style: TextStyle(
+                        color: Colors.blueGrey[300],
+                        fontSize: 13,
                       ),
                     ),
                   ],
                 ),
               ),
-              
-              // Connections
-              Column(
-                crossAxisAlignment: isSmallScreen
-                    ? CrossAxisAlignment.center
-                    : CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    'CONNECT WITH US',
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w900,
-                      color: Colors.white70,
-                      letterSpacing: 2,
+              Container(
+                width: isSmallScreen ? double.infinity : 300,
+                padding: const EdgeInsets.all(20),
+                decoration: BoxDecoration(
+                  color: Colors.white.withValues(alpha: 0.05),
+                  borderRadius: BorderRadius.circular(18),
+                  border: Border.all(color: Colors.white12),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'CONNECT',
+                      style: TextStyle(
+                        fontWeight: FontWeight.w800,
+                        letterSpacing: 1.5,
+                        color: Colors.white70,
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 20),
-                  _SocialLink(
-                    icon: Icons.play_arrow_rounded,
-                    label: 'YouTube',
-                    color: Colors.red,
-                    onTap: () =>
-                        _launchUrl(context, 'https://www.youtube.com/@FriendSMP75'),
-                  ),
-                  _SocialLink(
-                    icon: Icons.discord,
-                    label: 'Discord',
-                    color: Colors.indigoAccent,
-                    onTap: () =>
-                        _launchUrl(context, 'https://discord.com/invite/K8ucVvjfge'),
-                  ),
-                  _SocialLink(
-                    icon: Icons.email,
-                    label: 'Email',
-                    color: Colors.green,
-                    onTap: () =>
-                        _launchUrl(context, 'mailto:friendsmp75@outlook.com'),
-                  ),
-                ],
+                    const SizedBox(height: 14),
+                    _SocialLink(
+                      icon: Icons.play_arrow_rounded,
+                      label: 'YouTube',
+                      color: Colors.red,
+                      onTap: () => _launchUrl(
+                        context,
+                        'https://www.youtube.com/@FriendSMP75',
+                      ),
+                    ),
+                    _SocialLink(
+                      icon: Icons.discord,
+                      label: 'Discord',
+                      color: Colors.indigoAccent,
+                      onTap: () => _launchUrl(
+                        context,
+                        'https://discord.com/invite/K8ucVvjfge',
+                      ),
+                    ),
+                    _SocialLink(
+                      icon: Icons.email_outlined,
+                      label: 'Email',
+                      color: Colors.greenAccent,
+                      onTap: () =>
+                          _launchUrl(context, 'mailto:friendsmp75@outlook.com'),
+                    ),
+                  ],
+                ),
               ),
             ],
           ),
@@ -188,12 +214,17 @@ class _SocialLink extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 8.0),
+      padding: const EdgeInsets.only(bottom: 10),
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(8),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+        borderRadius: BorderRadius.circular(10),
+        child: Container(
+          padding: const EdgeInsets.symmetric(vertical: 9, horizontal: 10),
+          decoration: BoxDecoration(
+            color: Colors.white.withValues(alpha: 0.06),
+            borderRadius: BorderRadius.circular(10),
+            border: Border.all(color: Colors.white10),
+          ),
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -201,7 +232,7 @@ class _SocialLink extends StatelessWidget {
               const SizedBox(width: 12),
               Text(
                 label,
-                style: const TextStyle(color: Colors.white, fontSize: 16),
+                style: const TextStyle(color: Colors.white, fontSize: 15),
               ),
             ],
           ),

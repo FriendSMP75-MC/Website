@@ -117,25 +117,25 @@
         "@type": "ListItem",
         "position": 1,
         "name": "Home",
-        "url": "https://friendsmp75.vercel.app/"
+        "item": "https://friendsmp75.vercel.app/"
       },
       {
         "@type": "ListItem",
         "position": 2,
         "name": "About",
-        "url": "https://friendsmp75.vercel.app/about"
+        "item": "https://friendsmp75.vercel.app/about"
       },
       {
         "@type": "ListItem",
         "position": 3,
         "name": "Announcements",
-        "url": "https://friendsmp75.vercel.app/announcements"
+        "item": "https://friendsmp75.vercel.app/announcements"
       },
       {
         "@type": "ListItem",
         "position": 4,
         "name": "Gallery",
-        "url": "https://friendsmp75.vercel.app/gallery"
+        "item": "https://friendsmp75.vercel.app/gallery"
       }
     ]
   }
@@ -292,17 +292,27 @@
     // When Flutter is ready, swap spinner for tick, then fade out
     window.addEventListener('flutter-first-frame', function () {
       const loader = document.getElementById('loading');
+      if (!loader) {
+        return;
+      }
+
       const spinner = loader.querySelector('.spinner');
       const tick = loader.querySelector('.tick');
 
       // Hide spinner, show tick
-      spinner.style.display = 'none';
-      tick.classList.add('show');
+      if (spinner) {
+        spinner.style.display = 'none';
+      }
+      if (tick) {
+        tick.classList.add('show');
+      }
 
       // Wait a moment to show the tick, then fade out
       setTimeout(() => {
         loader.classList.add('fade-out');
-        loader.addEventListener('transitionend', () => loader.remove());
+        loader.addEventListener('transitionend', () => loader.remove(), {
+          once: true,
+        });
       }, 800); // show tick for 0.8s
     });
   </script>

@@ -74,11 +74,10 @@ class _StaffGalleryRequestsPageState extends State<StaffGalleryRequestsPage> {
   }
 
   String _readRequestStatus(Map<String, dynamic> request) {
-    final raw = _readString(
-      request,
-      const ['status', 'request_status'],
-      'pending',
-    );
+    final raw = _readString(request, const [
+      'status',
+      'request_status',
+    ], 'pending');
     return raw.toLowerCase();
   }
 
@@ -329,8 +328,9 @@ class _StaffGalleryRequestsPageState extends State<StaffGalleryRequestsPage> {
       return null;
     }
 
-    final normalizedPath =
-        rawPath.startsWith('/') ? rawPath.substring(1) : rawPath;
+    final normalizedPath = rawPath.startsWith('/')
+        ? rawPath.substring(1)
+        : rawPath;
     if (normalizedPath.isEmpty) {
       return null;
     }
@@ -361,7 +361,8 @@ class _StaffGalleryRequestsPageState extends State<StaffGalleryRequestsPage> {
       }
     }
 
-    final storagePath = _extractUrlString(request['storage_path']) ??
+    final storagePath =
+        _extractUrlString(request['storage_path']) ??
         _extractUrlString(request['image_location']) ??
         _extractUrlString(request['path']) ??
         _extractUrlString(request['image']) ??
@@ -402,7 +403,7 @@ class _StaffGalleryRequestsPageState extends State<StaffGalleryRequestsPage> {
               height: 170,
               width: double.infinity,
               fit: BoxFit.cover,
-              errorBuilder: (_, __, ___) {
+              errorBuilder: (_, _, _) {
                 return Container(
                   height: 170,
                   width: double.infinity,
@@ -416,10 +417,7 @@ class _StaffGalleryRequestsPageState extends State<StaffGalleryRequestsPage> {
               right: 8,
               bottom: 8,
               child: Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 8,
-                  vertical: 4,
-                ),
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                 decoration: BoxDecoration(
                   color: Colors.black.withAlpha(160),
                   borderRadius: BorderRadius.circular(8),
@@ -462,7 +460,7 @@ class _StaffGalleryRequestsPageState extends State<StaffGalleryRequestsPage> {
                       child: Image.network(
                         imageUrl,
                         fit: BoxFit.contain,
-                        errorBuilder: (_, __, ___) {
+                        errorBuilder: (_, _, _) {
                           return const Icon(
                             Icons.broken_image_outlined,
                             color: Colors.white,
@@ -688,17 +686,26 @@ class _StaffGalleryRequestsPageState extends State<StaffGalleryRequestsPage> {
       return Scaffold(
         appBar: AppbarPage(backArrow: true),
         endDrawer: NavDrawer(currentPage: 'Dashboard', parentContext: context),
-        body: Column(
-          children: const [
-            Expanded(
-              child: Center(
-                child: Text(
-                  'Login required to access gallery request approvals.',
+        body: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [Color(0xFF091323), Color(0xFF102037), Color(0xFF091323)],
+            ),
+          ),
+          child: const Column(
+            children: [
+              Expanded(
+                child: Center(
+                  child: Text(
+                    'Login required to access gallery request approvals.',
+                  ),
                 ),
               ),
-            ),
-            MyFooter(),
-          ],
+              MyFooter(),
+            ],
+          ),
         ),
       );
     }
@@ -706,332 +713,421 @@ class _StaffGalleryRequestsPageState extends State<StaffGalleryRequestsPage> {
     return Scaffold(
       appBar: AppbarPage(backArrow: true),
       endDrawer: NavDrawer(currentPage: 'Dashboard', parentContext: context),
-      body: Column(
-        children: [
-          Expanded(
-            child: ListView(
-              padding: const EdgeInsets.all(12),
-              children: [
-                Container(
-                  width: double.infinity,
-                  padding: EdgeInsets.all(isCompact ? 14 : 16),
-                  decoration: BoxDecoration(
-                    gradient: const LinearGradient(
-                      colors: [Color(0xFF183B63), Color(0xFF255B92)],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [Color(0xFF091323), Color(0xFF102037), Color(0xFF091323)],
+          ),
+        ),
+        child: Column(
+          children: [
+            Expanded(
+              child: ListView(
+                padding: const EdgeInsets.all(12),
+                children: [
+                  Container(
+                    width: double.infinity,
+                    padding: EdgeInsets.all(isCompact ? 14 : 16),
+                    decoration: BoxDecoration(
+                      gradient: const LinearGradient(
+                        colors: [Color(0xFF1A3656), Color(0xFF16506F)],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                      ),
+                      borderRadius: BorderRadius.circular(16),
+                      border: Border.all(color: Colors.white24),
                     ),
-                    borderRadius: BorderRadius.circular(14),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'Gallery Request Review',
+                          style: TextStyle(
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                        ),
+                        const SizedBox(height: 6),
+                        const Text(
+                          'Review memory submissions, preview images, and update request status.',
+                          style: TextStyle(color: Colors.white, height: 1.4),
+                        ),
+                        const SizedBox(height: 12),
+                        Wrap(
+                          spacing: 8,
+                          runSpacing: 8,
+                          children: [
+                            _buildCountPill(
+                              label: 'Pending',
+                              count: _countByStatus('pending'),
+                              color: const Color(0xFFFFD166),
+                              icon: Icons.hourglass_top_rounded,
+                            ),
+                            _buildCountPill(
+                              label: 'Approved',
+                              count: _countByStatus('approved'),
+                              color: const Color(0xFF7DFFB2),
+                              icon: Icons.verified_rounded,
+                            ),
+                            _buildCountPill(
+                              label: 'Rejected',
+                              count: _countByStatus('rejected'),
+                              color: const Color(0xFFFFA2A2),
+                              icon: Icons.cancel_rounded,
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text(
-                        'Gallery Request Review',
-                        style: TextStyle(
-                          fontSize: 21,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
+                  const SizedBox(height: 10),
+                  Align(
+                    alignment: isCompact
+                        ? Alignment.centerLeft
+                        : Alignment.centerRight,
+                    child: Wrap(
+                      spacing: 8,
+                      runSpacing: 8,
+                      children: [
+                        PopupMenuButton<String>(
+                          initialValue: _selectedStatusSort,
+                          constraints: const BoxConstraints(
+                            minWidth: 180,
+                            maxWidth: 180,
+                          ),
+                          onSelected: (value) {
+                            setState(() {
+                              _selectedStatusSort = value;
+                            });
+                          },
+                          itemBuilder: (context) => const [
+                            PopupMenuItem(
+                              value: 'all',
+                              child: Text('All requests'),
+                            ),
+                            PopupMenuItem(
+                              value: 'pending',
+                              child: Text('Pending'),
+                            ),
+                            PopupMenuItem(
+                              value: 'approved',
+                              child: Text('Approved'),
+                            ),
+                            PopupMenuItem(
+                              value: 'rejected',
+                              child: Text('Rejected'),
+                            ),
+                          ],
+                          child: _buildMenuTrigger(
+                            icon: Icons.filter_list,
+                            label:
+                                'Status: ${_statusSortLabel(_selectedStatusSort)}',
+                            width: 180,
+                          ),
                         ),
-                      ),
-                      const SizedBox(height: 6),
-                      const Text(
-                        'Review memory submissions, preview images, and update request status.',
-                        style: TextStyle(color: Colors.white, height: 1.4),
-                      ),
-                      const SizedBox(height: 12),
-                      Wrap(
-                        spacing: 8,
-                        runSpacing: 8,
-                        children: [
-                          _buildCountPill(
-                            label: 'Pending',
-                            count: _countByStatus('pending'),
-                            color: const Color(0xFFFFD166),
-                            icon: Icons.hourglass_top_rounded,
+                        PopupMenuButton<String>(
+                          initialValue: _selectedDateSort,
+                          constraints: const BoxConstraints(
+                            minWidth: 180,
+                            maxWidth: 180,
                           ),
-                          _buildCountPill(
-                            label: 'Approved',
-                            count: _countByStatus('approved'),
-                            color: const Color(0xFF7DFFB2),
-                            icon: Icons.verified_rounded,
+                          onSelected: (value) {
+                            setState(() {
+                              _selectedDateSort = value;
+                            });
+                          },
+                          itemBuilder: (context) => const [
+                            PopupMenuItem(
+                              value: 'newest',
+                              child: Text('Newest'),
+                            ),
+                            PopupMenuItem(
+                              value: 'oldest',
+                              child: Text('Oldest'),
+                            ),
+                          ],
+                          child: _buildMenuTrigger(
+                            icon: Icons.sort,
+                            label: 'Date: ${_dateSortLabel(_selectedDateSort)}',
+                            width: 180,
                           ),
-                          _buildCountPill(
-                            label: 'Rejected',
-                            count: _countByStatus('rejected'),
-                            color: const Color(0xFFFFA2A2),
-                            icon: Icons.cancel_rounded,
-                          ),
-                        ],
-                      ),
-                    ],
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-                const SizedBox(height: 10),
-                Align(
-                  alignment: isCompact
-                      ? Alignment.centerLeft
-                      : Alignment.centerRight,
-                  child: Wrap(
-                    spacing: 8,
-                    runSpacing: 8,
-                    children: [
-                      PopupMenuButton<String>(
-                        initialValue: _selectedStatusSort,
-                        constraints: const BoxConstraints(
-                          minWidth: 180,
-                          maxWidth: 180,
-                        ),
-                        onSelected: (value) {
-                          setState(() {
-                            _selectedStatusSort = value;
-                          });
-                        },
-                        itemBuilder: (context) => const [
-                          PopupMenuItem(
-                            value: 'all',
-                            child: Text('All requests'),
-                          ),
-                          PopupMenuItem(value: 'pending', child: Text('Pending')),
-                          PopupMenuItem(value: 'approved', child: Text('Approved')),
-                          PopupMenuItem(value: 'rejected', child: Text('Rejected')),
-                        ],
-                        child: _buildMenuTrigger(
-                          icon: Icons.filter_list,
-                          label:
-                              'Status: ${_statusSortLabel(_selectedStatusSort)}',
-                          width: 180,
-                        ),
-                      ),
-                      PopupMenuButton<String>(
-                        initialValue: _selectedDateSort,
-                        constraints: const BoxConstraints(
-                          minWidth: 180,
-                          maxWidth: 180,
-                        ),
-                        onSelected: (value) {
-                          setState(() {
-                            _selectedDateSort = value;
-                          });
-                        },
-                        itemBuilder: (context) => const [
-                          PopupMenuItem(value: 'newest', child: Text('Newest')),
-                          PopupMenuItem(value: 'oldest', child: Text('Oldest')),
-                        ],
-                        child: _buildMenuTrigger(
-                          icon: Icons.sort,
-                          label: 'Date: ${_dateSortLabel(_selectedDateSort)}',
-                          width: 180,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 14),
-                if (_isLoadingRequests)
-                  const Center(
-                    child: Padding(
-                      padding: EdgeInsets.all(20),
-                      child: CircularProgressIndicator(),
-                    ),
-                  )
-                else if (_loadError != null)
-                  Card(
-                    child: Padding(
-                      padding: const EdgeInsets.all(20),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(_loadError!),
-                          const SizedBox(height: 8),
-                          OutlinedButton.icon(
-                            onPressed: _loadRequests,
-                            icon: const Icon(Icons.refresh),
-                            label: const Text('Retry'),
-                          ),
-                        ],
-                      ),
-                    ),
-                  )
-                else if (visibleRequests.isEmpty)
-                  Card(
-                    child: Padding(
-                      padding: const EdgeInsets.all(20),
-                      child: Text(
-                        _selectedStatusSort == 'all'
-                            ? 'No gallery requests right now.'
-                            : 'No ${_statusSortLabel(_selectedStatusSort).toLowerCase()} requests right now.',
-                      ),
-                    ),
-                  )
-                else
-                  ...visibleRequests.map((request) {
-                    final title = _readString(request, const [
-                      'title',
-                      'memory_title',
-                      'name',
-                    ], 'Untitled request');
-                    final player = _readString(request, const [
-                      'player',
-                      'display_name',
-                      'author',
-                      'username',
-                    ], 'Unknown');
-                    final requestId = _readRequestId(request);
-                    final submittedRaw = _readString(request, const [
-                      'created_at',
-                      'submitted_at',
-                      'date',
-                    ], '-');
-                    final takenRaw = _readString(request, const [
-                      'time_taken',
-                      'taken_date',
-                      'date_taken',
-                    ], '-');
-                    final submitted = _formatDateTimeForCard(submittedRaw);
-                    final taken = _formatDateForCard(takenRaw);
-                    final status = _readRequestStatus(request);
-                    final note = _readString(request, const [
-                      'note',
-                      'description',
-                      'caption',
-                    ], '');
-                    final canTakeAction =
-                        status == 'pending' && !_isUpdatingRequest;
-                    final canDelete =
-                        status != 'pending' && !_isDeletingRequest;
-
-                    return Card(
-                      elevation: 1,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(14),
-                      ),
-                      margin: const EdgeInsets.only(bottom: 10),
+                  const SizedBox(height: 14),
+                  if (_isLoadingRequests)
+                    const Center(
                       child: Padding(
-                        padding: const EdgeInsets.all(12),
+                        padding: EdgeInsets.all(20),
+                        child: CircularProgressIndicator(),
+                      ),
+                    )
+                  else if (_loadError != null)
+                    Card(
+                      child: Padding(
+                        padding: const EdgeInsets.all(20),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Expanded(
-                                  child: Text(
-                                    title,
-                                    style: const TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 17,
+                            Text(_loadError!),
+                            const SizedBox(height: 8),
+                            OutlinedButton.icon(
+                              onPressed: _loadRequests,
+                              icon: const Icon(Icons.refresh),
+                              label: const Text('Retry'),
+                            ),
+                          ],
+                        ),
+                      ),
+                    )
+                  else if (visibleRequests.isEmpty)
+                    Card(
+                      child: Padding(
+                        padding: const EdgeInsets.all(20),
+                        child: Text(
+                          _selectedStatusSort == 'all'
+                              ? 'No gallery requests right now.'
+                              : 'No ${_statusSortLabel(_selectedStatusSort).toLowerCase()} requests right now.',
+                        ),
+                      ),
+                    )
+                  else
+                    ...visibleRequests.map((request) {
+                      final title = _readString(request, const [
+                        'title',
+                        'memory_title',
+                        'name',
+                      ], 'Untitled request');
+                      final player = _readString(request, const [
+                        'player',
+                        'display_name',
+                        'author',
+                        'username',
+                      ], 'Unknown');
+                      final requestId = _readRequestId(request);
+                      final submittedRaw = _readString(request, const [
+                        'created_at',
+                        'submitted_at',
+                        'date',
+                      ], '-');
+                      final takenRaw = _readString(request, const [
+                        'time_taken',
+                        'taken_date',
+                        'date_taken',
+                      ], '-');
+                      final submitted = _formatDateTimeForCard(submittedRaw);
+                      final taken = _formatDateForCard(takenRaw);
+                      final status = _readRequestStatus(request);
+                      final note = _readString(request, const [
+                        'note',
+                        'description',
+                        'caption',
+                      ], '');
+                      final canTakeAction =
+                          status == 'pending' && !_isUpdatingRequest;
+                      final canDelete =
+                          status != 'pending' && !_isDeletingRequest;
+
+                      return Card(
+                        elevation: 1,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(14),
+                        ),
+                        color: Colors.white.withValues(alpha: 0.06),
+                        margin: const EdgeInsets.only(bottom: 10),
+                        child: Padding(
+                          padding: const EdgeInsets.all(12),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Expanded(
+                                    child: Text(
+                                      title,
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 17,
+                                      ),
                                     ),
                                   ),
-                                ),
-                                _buildStatusBadge(status),
-                              ],
-                            ),
-                            const SizedBox(height: 8),
-                            Container(
-                              padding: const EdgeInsets.all(8),
-                              decoration: BoxDecoration(
-                                color: const Color(0xFF111B29),
-                                borderRadius: BorderRadius.circular(10),
-                                border: Border.all(color: const Color(0xFF2F3E56)),
+                                  _buildStatusBadge(status),
+                                ],
                               ),
-                              child: DefaultTextStyle(
-                                style: const TextStyle(
-                                  color: Color(0xFFD9E6FA),
-                                  fontSize: 15,
-                                ),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Wrap(
-                                      spacing: 8,
-                                      runSpacing: 8,
-                                      children: [
-                                        _buildMetaChip(
-                                          icon: Icons.tag_rounded,
-                                          label: 'ID',
-                                          value: requestId,
-                                        ),
-                                        _buildMetaChip(
-                                          icon: Icons.person_rounded,
-                                          label: 'Player',
-                                          value: player,
-                                        ),
-                                        _buildMetaChip(
-                                          icon: Icons.event_rounded,
-                                          label: 'Taken',
-                                          value: taken,
-                                        ),
-                                        _buildMetaChip(
-                                          icon: Icons.schedule_rounded,
-                                          label: 'Submitted',
-                                          value: submitted,
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                            const SizedBox(height: 6),
-                            _buildRequestPreview(request),
-                            if (note.trim().isNotEmpty) ...[
                               const SizedBox(height: 8),
                               Container(
-                                width: double.infinity,
-                                padding: const EdgeInsets.all(10),
+                                padding: const EdgeInsets.all(8),
                                 decoration: BoxDecoration(
-                                  color: const Color(0xFF111B29),
+                                  color: const Color(0xFF0F1A2C),
                                   borderRadius: BorderRadius.circular(10),
                                   border: Border.all(
                                     color: const Color(0xFF2F3E56),
                                   ),
                                 ),
-                                child: Text(
-                                  note,
+                                child: DefaultTextStyle(
                                   style: const TextStyle(
                                     color: Color(0xFFD9E6FA),
-                                    height: 1.35,
+                                    fontSize: 15,
+                                  ),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Wrap(
+                                        spacing: 8,
+                                        runSpacing: 8,
+                                        children: [
+                                          _buildMetaChip(
+                                            icon: Icons.tag_rounded,
+                                            label: 'ID',
+                                            value: requestId,
+                                          ),
+                                          _buildMetaChip(
+                                            icon: Icons.person_rounded,
+                                            label: 'Player',
+                                            value: player,
+                                          ),
+                                          _buildMetaChip(
+                                            icon: Icons.event_rounded,
+                                            label: 'Taken',
+                                            value: taken,
+                                          ),
+                                          _buildMetaChip(
+                                            icon: Icons.schedule_rounded,
+                                            label: 'Submitted',
+                                            value: submitted,
+                                          ),
+                                        ],
+                                      ),
+                                    ],
                                   ),
                                 ),
                               ),
-                            ],
-                            const SizedBox(height: 10),
-                            if (canTakeAction)
-                              Align(
-                                alignment: Alignment.centerRight,
-                                child: Wrap(
-                                  spacing: 8,
-                                  runSpacing: 8,
+                              const SizedBox(height: 6),
+                              _buildRequestPreview(request),
+                              if (note.trim().isNotEmpty) ...[
+                                const SizedBox(height: 8),
+                                Container(
+                                  width: double.infinity,
+                                  padding: const EdgeInsets.all(10),
+                                  decoration: BoxDecoration(
+                                    color: const Color(0xFF0F1A2C),
+                                    borderRadius: BorderRadius.circular(10),
+                                    border: Border.all(
+                                      color: const Color(0xFF2F3E56),
+                                    ),
+                                  ),
+                                  child: Text(
+                                    note,
+                                    style: const TextStyle(
+                                      color: Color(0xFFD9E6FA),
+                                      height: 1.35,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                              const SizedBox(height: 10),
+                              if (canTakeAction)
+                                Align(
+                                  alignment: Alignment.centerRight,
+                                  child: Wrap(
+                                    spacing: 8,
+                                    runSpacing: 8,
+                                    children: [
+                                      ElevatedButton.icon(
+                                        onPressed: () => _handleRequestAction(
+                                          approved: true,
+                                          request: request,
+                                        ),
+                                        icon: const Icon(Icons.check),
+                                        label: Text(
+                                          _isUpdatingRequest
+                                              ? 'Working...'
+                                              : 'Approve',
+                                        ),
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor: const Color(
+                                            0xFF1B8A5A,
+                                          ),
+                                          foregroundColor: Colors.white,
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: 14,
+                                            vertical: 10,
+                                          ),
+                                        ),
+                                      ),
+                                      OutlinedButton.icon(
+                                        onPressed: () => _handleRequestAction(
+                                          approved: false,
+                                          request: request,
+                                        ),
+                                        icon: const Icon(Icons.close),
+                                        label: const Text('Reject'),
+                                        style: OutlinedButton.styleFrom(
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: 14,
+                                            vertical: 10,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                )
+                              else
+                                Row(
                                   children: [
-                                    ElevatedButton.icon(
-                                      onPressed: () => _handleRequestAction(
-                                        approved: true,
-                                        request: request,
+                                    Container(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 12,
+                                        vertical: 10,
                                       ),
-                                      icon: const Icon(Icons.check),
-                                      label: Text(
-                                        _isUpdatingRequest
-                                            ? 'Working...'
-                                            : 'Approve',
+                                      decoration: BoxDecoration(
+                                        color: const Color(0xFF1D2A3A),
+                                        borderRadius: BorderRadius.circular(10),
+                                        border: Border.all(
+                                          color: const Color(0xFF3A4A63),
+                                        ),
                                       ),
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor: const Color(0xFF1B8A5A),
-                                        foregroundColor: Colors.white,
-                                        padding: const EdgeInsets.symmetric(
-                                          horizontal: 14,
-                                          vertical: 10,
+                                      child: Text(
+                                        'Reviewed: ${_statusLabel(status)}',
+                                        style: const TextStyle(
+                                          fontWeight: FontWeight.w600,
+                                          color: Color(0xFFDCE7F7),
                                         ),
                                       ),
                                     ),
+                                    const Spacer(),
                                     OutlinedButton.icon(
-                                      onPressed: () => _handleRequestAction(
-                                        approved: false,
-                                        request: request,
+                                      onPressed: canDelete
+                                          ? () => _handleDeleteRequest(request)
+                                          : null,
+                                      icon: Icon(
+                                        Icons.delete_outline,
+                                        color: canDelete
+                                            ? Colors.red.shade300
+                                            : Colors.grey,
                                       ),
-                                      icon: const Icon(Icons.close),
-                                      label: const Text('Reject'),
+                                      label: Text(
+                                        _isDeletingRequest
+                                            ? 'Deleting...'
+                                            : 'Delete',
+                                        style: TextStyle(
+                                          color: canDelete
+                                              ? Colors.red.shade300
+                                              : Colors.grey,
+                                        ),
+                                      ),
                                       style: OutlinedButton.styleFrom(
+                                        side: BorderSide(
+                                          color: canDelete
+                                              ? Colors.red.shade300
+                                              : Colors.grey,
+                                        ),
                                         padding: const EdgeInsets.symmetric(
                                           horizontal: 14,
                                           vertical: 10,
@@ -1040,75 +1136,17 @@ class _StaffGalleryRequestsPageState extends State<StaffGalleryRequestsPage> {
                                     ),
                                   ],
                                 ),
-                              )
-                            else
-                              Row(
-                                children: [
-                                  Container(
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 12,
-                                      vertical: 10,
-                                    ),
-                                    decoration: BoxDecoration(
-                                      color: const Color(0xFF1D2A3A),
-                                      borderRadius: BorderRadius.circular(10),
-                                      border: Border.all(
-                                        color: const Color(0xFF3A4A63),
-                                      ),
-                                    ),
-                                    child: Text(
-                                      'Reviewed: ${_statusLabel(status)}',
-                                      style: const TextStyle(
-                                        fontWeight: FontWeight.w600,
-                                        color: Color(0xFFDCE7F7),
-                                      ),
-                                    ),
-                                  ),
-                                  const Spacer(),
-                                  OutlinedButton.icon(
-                                    onPressed: canDelete
-                                        ? () => _handleDeleteRequest(request)
-                                        : null,
-                                    icon: Icon(
-                                      Icons.delete_outline,
-                                      color: canDelete
-                                          ? Colors.red.shade300
-                                          : Colors.grey,
-                                    ),
-                                    label: Text(
-                                      _isDeletingRequest
-                                          ? 'Deleting...'
-                                          : 'Delete',
-                                      style: TextStyle(
-                                        color: canDelete
-                                            ? Colors.red.shade300
-                                            : Colors.grey,
-                                      ),
-                                    ),
-                                    style: OutlinedButton.styleFrom(
-                                      side: BorderSide(
-                                        color: canDelete
-                                            ? Colors.red.shade300
-                                            : Colors.grey,
-                                      ),
-                                      padding: const EdgeInsets.symmetric(
-                                        horizontal: 14,
-                                        vertical: 10,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                          ],
+                            ],
+                          ),
                         ),
-                      ),
-                    );
-                  }),
-              ],
+                      );
+                    }),
+                ],
+              ),
             ),
-          ),
-          const MyFooter(),
-        ],
+            const MyFooter(),
+          ],
+        ),
       ),
     );
   }
