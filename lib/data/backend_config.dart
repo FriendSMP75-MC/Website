@@ -389,12 +389,22 @@ class BackendData {
       final author = SupabaseConfig.getDisplayName(user);
       final authorUUID = SupabaseConfig.getSupabaseUUID(user);
 
-      return await sendData('new-announcements', {
+      final result = await sendData('new-announcements', {
         'title': title,
         'body': body,
         'author': author,
         'author_uuid': authorUUID,
       });
+
+      // Notify Discord webhook
+      await notifyDiscordAnnouncement(
+        title: title,
+        body: body,
+        author: author,
+        authorUuid: authorUUID,
+      );
+
+      return result;
     } catch (e) {
       return 'Error: $e';
     }
