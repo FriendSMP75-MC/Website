@@ -10,51 +10,56 @@ class AnnouncementPreview extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final title = announcement['announcement_title'];
+    final title =
+        announcement['announcement_title']?.toString() ?? 'Announcement';
+    final body = announcement['announcement_body']?.toString() ?? '';
+    final author = announcement['author']?.toString() ?? 'Unknown';
     final date = announcement['created_at'] != null
         ? DateFormat(
-            'dd MMMM yyyy',
+            'dd MMM yyyy',
           ).format(DateTime.parse(announcement['created_at']))
-        : 'No date?';
-    final body = announcement['announcement_body'];
-    final author = announcement['author'];
+        : 'Unknown date';
 
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(18),
+        color: Colors.white.withValues(alpha: 0.06),
+        border: Border.all(color: Colors.white12),
+      ),
       child: Column(
         children: [
-          Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(8),
-                topRight: Radius.circular(8),
-              ),
-              color: Colors.white10,
-            ),
-            child: SizedBox(
-              height: 400,
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(14, 14, 14, 8),
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(8, 8, 8, 0),
-                    child: Text(
-                      title,
-                      style: TextStyle(
-                        fontSize: 30,
-                        color: Colors.blue.shade400,
-                        fontWeight: FontWeight.bold,
-                      ),
-                      textAlign: TextAlign.center,
-                      softWrap: true,
+                  Text(
+                    title,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
+                      fontSize: 22,
+                      fontWeight: FontWeight.w700,
+                      color: Color(0xFF66D3F2),
+                      height: 1.1,
                     ),
                   ),
-                  SizedBox(height: 10),
+                  const SizedBox(height: 8),
                   Expanded(
-                    child: markdown.Markdown(
-                      physics: NeverScrollableScrollPhysics(),
-                      data: body,
-                      selectable: true,
-                      shrinkWrap: true,
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(10),
+                      child: Container(
+                        width: double.infinity,
+                        color: Colors.black.withValues(alpha: 0.14),
+                        child: markdown.Markdown(
+                          data: body,
+                          selectable: true,
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          padding: const EdgeInsets.all(10),
+                        ),
+                      ),
                     ),
                   ),
                 ],
@@ -62,56 +67,31 @@ class AnnouncementPreview extends StatelessWidget {
             ),
           ),
           Container(
-            width: double.infinity,
-            color: Colors.blueAccent,
-            child: ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                elevation: 0,
-                backgroundColor: Colors.blueAccent,
-                shape: const RoundedRectangleBorder(
-                  borderRadius: BorderRadius.only(
-                    bottomLeft: Radius.circular(0),
-                    bottomRight: Radius.circular(0),
+            padding: const EdgeInsets.fromLTRB(14, 10, 14, 10),
+            decoration: const BoxDecoration(
+              border: Border(top: BorderSide(color: Colors.white12)),
+            ),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    'By $author • $date',
+                    style: const TextStyle(color: Colors.white70, fontSize: 12),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ),
-              ),
-              onPressed: () {
-                context.push(
-                  '/announcement/${Uri.encodeComponent(title)}',
-                  extra: {'body': body},
-                );
-              },
-              child: Text('Read more!', style: TextStyle(color: Colors.white)),
-            ),
-          ),
-
-          // Author details
-          Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.only(
-                bottomLeft: Radius.circular(8),
-                bottomRight: Radius.circular(8),
-              ),
-              color: const Color.fromARGB(130, 195, 17, 17),
-            ),
-            child: SizedBox(
-              height: 60,
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Row(
-                  children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [Text('Authored By'), Text(author)],
-                    ),
-                    Spacer(),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [Text('Created on'), Text(date)],
-                    ),
-                  ],
+                FilledButton.tonalIcon(
+                  onPressed: () {
+                    context.push(
+                      '/announcement/${Uri.encodeComponent(title)}',
+                      extra: {'body': body},
+                    );
+                  },
+                  icon: const Icon(Icons.arrow_forward_rounded, size: 16),
+                  label: const Text('Read'),
                 ),
-              ),
+              ],
             ),
           ),
         ],
@@ -122,140 +102,96 @@ class AnnouncementPreview extends StatelessWidget {
 
 class LatestAnnouncementPreview extends StatelessWidget {
   final Map<String, dynamic> announcement;
+
   const LatestAnnouncementPreview({super.key, required this.announcement});
 
   @override
   Widget build(BuildContext context) {
-    final title = announcement['announcement_title'];
-    final body = announcement['announcement_body'];
-    final author = announcement['author'];
+    final title =
+        announcement['announcement_title']?.toString() ?? 'Announcement';
+    final body = announcement['announcement_body']?.toString() ?? '';
+    final author = announcement['author']?.toString() ?? 'Unknown';
     final date = announcement['created_at'] != null
         ? DateFormat(
-            'dd MMMM yyyy',
+            'dd MMM yyyy',
           ).format(DateTime.parse(announcement['created_at']))
-        : 'no date';
+        : 'Unknown date';
 
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        double padding = 0;
-        double sizedBoxWidth = 0;
-        double sizedBoxHeight = 0;
+    final bool isMobile = MediaQuery.sizeOf(context).width < 700;
 
-        if (constraints.maxWidth < 600) {
-          padding = 8.0;
-          sizedBoxWidth = MediaQuery.widthOf(context);
-          sizedBoxHeight = 300;
-        } else {
-          padding = 10.0;
-          sizedBoxWidth = MediaQuery.widthOf(context) - 200;
-          sizedBoxHeight = 300;
-        }
-
-        return Padding(
-          padding: EdgeInsets.all(padding),
-          child: Column(
-            children: [
-              Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(8),
-                    topRight: Radius.circular(8),
-                  ),
-                  color: Colors.white10,
-                ),
-
-                child: SizedBox(
-                  height: sizedBoxHeight,
-                  width: sizedBoxWidth,
-                  child: Column(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(8, 8, 8, 0),
-                        child: Text(
-                          title,
-                          style: TextStyle(
-                            fontSize: 30,
-                            color: Colors.blue.shade400,
-                            fontWeight: FontWeight.bold,
-                          ),
-                          textAlign: TextAlign.center,
-                          softWrap: true,
-                        ),
-                      ),
-                      SizedBox(height: 10),
-                      Expanded(
-                        child: markdown.Markdown(
-                          physics: NeverScrollableScrollPhysics(),
-                          data: body,
-                          selectable: true,
-                          shrinkWrap: true,
-                        ),
-                      ),
-                    ],
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(16),
+        color: Colors.white.withValues(alpha: 0.05),
+        border: Border.all(color: Colors.white12),
+      ),
+      child: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(14, 14, 14, 8),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: TextStyle(
+                    fontSize: isMobile ? 22 : 28,
+                    fontWeight: FontWeight.w700,
+                    color: const Color(0xFF66D3F2),
+                    height: 1.1,
                   ),
                 ),
-              ),
-              Container(
-                width: sizedBoxWidth,
-                color: Colors.blueAccent,
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    elevation: 0,
-                    backgroundColor: Colors.blueAccent,
-                    shape: const RoundedRectangleBorder(
-                      borderRadius: BorderRadius.only(
-                        bottomLeft: Radius.circular(0),
-                        bottomRight: Radius.circular(0),
+                const SizedBox(height: 8),
+                SizedBox(
+                  height: isMobile ? 180 : 220,
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(10),
+                    child: Container(
+                      width: double.infinity,
+                      color: Colors.black.withValues(alpha: 0.14),
+                      child: markdown.Markdown(
+                        data: body,
+                        selectable: true,
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        padding: const EdgeInsets.all(10),
                       ),
                     ),
                   ),
+                ),
+              ],
+            ),
+          ),
+          Container(
+            padding: const EdgeInsets.fromLTRB(14, 10, 14, 10),
+            decoration: const BoxDecoration(
+              border: Border(top: BorderSide(color: Colors.white12)),
+            ),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    'By $author • $date',
+                    style: const TextStyle(color: Colors.white70, fontSize: 12),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+                FilledButton.tonalIcon(
                   onPressed: () {
                     context.push(
                       '/announcement/${Uri.encodeComponent(title)}',
                       extra: {'body': body},
                     );
                   },
-                  child: Text(
-                    'Read more!',
-                    style: TextStyle(color: Colors.white),
-                  ),
+                  icon: const Icon(Icons.arrow_forward_rounded, size: 16),
+                  label: const Text('Read More'),
                 ),
-              ),
-
-              // Author details
-              Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.only(
-                    bottomLeft: Radius.circular(8),
-                    bottomRight: Radius.circular(8),
-                  ),
-                  color: const Color.fromARGB(130, 195, 17, 17),
-                ),
-                child: SizedBox(
-                  height: 60,
-                  width: sizedBoxWidth,
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Row(
-                      children: [
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [Text('Authored By'), Text(author)],
-                        ),
-                        Spacer(),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: [Text('Created on'), Text(date)],
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            ],
+              ],
+            ),
           ),
-        );
-      },
+        ],
+      ),
     );
   }
 }

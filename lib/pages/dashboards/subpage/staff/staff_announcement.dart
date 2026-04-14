@@ -3,10 +3,8 @@ import 'package:go_router/go_router.dart';
 import 'package:server_site/data/backend_config.dart';
 import 'package:server_site/data/supabase_config.dart';
 import 'package:server_site/widgets/appbar.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:server_site/widgets/footer.dart';
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart' as markdown;
-
-SupabaseClient get supabase => Supabase.instance.client;
 
 class Staffannouncements extends StatefulWidget {
   const Staffannouncements({super.key});
@@ -16,7 +14,6 @@ class Staffannouncements extends StatefulWidget {
 }
 
 class _StaffannouncementsState extends State<Staffannouncements> {
-  // Keys and controllers
   final announcementTitle = GlobalKey<FormState>();
   final TextEditingController _announcementTitleController =
       TextEditingController();
@@ -28,12 +25,8 @@ class _StaffannouncementsState extends State<Staffannouncements> {
   @override
   void initState() {
     super.initState();
-    _announcementTitleController.addListener(() {
-      setState(() {});
-    });
-    _announcementBodyContoller.addListener(() {
-      setState(() {});
-    });
+    _announcementTitleController.addListener(() => setState(() {}));
+    _announcementBodyContoller.addListener(() => setState(() {}));
   }
 
   @override
@@ -43,436 +36,323 @@ class _StaffannouncementsState extends State<Staffannouncements> {
     super.dispose();
   }
 
+  Future<void> _submitAnnouncement() async {
+    final messenger = ScaffoldMessenger.of(context);
+
+    if (!announcementTitle.currentState!.validate() ||
+        !announcementBody.currentState!.validate()) {
+      return;
+    }
+
+    try {
+      await BackendData.newAnnouncement(
+        _announcementTitleController.text.trim(),
+        _announcementBodyContoller.text,
+      );
+
+      _announcementBodyContoller.clear();
+      _announcementTitleController.clear();
+
+      if (!mounted) return;
+      messenger.showSnackBar(
+        const SnackBar(
+          content: Row(
+            children: [
+              Icon(Icons.check_circle_outline),
+              SizedBox(width: 8),
+              Text('Announcement published'),
+            ],
+          ),
+          backgroundColor: Color(0xFF1E7AA7),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+    } catch (e) {
+      if (!mounted) return;
+      messenger.showSnackBar(
+        SnackBar(
+          content: Row(
+            children: [
+              const Icon(Icons.error_outline, color: Colors.redAccent),
+              const SizedBox(width: 8),
+              Expanded(child: Text('Error: $e')),
+            ],
+          ),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    final bool isMobile = MediaQuery.sizeOf(context).width < 760;
+    final title = _announcementTitleController.text.trim();
+    final body = _announcementBodyContoller.text.trim();
+
     return Scaffold(
       appBar: AppbarPage(backArrow: true),
       body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Header
-            Padding(
-              padding: EdgeInsets.all(8.0),
-              child: Center(
-                child: Text(
-                  'Manage Announcements',
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                ),
-              ),
+        child: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [Color(0xFF091323), Color(0xFF102037), Color(0xFF091323)],
             ),
-            Divider(),
-
-            Padding(
-              padding: const EdgeInsets.only(left: 8),
-              child: Text(
-                'Add a new Announcement!',
-                style: TextStyle(fontSize: 18),
-              ),
-            ),
-            SizedBox(height: 2),
-
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(Icons.info_outline, color: Colors.lightBlue),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text('See the preview before adding announcement'),
-                ),
-              ],
-            ),
-
-            // AnnouncementTitle textfield
-            Form(
-              key: announcementTitle,
+          ),
+          child: Center(
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 1100),
               child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: TextFormField(
-                  controller: _announcementTitleController,
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(),
-                    hintText: 'Give title for announcement',
-                    labelText: 'Announcement Title',
-                  ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'This field is required';
-                    }
-                    if (value.length < 5) {
-                      return 'Text is too small';
-                    }
-                    return null;
-                  },
+                padding: EdgeInsets.fromLTRB(
+                  isMobile ? 12 : 20,
+                  16,
+                  isMobile ? 12 : 20,
+                  0,
                 ),
-              ),
-            ),
-
-            // AnnouncemnetBody textfield
-            Form(
-              key: announcementBody,
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: TextFormField(
-                  minLines: 5,
-                  maxLines: 10,
-                  keyboardType: TextInputType.multiline,
-                  controller: _announcementBodyContoller,
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(),
-                    hintText: 'Enter description of announcement',
-                    labelText: 'Announcement Description',
-                  ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'This field is required';
-                    }
-                    if (value.length < 15) {
-                      return 'Text is too small';
-                    }
-                    return null;
-                  },
-                ),
-              ),
-            ),
-
-            // Submit button
-            Center(
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    side: BorderSide(color: Colors.redAccent),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(8)),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      width: double.infinity,
+                      padding: EdgeInsets.all(isMobile ? 16 : 20),
+                      decoration: BoxDecoration(
+                        gradient: const LinearGradient(
+                          colors: [Color(0xFF1A3656), Color(0xFF16506F)],
+                        ),
+                        borderRadius: BorderRadius.circular(20),
+                        border: Border.all(color: Colors.white24),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Announcement Manager',
+                            style: TextStyle(
+                              fontSize: isMobile ? 30 : 40,
+                              fontWeight: FontWeight.w800,
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            'Write and preview updates before publishing to players.',
+                            style: TextStyle(
+                              color: Colors.blueGrey[100],
+                              height: 1.4,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                    backgroundColor: Colors.lightBlueAccent,
-                  ),
-                  onPressed: () async {
-                    final messenger = ScaffoldMessenger.of(context);
-
-                    if (announcementTitle.currentState!.validate() &&
-                        announcementBody.currentState!.validate()) {
-                      try {
-                        await BackendData.newAnnouncement(
-                          _announcementTitleController.text.trim(),
-                          _announcementBodyContoller.text,
-                        );
-
-                        _announcementBodyContoller.clear();
-                        _announcementTitleController.clear();
-
-                        if (!mounted) return;
-                        messenger.showSnackBar(
-                          SnackBar(
-                            content: const Row(
+                    const SizedBox(height: 14),
+                    Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.all(14),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withValues(alpha: 0.05),
+                        borderRadius: BorderRadius.circular(16),
+                        border: Border.all(color: Colors.white12),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Row(
+                            children: [
+                              Icon(
+                                Icons.info_outline,
+                                color: Color(0xFF66D3F2),
+                              ),
+                              SizedBox(width: 8),
+                              Text('Fill in both fields to publish.'),
+                            ],
+                          ),
+                          const SizedBox(height: 12),
+                          Form(
+                            key: announcementTitle,
+                            child: TextFormField(
+                              controller: _announcementTitleController,
+                              decoration: InputDecoration(
+                                labelText: 'Announcement Title',
+                                hintText: 'Give this update a strong headline',
+                                filled: true,
+                                fillColor: Colors.black.withValues(alpha: 0.2),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                              ),
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return 'This field is required';
+                                }
+                                if (value.length < 5) {
+                                  return 'Title is too short';
+                                }
+                                return null;
+                              },
+                            ),
+                          ),
+                          const SizedBox(height: 10),
+                          Form(
+                            key: announcementBody,
+                            child: TextFormField(
+                              minLines: 7,
+                              maxLines: 12,
+                              keyboardType: TextInputType.multiline,
+                              controller: _announcementBodyContoller,
+                              decoration: InputDecoration(
+                                labelText: 'Announcement Body',
+                                hintText: 'Use markdown for formatting',
+                                filled: true,
+                                fillColor: Colors.black.withValues(alpha: 0.2),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                              ),
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return 'This field is required';
+                                }
+                                if (value.length < 15) {
+                                  return 'Body is too short';
+                                }
+                                return null;
+                              },
+                            ),
+                          ),
+                          const SizedBox(height: 12),
+                          Align(
+                            alignment: Alignment.centerRight,
+                            child: FilledButton.icon(
+                              onPressed: _submitAnnouncement,
+                              style: FilledButton.styleFrom(
+                                backgroundColor: const Color(0xFF1E7AA7),
+                                foregroundColor: Colors.white,
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 16,
+                                  vertical: 12,
+                                ),
+                              ),
+                              icon: const Icon(Icons.campaign_outlined),
+                              label: const Text('Publish Announcement'),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 14),
+                    Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.all(14),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withValues(alpha: 0.05),
+                        borderRadius: BorderRadius.circular(16),
+                        border: Border.all(color: Colors.white12),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text(
+                            'Live Preview',
+                            style: TextStyle(
+                              fontSize: 22,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                          const SizedBox(height: 10),
+                          Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(14),
+                              border: Border.all(color: Colors.white12),
+                              color: Colors.black.withValues(alpha: 0.2),
+                            ),
+                            child: Column(
                               children: [
-                                Icon(Icons.info),
-                                SizedBox(width: 8),
-                                Text(
-                                  'Announcement Added!',
-                                  style: TextStyle(color: Colors.white),
+                                Padding(
+                                  padding: const EdgeInsets.fromLTRB(
+                                    12,
+                                    12,
+                                    12,
+                                    6,
+                                  ),
+                                  child: Text(
+                                    title.isEmpty
+                                        ? 'Announcement title preview'
+                                        : title,
+                                    style: TextStyle(
+                                      fontSize: isMobile ? 22 : 28,
+                                      color: const Color(0xFF66D3F2),
+                                      fontWeight: FontWeight.w700,
+                                    ),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ),
+                                SizedBox(
+                                  height: isMobile ? 210 : 250,
+                                  child: markdown.Markdown(
+                                    data: body.isNotEmpty
+                                        ? body
+                                        : '*No announcement body yet*',
+                                    selectable: true,
+                                    shrinkWrap: true,
+                                    padding: const EdgeInsets.all(12),
+                                    physics:
+                                        const NeverScrollableScrollPhysics(),
+                                  ),
+                                ),
+                                Container(
+                                  width: double.infinity,
+                                  padding: const EdgeInsets.fromLTRB(
+                                    12,
+                                    10,
+                                    12,
+                                    10,
+                                  ),
+                                  decoration: const BoxDecoration(
+                                    border: Border(
+                                      top: BorderSide(color: Colors.white12),
+                                    ),
+                                  ),
+                                  child: Row(
+                                    children: [
+                                      Text(
+                                        'By ${SupabaseConfig.getDisplayName(BackendData.user)}',
+                                        style: const TextStyle(
+                                          color: Colors.white70,
+                                        ),
+                                      ),
+                                      const Spacer(),
+                                      FilledButton.tonalIcon(
+                                        onPressed: title.isEmpty
+                                            ? null
+                                            : () {
+                                                context.push(
+                                                  '/announcement/${Uri.encodeComponent(title)}',
+                                                  extra: {'body': body},
+                                                );
+                                              },
+                                        icon: const Icon(
+                                          Icons.open_in_new_rounded,
+                                          size: 16,
+                                        ),
+                                        label: const Text('Preview Route'),
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ],
                             ),
-                            backgroundColor: Colors.purpleAccent[100],
-                            behavior: SnackBarBehavior.floating,
                           ),
-                        );
-                      } catch (e) {
-                        if (!mounted) return;
-                        messenger.showSnackBar(
-                          SnackBar(
-                            content: Row(
-                              children: [
-                                Icon(Icons.error, color: Colors.red),
-                                SizedBox(width: 8),
-                                Text('Error: $e'),
-                              ],
-                            ),
-                          ),
-                        );
-                      }
-                    }
-                  },
-                  child: Text(
-                    'Add Announcement!',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(color: Colors.black),
-                  ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    const MyFooter(),
+                  ],
                 ),
               ),
             ),
-            Divider(),
-
-            // Preview header
-            Center(
-              child: Text(
-                'Preview',
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-              ),
-            ),
-            Divider(),
-
-            // Mobile view preview
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: LayoutBuilder(
-                builder: (context, constraints) {
-                  if (constraints.maxWidth < 600) {
-                    return Column(
-                      children: [
-                        Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.only(
-                              topLeft: Radius.circular(8),
-                              topRight: Radius.circular(8),
-                            ),
-                            color: Colors.white10,
-                          ),
-                          child: SizedBox(
-                            height: 400,
-                            child: Column(
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.fromLTRB(
-                                    8,
-                                    8,
-                                    8,
-                                    0,
-                                  ),
-                                  child: Text(
-                                    _announcementTitleController.text.trim(),
-                                    style: TextStyle(
-                                      fontSize: 30,
-                                      color: Colors.blue.shade400,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                    textAlign: TextAlign.center,
-                                    softWrap: true,
-                                  ),
-                                ),
-                                SizedBox(height: 10),
-                                Expanded(
-                                  child: OverflowBox(
-                                    maxHeight: 400,
-                                    child: markdown.Markdown(
-                                      physics: NeverScrollableScrollPhysics(),
-                                      data:
-                                          _announcementBodyContoller
-                                              .text
-                                              .isNotEmpty
-                                          ? _announcementBodyContoller.text
-                                          : "*No announcement body yet*",
-                                      selectable: true,
-                                      shrinkWrap: true,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                        Container(
-                          width: double.infinity,
-                          color: Colors.blueAccent,
-                          child: ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.blueAccent,
-                              shape: const RoundedRectangleBorder(
-                                borderRadius: BorderRadius.only(
-                                  bottomLeft: Radius.circular(0),
-                                  bottomRight: Radius.circular(0),
-                                ),
-                              ),
-                            ),
-                            onPressed: () {
-                              final title = _announcementTitleController.text;
-                              final body = _announcementBodyContoller.text;
-                              context.push(
-                                '/announcements/${Uri.encodeComponent(title)}',
-                                extra: {'body': body},
-                              );
-                            },
-                            child: Text(
-                              'Read more!',
-                              style: TextStyle(color: Colors.white),
-                            ),
-                          ),
-                        ),
-
-                        // Author details
-                        Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.only(
-                              bottomLeft: Radius.circular(8),
-                              bottomRight: Radius.circular(8),
-                            ),
-                            color: const Color.fromARGB(130, 195, 17, 17),
-                          ),
-                          child: SizedBox(
-                            height: 70,
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Row(
-                                children: [
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text('Authored By'),
-                                      Text(
-                                        SupabaseConfig.getDisplayName(
-                                          BackendData.user,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  Spacer(),
-                                  Column(
-                                    crossAxisAlignment: CrossAxisAlignment.end,
-                                    children: [
-                                      Text('Created on'),
-                                      Text("Today's Date will be displayed"),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    );
-                  } else {
-                    // Desktop view placeholder
-                    return Column(
-                      children: [
-                        Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.only(
-                              topLeft: Radius.circular(8),
-                              topRight: Radius.circular(8),
-                            ),
-                            color: Colors.white10,
-                          ),
-                          child: SizedBox(
-                            height: 200,
-                            child: Column(
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.fromLTRB(
-                                    8,
-                                    8,
-                                    8,
-                                    0,
-                                  ),
-                                  child: Text(
-                                    _announcementTitleController.text.trim(),
-                                    style: TextStyle(
-                                      fontSize: 30,
-                                      color: Colors.blue.shade400,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                    textAlign: TextAlign.center,
-                                    softWrap: true,
-                                  ),
-                                ),
-                                SizedBox(height: 10),
-                                Expanded(
-                                  child: OverflowBox(
-                                    maxHeight: 400,
-                                    child: markdown.Markdown(
-                                      physics: NeverScrollableScrollPhysics(),
-                                      data:
-                                          _announcementBodyContoller
-                                              .text
-                                              .isNotEmpty
-                                          ? _announcementBodyContoller.text
-                                          : "*No announcement body yet*",
-                                      selectable: true,
-                                      shrinkWrap: true,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                        Container(
-                          width: double.infinity,
-                          color: Colors.blueAccent,
-                          child: ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.blueAccent,
-                              shape: const RoundedRectangleBorder(
-                                borderRadius: BorderRadius.only(
-                                  bottomLeft: Radius.circular(0),
-                                  bottomRight: Radius.circular(0),
-                                ),
-                              ),
-                            ),
-                            onPressed: () {
-                              final title = _announcementTitleController.text;
-                              final body = _announcementBodyContoller.text;
-                              context.push(
-                                '/announcement/${Uri.encodeComponent(title)}',
-                                extra: {'body': body},
-                              );
-                            },
-                            child: Text(
-                              'Read more!',
-                              style: TextStyle(color: Colors.white),
-                            ),
-                          ),
-                        ),
-
-                        // Author details
-                        Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.only(
-                              bottomLeft: Radius.circular(8),
-                              bottomRight: Radius.circular(8),
-                            ),
-                            color: const Color.fromARGB(130, 195, 17, 17),
-                          ),
-                          child: SizedBox(
-                            height: 70,
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Row(
-                                children: [
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text('Authored By'),
-                                      Text(
-                                        SupabaseConfig.getDisplayName(
-                                          BackendData.user,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  Spacer(),
-                                  Column(
-                                    crossAxisAlignment: CrossAxisAlignment.end,
-                                    children: [
-                                      Text('Created on'),
-                                      Text("Today's Date will be displayed"),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    );
-                  }
-                },
-              ),
-            ),
-          ],
+          ),
         ),
       ),
     );

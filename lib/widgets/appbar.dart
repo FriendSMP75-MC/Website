@@ -12,23 +12,44 @@ class AppbarPage extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
     return AppBar(
       automaticallyImplyLeading: backArrow ?? false,
+      toolbarHeight: 66,
+      titleSpacing: 12,
+      centerTitle: false,
+      flexibleSpace: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [Color(0xFF0E1A2C), Color(0xFF132640)],
+          ),
+        ),
+      ),
       title: SafeArea(
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Padding(
-              padding: const EdgeInsets.only(right: 3),
-              child: Image.network(
-                'https://i.ibb.co/4nkHpYDw/servercurrent.jpg',
-                height: 40,
-                errorBuilder: (context, error, stackTrace) =>
-                    const Icon(Icons.broken_image),
+            ClipRRect(
+              borderRadius: BorderRadius.circular(8),
+              child: SizedBox(
+                width: 38,
+                height: 38,
+                child: Image.network(
+                  'https://i.ibb.co/4nkHpYDw/servercurrent.jpg',
+                  fit: BoxFit.cover,
+                  errorBuilder: (context, error, stackTrace) =>
+                      const Icon(Icons.broken_image),
+                ),
               ),
             ),
+            const SizedBox(width: 10),
             Flexible(
               child: Text(
                 customTitle ?? 'FriendSMP75',
-                overflow: TextOverflow.visible,
+                overflow: TextOverflow.ellipsis,
+                style: const TextStyle(
+                  fontWeight: FontWeight.w700,
+                  letterSpacing: 0.2,
+                ),
               ),
             ),
           ],
@@ -48,7 +69,7 @@ class AppbarPage extends StatelessWidget implements PreferredSizeWidget {
         preferredSize: Size.fromHeight(1),
         child: SizedBox(
           width: double.infinity,
-          child: Divider(height: 1, thickness: 1, color: Colors.grey),
+          child: Divider(height: 1, thickness: 1, color: Colors.white24),
         ),
       ),
     );

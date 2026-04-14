@@ -12,11 +12,9 @@ class ViewAnnouncement extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Safely cast to String. If null, use a fallback to prevent .trim() crashes.
-    final String safeTitle = title?.toString() ?? "Announcement";
-    final String safeBody = body?.toString() ?? "";
-
-    final double screenWidth = MediaQuery.sizeOf(context).width;
+    final String safeTitle = title?.toString() ?? 'Announcement';
+    final String safeBody = body?.toString() ?? '';
+    final bool isMobile = MediaQuery.sizeOf(context).width < 700;
 
     return Scaffold(
       appBar: AppbarPage(customTitle: 'Announcements', backArrow: true),
@@ -24,87 +22,91 @@ class ViewAnnouncement extends StatelessWidget {
         currentPage: 'Announcements',
         parentContext: context,
       ),
-      body: LayoutBuilder(
-        builder: (context, constraints) {
-          bool isMobile = constraints.maxWidth < 600;
-
-          if (safeBody.trim().isEmpty) {
-            // Show a friendly message if the announcement body is empty
-            return Center(
-              child: Padding(
-                padding: const EdgeInsets.all(32.0),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: const [
-                    Icon(Icons.error_outline, color: Colors.red, size: 64),
-                    SizedBox(height: 16),
-                    Text(
-                      'This announcement has no content.\nPlease check back later or contact the admin.',
-                      style: TextStyle(fontSize: 18, color: Colors.red),
-                      textAlign: TextAlign.center,
-                    ),
-                  ],
-                ),
-              ),
-            );
-          }
-
-          return Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                  vertical: 20.0,
-                  horizontal: 8.0,
-                ),
-                child: Center(
-                  child: Text(
-                    safeTitle,
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(
-                      fontSize: 24,
-                      color: Colors.blue,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-              ),
-              Expanded(
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [Color(0xFF091323), Color(0xFF0F1D33), Color(0xFF091323)],
+          ),
+        ),
+        child: safeBody.trim().isEmpty
+            ? const Center(
                 child: Padding(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: isMobile ? 12.0 : 40.0,
-                    vertical: 10.0,
+                  padding: EdgeInsets.all(32),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        Icons.error_outline,
+                        color: Colors.redAccent,
+                        size: 56,
+                      ),
+                      SizedBox(height: 12),
+                      Text(
+                        'This announcement has no content yet.',
+                        style: TextStyle(fontSize: 18, color: Colors.white70),
+                        textAlign: TextAlign.center,
+                      ),
+                    ],
                   ),
-                  child: Center(
-                    child: Container(
-                      // Prevents negative width crashes on ultra-small screens
-                      width: isMobile
-                          ? screenWidth * 0.95
-                          : (screenWidth > 1000 ? 800 : screenWidth - 100),
-                      decoration: BoxDecoration(
-                        border: Border.all(width: 1.5, color: Colors.white24),
-                        borderRadius: const BorderRadius.all(
-                          Radius.circular(12),
+                ),
+              )
+            : Center(
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 980),
+                  child: Padding(
+                    padding: EdgeInsets.fromLTRB(
+                      isMobile ? 12 : 18,
+                      18,
+                      isMobile ? 12 : 18,
+                      16,
+                    ),
+                    child: Column(
+                      children: [
+                        Container(
+                          width: double.infinity,
+                          padding: EdgeInsets.all(isMobile ? 16 : 22),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(18),
+                            border: Border.all(color: Colors.white24),
+                            gradient: const LinearGradient(
+                              colors: [Color(0xFF1A3656), Color(0xFF16516F)],
+                            ),
+                          ),
+                          child: Text(
+                            safeTitle,
+                            style: TextStyle(
+                              fontSize: isMobile ? 25 : 34,
+                              fontWeight: FontWeight.w800,
+                              height: 1.15,
+                            ),
+                          ),
                         ),
-                        color: Colors.white10,
-                      ),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(12),
-                        child: Markdown(
-                          data: safeBody,
-                          selectable: true,
-                          shrinkWrap:
-                              false, // Critical for performance inside Expanded
-                          padding: const EdgeInsets.all(20),
-                         
+                        const SizedBox(height: 12),
+                        Expanded(
+                          child: Container(
+                            width: double.infinity,
+                            decoration: BoxDecoration(
+                              color: Colors.white.withValues(alpha: 0.06),
+                              borderRadius: BorderRadius.circular(18),
+                              border: Border.all(color: Colors.white12),
+                            ),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(18),
+                              child: Markdown(
+                                data: safeBody,
+                                selectable: true,
+                                padding: EdgeInsets.all(isMobile ? 14 : 20),
+                              ),
+                            ),
+                          ),
                         ),
-                      ),
+                      ],
                     ),
                   ),
                 ),
               ),
-            ],
-          );
-        },
       ),
     );
   }

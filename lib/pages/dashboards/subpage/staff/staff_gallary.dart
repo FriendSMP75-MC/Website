@@ -17,10 +17,8 @@ class _StaffGallaryState extends State<StaffGallary> {
   DateTime? imageTakenDate;
   PlatformFile? pickedFile;
 
-  // Controller for the filename text field
   final TextEditingController _fileNameController = TextEditingController();
 
-  // Loading state to show a spinner during upload
   bool _isLoading = false;
   double _uploadProgress = 0.0;
 
@@ -44,20 +42,18 @@ class _StaffGallaryState extends State<StaffGallary> {
     }
   }
 
-  // Upload Logic
   Future<void> _handleUpload() async {
-    // 1. Validations
     if (pickedFile == null || pickedFile!.bytes == null) {
-      _showSnackBar("Please select an image first!", Colors.purpleAccent);
+      _showSnackBar('Please select an image first!', Colors.purpleAccent);
       return;
     }
     if (_fileNameController.text.trim().isEmpty) {
-      _showSnackBar("Please provide a filename!", Colors.purpleAccent);
+      _showSnackBar('Please provide a filename!', Colors.purpleAccent);
       return;
     }
     if (imageTakenDate == null) {
       _showSnackBar(
-        "Please select the date the image was taken!",
+        'Please select the date the image was taken!',
         Colors.purpleAccent,
       );
       return;
@@ -68,7 +64,6 @@ class _StaffGallaryState extends State<StaffGallary> {
       _uploadProgress = 0.0;
     });
 
-    // 2. Call Backend
     final result = await BackendData.uploadImage(
       filename: _fileNameController.text.trim(),
       imageBytes: pickedFile!.bytes!,
@@ -86,16 +81,15 @@ class _StaffGallaryState extends State<StaffGallary> {
       _uploadProgress = 0.0;
     });
 
-    // 3. Handle Result
     if (result != null) {
-      _showSnackBar("Image successfully added to gallery!", Colors.green);
+      _showSnackBar('Image successfully added to gallery!', Colors.green);
       setState(() {
         pickedFile = null;
         imageTakenDate = null;
         _fileNameController.clear();
       });
     } else {
-      _showSnackBar("Upload failed. Please check backend logs.", Colors.red);
+      _showSnackBar('Upload failed. Please check backend logs.', Colors.red);
     }
   }
 
@@ -107,268 +101,282 @@ class _StaffGallaryState extends State<StaffGallary> {
 
   @override
   Widget build(BuildContext context) {
+    final bool isMobile = MediaQuery.sizeOf(context).width < 760;
+
     return Scaffold(
       appBar: AppbarPage(backArrow: true),
       body: SingleChildScrollView(
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: const Center(
-                child: Text(
-                  'Manage Gallary images',
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+        child: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [Color(0xFF091323), Color(0xFF102037), Color(0xFF091323)],
+            ),
+          ),
+          child: Center(
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 1100),
+              child: Padding(
+                padding: EdgeInsets.fromLTRB(
+                  isMobile ? 12 : 20,
+                  16,
+                  isMobile ? 12 : 20,
+                  0,
                 ),
-              ),
-            ),
-
-            const Padding(
-              padding: EdgeInsets.all(8.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(Icons.info_outline, color: Colors.blueAccent),
-                  Padding(
-                    padding: EdgeInsets.only(left: 8),
-                    child: Text(
-                      'Provide one good image to display it in gallary page',
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Divider(),
-
-            Text('Date of the Uploading image taken'),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: SizedBox(
-                height: 50,
-                child: Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.all(Radius.circular(8)),
-                    border: Border.all(color: Colors.red),
-                  ),
-                  width: MediaQuery.of(context).size.width > 600
-                      ? 400
-                      : double.infinity,
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 10, right: 10),
-                    child: Row(
-                      children: [
-                        Text(
-                          imageTakenDate == null
-                              ? "No date selected!"
-                              : DateFormat(
-                                  'dd-MM-yyyy',
-                                ).format(imageTakenDate!),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      width: double.infinity,
+                      padding: EdgeInsets.all(isMobile ? 16 : 20),
+                      decoration: BoxDecoration(
+                        gradient: const LinearGradient(
+                          colors: [Color(0xFF1A3656), Color(0xFF16506F)],
                         ),
-                        Spacer(),
-                        IconButton(
-                          onPressed: () => _imageTakenDate(context),
-                          icon: Icon(Icons.date_range),
-                        ),
-                      ],
+                        borderRadius: BorderRadius.circular(20),
+                        border: Border.all(color: Colors.white24),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Gallery Upload Manager',
+                            style: TextStyle(
+                              fontSize: isMobile ? 30 : 40,
+                              fontWeight: FontWeight.w800,
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            'Upload high-quality community photos with complete metadata.',
+                            style: TextStyle(
+                              color: Colors.blueGrey[100],
+                              height: 1.4,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                ),
-              ),
-            ),
-
-            SizedBox(height: 10),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(Icons.info_outline, color: Colors.blueAccent),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text(
-                    'File name [The uploaded image will be saved in this name]',
-                  ),
-                ),
-              ],
-            ),
-
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: SizedBox(
-                width: MediaQuery.of(context).size.width > 600
-                    ? 400
-                    : double.infinity,
-                child: TextField(
-                  controller: _fileNameController,
-                  decoration: InputDecoration(
-                    label: Text('Filename'),
-                    border: OutlineInputBorder(),
-                  ),
-                ),
-              ),
-            ),
-
-            SizedBox(height: 10),
-
-            ElevatedButton.icon(
-              style: ElevatedButton.styleFrom(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                backgroundColor: Colors.blueAccent,
-                foregroundColor: Colors.white,
-              ),
-              onPressed: () async {
-                FilePickerResult? result = await FilePicker.platform.pickFiles(
-                  type: FileType.image,
-                  allowMultiple: false,
-                );
-
-                if (result != null) {
-                  setState(() {
-                    pickedFile = result.files.first;
-                    // Auto-fill filename if empty
-                    if (_fileNameController.text.isEmpty) {
-                      _fileNameController.text = pickedFile!.name;
-                    }
-                  });
-                }
-              },
-              label: Text('Click to upload image'),
-              icon: Icon(Icons.upload_file),
-            ),
-
-            SizedBox(height: 10),
-            Divider(),
-            SizedBox(height: 20),
-
-            Text(
-              'Preview',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 20),
-
-            ConstrainedBox(
-              constraints: BoxConstraints(
-                maxWidth: MediaQuery.of(context).size.width > 800
-                    ? 600
-                    : MediaQuery.of(context).size.width * 0.9,
-              ),
-              child: Column(
-                children: [
-                  (pickedFile != null && pickedFile!.bytes != null)
-                      ? Column(
-                          children: [
-                            ClipRRect(
-                              borderRadius: const BorderRadius.only(
-                                topLeft: Radius.circular(10),
-                                topRight: Radius.circular(10),
-                              ),
-                              child: Image.memory(
-                                pickedFile!.bytes!,
-                                width: double.infinity,
-                                height: 400,
-                                fit: BoxFit.cover,
+                    const SizedBox(height: 14),
+                    Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.all(14),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withValues(alpha: 0.05),
+                        borderRadius: BorderRadius.circular(16),
+                        border: Border.all(color: Colors.white12),
+                      ),
+                      child: Column(
+                        children: [
+                          _InputCard(
+                            icon: Icons.event_available_rounded,
+                            title: 'Date when image was taken',
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  child: Text(
+                                    imageTakenDate == null
+                                        ? 'No date selected'
+                                        : DateFormat(
+                                            'dd-MM-yyyy',
+                                          ).format(imageTakenDate!),
+                                  ),
+                                ),
+                                IconButton(
+                                  onPressed: () => _imageTakenDate(context),
+                                  icon: const Icon(Icons.date_range_rounded),
+                                ),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(height: 10),
+                          _InputCard(
+                            icon: Icons.edit_note_rounded,
+                            title: 'Filename',
+                            child: TextField(
+                              controller: _fileNameController,
+                              decoration: InputDecoration(
+                                labelText: 'Image filename',
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                filled: true,
+                                fillColor: Colors.black.withValues(alpha: 0.2),
                               ),
                             ),
+                          ),
+                          const SizedBox(height: 10),
+                          Align(
+                            alignment: Alignment.centerLeft,
+                            child: FilledButton.icon(
+                              style: FilledButton.styleFrom(
+                                backgroundColor: const Color(0xFF1E7AA7),
+                                foregroundColor: Colors.white,
+                              ),
+                              onPressed: () async {
+                                final result = await FilePicker.platform
+                                    .pickFiles(
+                                      type: FileType.image,
+                                      allowMultiple: false,
+                                    );
+
+                                if (result != null) {
+                                  setState(() {
+                                    pickedFile = result.files.first;
+                                    if (_fileNameController.text.isEmpty) {
+                                      _fileNameController.text =
+                                          pickedFile!.name;
+                                    }
+                                  });
+                                }
+                              },
+                              icon: const Icon(Icons.upload_file_rounded),
+                              label: const Text('Select Image'),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 14),
+                    Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.all(14),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withValues(alpha: 0.05),
+                        borderRadius: BorderRadius.circular(16),
+                        border: Border.all(color: Colors.white12),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text(
+                            'Preview',
+                            style: TextStyle(
+                              fontSize: 22,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                          const SizedBox(height: 10),
+                          if (pickedFile != null && pickedFile!.bytes != null)
+                            Column(
+                              children: [
+                                ClipRRect(
+                                  borderRadius: const BorderRadius.only(
+                                    topLeft: Radius.circular(12),
+                                    topRight: Radius.circular(12),
+                                  ),
+                                  child: Image.memory(
+                                    pickedFile!.bytes!,
+                                    width: double.infinity,
+                                    height: isMobile ? 250 : 400,
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                                Container(
+                                  width: double.infinity,
+                                  decoration: BoxDecoration(
+                                    color: Colors.white.withValues(alpha: 0.08),
+                                    borderRadius: const BorderRadius.only(
+                                      bottomLeft: Radius.circular(12),
+                                      bottomRight: Radius.circular(12),
+                                    ),
+                                    border: Border.all(color: Colors.white12),
+                                  ),
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                      vertical: 12,
+                                      horizontal: 10,
+                                    ),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceAround,
+                                      children: [
+                                        _infoItem(
+                                          'Uploaded by',
+                                          SupabaseConfig.getDisplayName(
+                                            BackendData.user,
+                                          ),
+                                        ),
+                                        _infoItem(
+                                          'Taken on',
+                                          imageTakenDate == null
+                                              ? 'No date'
+                                              : DateFormat(
+                                                  'dd-MM-yyyy',
+                                                ).format(imageTakenDate!),
+                                        ),
+                                        _infoItem('Uploaded on', 'Today'),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                                TextButton.icon(
+                                  onPressed: () =>
+                                      setState(() => pickedFile = null),
+                                  icon: const Icon(
+                                    Icons.delete_outline,
+                                    color: Colors.redAccent,
+                                  ),
+                                  label: const Text(
+                                    'Clear selection',
+                                    style: TextStyle(color: Colors.redAccent),
+                                  ),
+                                ),
+                              ],
+                            )
+                          else
                             Container(
+                              height: 200,
                               width: double.infinity,
                               decoration: BoxDecoration(
-                                color: const Color.fromARGB(130, 195, 17, 17),
-                                borderRadius: const BorderRadius.only(
-                                  bottomLeft: Radius.circular(10),
-                                  bottomRight: Radius.circular(10),
-                                ),
+                                color: Colors.black.withValues(alpha: 0.2),
+                                borderRadius: BorderRadius.circular(12),
+                                border: Border.all(color: Colors.white12),
                               ),
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(
-                                  vertical: 15,
-                                  horizontal: 10,
-                                ),
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceAround,
-                                  children: [
-                                    _infoItem(
-                                      'Uploaded by',
-                                      SupabaseConfig.getDisplayName(
-                                        BackendData.user,
-                                      ),
-                                    ),
-                                    _infoItem(
-                                      'Taken on',
-                                      imageTakenDate == null
-                                          ? "No date!"
-                                          : DateFormat(
-                                              'dd-MM-yyyy',
-                                            ).format(imageTakenDate!),
-                                    ),
-                                    _infoItem('Uploaded on', 'Today'),
-                                  ],
+                              child: const Center(
+                                child: Text(
+                                  'Select image to view preview',
+                                  style: TextStyle(color: Colors.white70),
                                 ),
                               ),
                             ),
-                            TextButton.icon(
-                              onPressed: () =>
-                                  setState(() => pickedFile = null),
-                              icon: const Icon(Icons.delete, color: Colors.red),
-                              label: const Text(
-                                'Clear selection',
-                                style: TextStyle(color: Colors.red),
-                              ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 14),
+                    if (_isLoading)
+                      SizedBox(
+                        width: 280,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            LinearProgressIndicator(value: _uploadProgress),
+                            const SizedBox(height: 8),
+                            Text(
+                              'Uploading... ${(_uploadProgress * 100).toStringAsFixed(0)}%',
                             ),
                           ],
-                        )
-                      : Container(
-                          height: 200,
-                          width: double.infinity,
-                          decoration: BoxDecoration(
-                            color: Colors.grey.shade100,
-                            borderRadius: BorderRadius.circular(10),
-                            border: Border.all(color: Colors.grey.shade300),
-                          ),
-                          child: const Center(
-                            child: Text(
-                              'Select image to view Preview!',
-                              style: TextStyle(
-                                fontSize: 18,
-                                color: Colors.grey,
-                              ),
-                            ),
-                          ),
                         ),
-                ],
+                      )
+                    else
+                      FilledButton.icon(
+                        onPressed: _handleUpload,
+                        style: FilledButton.styleFrom(
+                          backgroundColor: const Color(0xFF1E7AA7),
+                          foregroundColor: Colors.white,
+                          minimumSize: const Size(240, 50),
+                        ),
+                        icon: const Icon(Icons.cloud_upload_rounded),
+                        label: const Text('Add Image To Gallery'),
+                      ),
+                    const SizedBox(height: 20),
+                    const MyFooter(),
+                  ],
+                ),
               ),
             ),
-            const SizedBox(height: 30),
-
-            // Final Upload Button with Loading Logic
-            _isLoading
-                ? SizedBox(
-                    width: 260,
-                    child: Column(
-                      children: [
-                        LinearProgressIndicator(value: _uploadProgress),
-                        const SizedBox(height: 8),
-                        Text(
-                          'Uploading... ${(_uploadProgress * 100).toStringAsFixed(0)}%',
-                        ),
-                      ],
-                    ),
-                  )
-                : ElevatedButton(
-                    onPressed: _handleUpload,
-                    style: ElevatedButton.styleFrom(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      backgroundColor: Colors.blueAccent,
-                      foregroundColor: Colors.white,
-                      minimumSize: const Size(200, 50),
-                    ),
-                    child: Text('Add Image to Gallery!'),
-                  ),
-
-            const SizedBox(height: 50),
-            MyFooter(),
-          ],
+          ),
         ),
       ),
     );
@@ -385,6 +393,45 @@ class _StaffGallaryState extends State<StaffGallary> {
         const SizedBox(height: 4),
         Text(value, style: const TextStyle(color: Colors.white, fontSize: 12)),
       ],
+    );
+  }
+}
+
+class _InputCard extends StatelessWidget {
+  final IconData icon;
+  final String title;
+  final Widget child;
+
+  const _InputCard({
+    required this.icon,
+    required this.title,
+    required this.child,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: Colors.black.withValues(alpha: 0.2),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.white12),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(icon, size: 18, color: const Color(0xFF66D3F2)),
+              const SizedBox(width: 8),
+              Text(title, style: const TextStyle(fontWeight: FontWeight.w600)),
+            ],
+          ),
+          const SizedBox(height: 8),
+          child,
+        ],
+      ),
     );
   }
 }
