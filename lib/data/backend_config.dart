@@ -240,6 +240,19 @@ class BackendData {
           request['title'] ?? request['memory_title'] ?? request['name'];
       final memberUuid =
           request['author_uuid'] ?? request['member_uuid'] ?? request['uuid'];
+      final displayName =
+          request['display_name'] ??
+          request['player'] ??
+          request['author'] ??
+          request['username'] ??
+          request['name'] ??
+          'Unknown';
+      final dateTaken =
+          request['time_taken'] ??
+          request['taken_date'] ??
+          request['date_taken'] ??
+          request['date'] ??
+          '';
 
       final payload = <String, dynamic>{
         'status': status,
@@ -288,6 +301,14 @@ class BackendData {
         }
 
         if (response.statusCode == 200 || response.statusCode == 201) {
+          if (approved) {
+            await notifyDiscordApprovedMemoryRequest(
+              displayName: displayName.toString(),
+              uuid: memberUuid?.toString() ?? 'Unknown',
+              title: title?.toString() ?? 'Untitled request',
+              dateTaken: dateTaken.toString(),
+            );
+          }
           return true;
         }
       }
@@ -476,6 +497,32 @@ class BackendData {
         {
           'title': messageTitle,
           'color': 15844367,
+          'fields': [
+            {'name': 'Display Name', 'value': displayName, 'inline': true},
+            {'name': 'UUID', 'value': uuid, 'inline': true},
+            {'name': 'Date Taken', 'value': dateTaken, 'inline': true},
+          ],
+        },
+      ],
+    );
+  }
+
+  static Future<String?> notifyDiscordApprovedMemoryRequest({
+    required String displayName,
+    required String uuid,
+    required String title,
+    required String dateTaken,
+  }) async {
+    final messageTitle = title.trim().isNotEmpty
+        ? title.trim()
+        : 'Member memory request approved';
+
+    return await sendDiscordWebhook(
+      content: '✅ Member memory request approved by staff',
+      embeds: [
+        {
+          'title': messageTitle,
+          'color': 3066993,
           'fields': [
             {'name': 'Display Name', 'value': displayName, 'inline': true},
             {'name': 'UUID', 'value': uuid, 'inline': true},
