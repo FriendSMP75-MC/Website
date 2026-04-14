@@ -681,6 +681,7 @@ class _StaffGalleryRequestsPageState extends State<StaffGalleryRequestsPage> {
     final user = SupabaseConfig.client.auth.currentUser;
     final visibleRequests = _visibleRequests();
     final isCompact = MediaQuery.of(context).size.width < 700;
+    final headerHeight = isCompact ? 620.0 : 500.0;
 
     if (user == null) {
       return Scaffold(
@@ -728,6 +729,7 @@ class _StaffGalleryRequestsPageState extends State<StaffGalleryRequestsPage> {
                 padding: const EdgeInsets.all(12),
                 children: [
                   Container(
+                    height: headerHeight,
                     width: double.infinity,
                     padding: EdgeInsets.all(isCompact ? 14 : 16),
                     decoration: BoxDecoration(
