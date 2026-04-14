@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:server_site/widgets/dashboardtitles.dart';
-import 'package:server_site/widgets/footer.dart';
 
 class StaffDashboard extends StatefulWidget {
   const StaffDashboard({super.key});
@@ -43,67 +42,65 @@ class _StaffDashboardState extends State<StaffDashboard> {
             ],
           ),
         ),
-        Expanded(
-          child: GridView.count(
-            crossAxisCount: isMobile
-                ? 1
-                : isTablet
-                ? 2
-                : 3,
-            crossAxisSpacing: 16,
-            mainAxisSpacing: 16,
-            childAspectRatio: isMobile
-                ? 2.2
-                : isTablet
-                ? 1.55
-                : 1.75,
-            padding: const EdgeInsets.all(8),
-            children: [
-              DashboardTiles(
-                title: 'Announcement',
-                color: const Color(0xFF5B3FD6),
-                icon: Icons.campaign_rounded,
-                actionLabel: 'Manage',
-                subText: 'Create and publish server updates for players.',
-                onTap: () {
-                  context.push('/staff/announcements');
-                },
-              ),
-              DashboardTiles(
-                title: 'Gallery',
-                color: const Color(0xFF1F7BD9),
-                icon: Icons.photo_library_rounded,
-                actionLabel: 'Upload',
-                onTap: () {
-                  context.push('/staff/gallery');
-                },
-                subText: 'Upload new gallery photos for public display.',
-              ),
-              DashboardTiles(
-                title: 'Approve Gallery Request',
-                color: const Color(0xFF228B63),
-                icon: Icons.fact_check_rounded,
-                actionLabel: 'Review',
-                onTap: () {
-                  context.push('/staff/gallery-requests');
-                },
-                subText: 'Review and approve members\' memory submissions.',
-              ),
-              DashboardTiles(
-                title: 'Server access',
-                color: Colors.redAccent,
-                icon: Icons.verified_user_outlined,
-                actionLabel: 'Server Access',
-                onTap: () {
-                  context.push('/staff/server-access');
-                },
-                subText: 'Start, restart, and stop server operations.',
-              ),
-            ],
-          ),
+        GridView.count(
+          crossAxisCount: isMobile
+              ? 1
+              : isTablet
+              ? 2
+              : 3,
+          crossAxisSpacing: 16,
+          mainAxisSpacing: 16,
+          childAspectRatio: isMobile
+              ? 1.95
+              : isTablet
+              ? 1.35
+              : 1.4,
+          padding: const EdgeInsets.all(8),
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          children: [
+            DashboardTiles(
+              title: 'Announcement',
+              color: const Color(0xFF5B3FD6),
+              icon: Icons.campaign_rounded,
+              actionLabel: 'Manage',
+              subText: 'Create and publish server updates for players.',
+              onTap: () {
+                context.push('/staff/announcements');
+              },
+            ),
+            DashboardTiles(
+              title: 'Gallery',
+              color: const Color(0xFF1F7BD9),
+              icon: Icons.photo_library_rounded,
+              actionLabel: 'Upload',
+              onTap: () {
+                context.push('/staff/gallery');
+              },
+              subText: 'Upload new gallery photos for public display.',
+            ),
+            DashboardTiles(
+              title: 'Approve Gallery Request',
+              color: const Color(0xFF228B63),
+              icon: Icons.fact_check_rounded,
+              actionLabel: 'Review',
+              onTap: () {
+                context.push('/staff/gallery-requests');
+              },
+              subText: 'Review and approve members\' memory submissions.',
+            ),
+            DashboardTiles(
+              title: 'Server access',
+              color: Colors.redAccent,
+              icon: Icons.verified_user_outlined,
+              actionLabel: 'Server Access',
+              onTap: () {
+                context.push('/staff/server-access');
+              },
+              subText: 'Start, restart, and stop server operations.',
+            ),
+          ],
         ),
-        const SizedBox(height: 28),
-        const MyFooter(),
       ],
     );
   }

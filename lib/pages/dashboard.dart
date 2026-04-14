@@ -487,62 +487,52 @@ class _DashboardState extends State<Dashboard> {
                           );
                         }
                         if (snapshot.data == true) {
-                          return SizedBox(
-                            height: MediaQuery.of(context).size.height,
-                            child: Column(
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 8,
-                                    vertical: 6,
+                          return Column(
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 8,
+                                  vertical: 6,
+                                ),
+                                child: Container(
+                                  padding: const EdgeInsets.all(4),
+                                  decoration: BoxDecoration(
+                                    color: Colors.white.withValues(alpha: 0.05),
+                                    borderRadius: BorderRadius.circular(12),
+                                    border: Border.all(color: Colors.white24),
                                   ),
-                                  child: Container(
-                                    padding: const EdgeInsets.all(4),
-                                    decoration: BoxDecoration(
-                                      color: Colors.white.withValues(
-                                        alpha: 0.05,
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      _DashboardTab(
+                                        selected: !_showMemberViewForStaff,
+                                        label: 'Staff Dashboard',
+                                        onTap: () {
+                                          setState(() {
+                                            _showMemberViewForStaff = false;
+                                          });
+                                        },
                                       ),
-                                      borderRadius: BorderRadius.circular(12),
-                                      border: Border.all(color: Colors.white24),
-                                    ),
-                                    child: Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        _DashboardTab(
-                                          selected: !_showMemberViewForStaff,
-                                          label: 'Staff Dashboard',
-                                          onTap: () {
-                                            setState(() {
-                                              _showMemberViewForStaff = false;
-                                            });
-                                          },
-                                        ),
-                                        _DashboardTab(
-                                          selected: _showMemberViewForStaff,
-                                          label: 'Member Dashboard',
-                                          onTap: () {
-                                            setState(() {
-                                              _showMemberViewForStaff = true;
-                                            });
-                                          },
-                                        ),
-                                      ],
-                                    ),
+                                      _DashboardTab(
+                                        selected: _showMemberViewForStaff,
+                                        label: 'Member Dashboard',
+                                        onTap: () {
+                                          setState(() {
+                                            _showMemberViewForStaff = true;
+                                          });
+                                        },
+                                      ),
+                                    ],
                                   ),
                                 ),
-                                Expanded(
-                                  child: _showMemberViewForStaff
-                                      ? MemberDashboard()
-                                      : StaffDashboard(),
-                                ),
-                              ],
-                            ),
+                              ),
+                              _showMemberViewForStaff
+                                  ? const MemberDashboard()
+                                  : const StaffDashboard(),
+                            ],
                           );
                         }
-                        return SizedBox(
-                          height: MediaQuery.of(context).size.height,
-                          child: MemberDashboard(),
-                        );
+                        return const MemberDashboard();
                       },
                     ),
                   ],
