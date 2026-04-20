@@ -132,7 +132,7 @@ class _HomeState extends State<Home> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Play FriendSMP75',
+                            'FriendSMP75',
                             style: TextStyle(
                               fontSize: isMobile ? 28 : 38,
                               fontWeight: FontWeight.w800,

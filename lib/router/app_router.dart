@@ -11,6 +11,7 @@ import 'package:server_site/pages/status.dart';
 import 'package:server_site/pages/support_us.dart';
 import 'package:server_site/pages/votes.dart';
 import 'package:server_site/pages/dashboards/subpage/staff/staff_announcement.dart';
+import 'package:server_site/pages/dashboards/subpage/staff/staff_dm_broadcast.dart';
 import 'package:server_site/pages/dashboards/subpage/staff/staff_gallary.dart';
 import 'package:server_site/pages/dashboards/subpage/staff/staff_gallery_requests.dart';
 import 'package:server_site/sub_page/view_announcements.dart';
@@ -230,6 +231,23 @@ class AppRouter {
         pageBuilder: (context, state) => CustomTransitionPage(
           key: state.pageKey,
           child: const StaffGalleryRequestsPage(),
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            return SlideTransition(
+              position: Tween<Offset>(
+                begin: const Offset(1, 0),
+                end: Offset.zero,
+              ).animate(animation),
+              child: child,
+            );
+          },
+        ),
+      ),
+      GoRoute(
+        path: '/staff/dm-broadcast',
+        name: 'staff-dm-broadcast',
+        pageBuilder: (context, state) => CustomTransitionPage(
+          key: state.pageKey,
+          child: const StaffDmBroadcastPage(),
           transitionsBuilder: (context, animation, secondaryAnimation, child) {
             return SlideTransition(
               position: Tween<Offset>(
