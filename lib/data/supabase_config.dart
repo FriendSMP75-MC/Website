@@ -96,17 +96,17 @@ class SupabaseConfig {
   }
 
   // Get user's display name
- static String getDisplayName(User? user) {
-  try{
-  if (user == null) return 'user';
-  final meta = user.userMetadata;
-  final customClaims = meta?['custom_claims'];
-  final displayName = customClaims?['global_name'];
-  if (displayName is String && displayName.isNotEmpty) {
-    return displayName;
-  }
-  return 'user';
-  } catch (e) {
+  static String getDisplayName(User? user) {
+    try {
+      if (user == null) return 'user';
+      final meta = user.userMetadata;
+      final customClaims = meta?['custom_claims'];
+      final displayName = customClaims?['global_name'];
+      if (displayName is String && displayName.isNotEmpty) {
+        return displayName;
+      }
+      return 'user';
+    } catch (e) {
       return 'Error: $e';
     }
   }
@@ -115,17 +115,54 @@ class SupabaseConfig {
     return user?.id ?? 'Not logged in';
   }
 
+  static String getDiscordId(User? user) {
+    if (user == null) return 'Unknown';
+
+    final meta = user.userMetadata;
+    final customClaims = meta?['custom_claims'];
+
+    final dynamic directDiscordId = meta?['discord_id'];
+    final dynamic providerId = meta?['provider_id'];
+    final dynamic customDiscordId = customClaims?['discord_id'];
+    final dynamic customProviderId = customClaims?['provider_id'];
+    final dynamic subject = customClaims?['sub'];
+
+    final candidates = [
+      directDiscordId,
+      providerId,
+      customDiscordId,
+      customProviderId,
+      subject,
+    ];
+
+    for (final candidate in candidates) {
+      if (candidate == null) continue;
+      final text = candidate.toString().trim();
+      final isNumeric =
+          text.isNotEmpty &&
+          text.codeUnits.every((code) => code >= 48 && code <= 57);
+      if (isNumeric && text.length >= 17 && text.length <= 20) {
+        return text;
+      }
+    }
+
+    return 'Unknown';
+  }
+
   /// Quick login/logout helpers
   static Future<void> loginWithDiscord() async {
-    const String isDev = String.fromEnvironment("IS_DEV", defaultValue: "false");
-    
-    final String redirectUrl = isDev == "true" 
-      ? "http://localhost:8080/" 
-      : "https://friendsmp75.vercel.app/";
-    
+    const String isDev = String.fromEnvironment(
+      "IS_DEV",
+      defaultValue: "false",
+    );
+
+    final String redirectUrl = isDev == "true"
+        ? "http://localhost:8080/"
+        : "https://friendsmp75.vercel.app/";
+
     await client.auth.signInWithOAuth(
-      OAuthProvider.discord, 
-      redirectTo: redirectUrl
+      OAuthProvider.discord,
+      redirectTo: redirectUrl,
     );
   }
 

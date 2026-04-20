@@ -405,6 +405,104 @@ class BackendData {
     return await sendData('add-uuid', {'uuid': uuid, 'nickname': nickname});
   }
 
+  static Future<bool> sendDirectMessage({
+    required String recipientDiscordId,
+    required String message,
+    String? senderUuid,
+    String? senderName,
+    String? senderDiscordId,
+    String serverName = 'FriendSMP75',
+  }) async {
+    try {
+      final sentAt = DateTime.now().toUtc().toIso8601String();
+      final safeSenderName =
+          (senderName != null && senderName.trim().isNotEmpty)
+          ? senderName.trim()
+          : 'Unknown';
+      final safeSenderUuid =
+          (senderUuid != null && senderUuid.trim().isNotEmpty)
+          ? senderUuid.trim()
+          : 'Unknown';
+      final safeSenderDiscordId =
+          (senderDiscordId != null && senderDiscordId.trim().isNotEmpty)
+          ? senderDiscordId.trim()
+          : 'Unknown';
+
+      final enrichedMessage =
+          '[Server: $serverName]\n'
+          'From: $safeSenderName\n'
+          'Sender UUID: $safeSenderUuid\n'
+          'Sender Discord ID: $safeSenderDiscordId\n'
+          'Sent At (UTC): $sentAt\n\n'
+          '${message.trim()}';
+
+      final payload = <String, dynamic>{
+        // Keep aliases to support backend field variations.
+        'recipient_discord_id': recipientDiscordId,
+        'discord_id': recipientDiscordId,
+        'recipient_uuid': recipientDiscordId,
+        'uuid': recipientDiscordId,
+        'message': enrichedMessage,
+        'message_body': enrichedMessage,
+        'raw_message': message,
+        'sender_uuid': safeSenderUuid,
+        'sender_name': safeSenderName,
+        'sender_discord_id': safeSenderDiscordId,
+        'sent_at': sentAt,
+        'server_name': serverName,
+        'source_server': serverName,
+      };
+
+      final response = await http.post(
+        Uri.parse('${backendUrl}send-dm'),
+        headers: _getHeaders(includeAuth: true),
+        body: jsonEncode(payload),
+      );
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        return true;
+      }
+
+      print('Send DM error: ${response.statusCode} ${response.body}');
+      return false;
+    } catch (e) {
+      print('Send DM exception: $e');
+      return false;
+    }
+  }
+
+  static Future<({int sentCount, List<String> failedIds})>
+  sendDirectMessageToMany({
+    required List<String> recipientDiscordIds,
+    required String message,
+    String? senderUuid,
+    String? senderName,
+    String? senderDiscordId,
+    String serverName = 'FriendSMP75',
+  }) async {
+    int sentCount = 0;
+    final failedIds = <String>[];
+
+    for (final id in recipientDiscordIds) {
+      final ok = await sendDirectMessage(
+        recipientDiscordId: id,
+        message: message,
+        senderUuid: senderUuid,
+        senderName: senderName,
+        senderDiscordId: senderDiscordId,
+        serverName: serverName,
+      );
+
+      if (ok) {
+        sentCount++;
+      } else {
+        failedIds.add(id);
+      }
+    }
+
+    return (sentCount: sentCount, failedIds: failedIds);
+  }
+
   static Future<String?> newAnnouncement(String title, String body) async {
     try {
       final author = SupabaseConfig.getDisplayName(user);
