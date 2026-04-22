@@ -87,6 +87,7 @@ class _SupportUsPageState extends State<SupportUsPage> {
       div.style.setProperty('width', '100%');
       div.style.setProperty('display', 'flex');
       div.style.setProperty('justify-content', 'center');
+      div.style.setProperty('pointer-events', 'none');
 
       final form = web.document.createElement('form') as web.HTMLFormElement;
       final script =
@@ -498,6 +499,14 @@ class _SupportUsPageState extends State<SupportUsPage> {
                             style: TextStyle(
                               fontSize: 12,
                               color: Colors.white60,
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          const Text(
+                            'Button is disabled in testing mode.',
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: Colors.orangeAccent,
                             ),
                           ),
                           const SizedBox(height: 12),
