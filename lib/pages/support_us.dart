@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:server_site/widgets/appbar.dart';
 import 'package:server_site/widgets/footer.dart';
 import 'package:server_site/widgets/nav_drawer.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'dart:ui_web' as ui;
 import 'package:web/web.dart' as web;
 
@@ -14,17 +13,14 @@ class SupportUsPage extends StatefulWidget {
 }
 
 class _SupportUsPageState extends State<SupportUsPage> {
-  final String _smartlinkUrl =
-      'https://duepose.com/fdyxudzb52?key=c6b07a3f738ebead7c217a43e9b3c89a';
-
-  final String _adViewType = 'adsterra-native-bypass';
-  final String _containerId = 'container-07b3366e08460cfc7ba1d4b71d138632';
+  final String _adViewType = 'google-adsense-ad';
+  final String _containerId = 'google-adsense-container';
 
   @override
   void initState() {
     super.initState();
 
-    // Register the View Factory
+    // Register the View Factory for Google AdSense
     ui.platformViewRegistry.registerViewFactory(_adViewType, (int viewId) {
       final div = web.document.createElement('div') as web.HTMLDivElement;
       div.id = _containerId;
@@ -34,14 +30,23 @@ class _SupportUsPageState extends State<SupportUsPage> {
       div.style.setProperty('display', 'flex');
       div.style.setProperty('justify-content', 'center');
 
-      final script =
-          web.document.createElement('script') as web.HTMLScriptElement;
-      script.src =
-          'https://duepose.com/07b3366e08460cfc7ba1d4b71d138632/invoke.js';
-      script.async = true;
-      script.setAttribute('data-cfasync', 'false');
+      final ins = web.document.createElement('ins') as web.HTMLElement;
+      ins.className = 'adsbygoogle';
+      ins.setAttribute('style', 'display:block');
+      ins.setAttribute('data-ad-client', 'ca-pub-2317643702082291');
+      ins.setAttribute('data-ad-slot', '6289746212');
+      ins.setAttribute('data-ad-format', 'auto');
+      ins.setAttribute('data-full-width-responsive', 'true');
 
-      div.append(script);
+      div.append(ins);
+
+      // Push the ad
+      (web.window as dynamic).adsbygoogle =
+          (web.window as dynamic).adsbygoogle ?? [];
+      ((web.window as dynamic).adsbygoogle as dynamic).push(<String, dynamic>{
+        'google_ad_client': 'ca-pub-2317643702082291',
+      });
+
       return div;
     });
   }
@@ -53,19 +58,126 @@ class _SupportUsPageState extends State<SupportUsPage> {
     super.dispose();
   }
 
-  Future<void> _launchSmartlink() async {
-    final Uri url = Uri.parse(_smartlinkUrl);
-    try {
-      if (await canLaunchUrl(url)) {
-        await launchUrl(url, mode: LaunchMode.externalApplication);
-        if (!mounted) return;
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Thank you for supporting the SMP!')),
-        );
-      }
-    } catch (e) {
-      debugPrint('Could not launch smartlink: $e');
-    }
+  Widget _buildSupportItem(String title, String description) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            '•',
+            style: TextStyle(fontSize: 18, color: Color(0xFF43D3E2)),
+          ),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: const TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                const SizedBox(height: 3),
+                Text(
+                  description,
+                  style: const TextStyle(fontSize: 13, color: Colors.white60),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildOption(String title, String description) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8),
+      child: Row(
+        children: [
+          const SizedBox(width: 8),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: const TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                Text(
+                  description,
+                  style: const TextStyle(fontSize: 12, color: Colors.white60),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showAdModal() {
+    showDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (context) => Dialog(
+        backgroundColor: const Color(0xFF0A1423),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        child: Container(
+          padding: const EdgeInsets.all(20),
+          decoration: BoxDecoration(
+            gradient: const LinearGradient(
+              colors: [Color(0xFF2B395F), Color(0xFF214E6F)],
+            ),
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(color: Colors.white24),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Text(
+                'Support Us by Viewing Ads',
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+              ),
+              const SizedBox(height: 16),
+              Container(
+                height: 300,
+                width: 400,
+                decoration: BoxDecoration(
+                  color: Colors.white.withValues(alpha: 0.06),
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: Colors.white12),
+                ),
+                child: HtmlElementView(viewType: _adViewType),
+              ),
+              const SizedBox(height: 16),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  TextButton(
+                    onPressed: () => Navigator.pop(context),
+                    child: const Text(
+                      'Close',
+                      style: TextStyle(color: Color(0xFF43D3E2)),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 
   @override
@@ -129,20 +241,6 @@ class _SupportUsPageState extends State<SupportUsPage> {
                       ),
                     ),
                     const SizedBox(height: 14),
-                    Center(
-                      child: Container(
-                        height: 190,
-                        width: 340,
-                        padding: const EdgeInsets.all(8),
-                        decoration: BoxDecoration(
-                          color: Colors.white.withValues(alpha: 0.06),
-                          borderRadius: BorderRadius.circular(14),
-                          border: Border.all(color: Colors.white12),
-                        ),
-                        child: HtmlElementView(viewType: _adViewType),
-                      ),
-                    ),
-                    const SizedBox(height: 16),
                     const Text(
                       'Why support us?',
                       style: TextStyle(
@@ -173,36 +271,159 @@ class _SupportUsPageState extends State<SupportUsPage> {
                         ),
                       ],
                     ),
+                    const SizedBox(height: 28),
+                    Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.all(20),
+                      decoration: BoxDecoration(
+                        gradient: const LinearGradient(
+                          colors: [Color(0xFF1E3A5F), Color(0xFF2A4A7F)],
+                        ),
+                        borderRadius: BorderRadius.circular(16),
+                        border: Border.all(color: Colors.white12),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text(
+                            'How Your Support Helps',
+                            style: TextStyle(
+                              fontSize: 24,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                          const SizedBox(height: 14),
+                          const Text(
+                            'Every contribution directly impacts the quality of your FriendSMP75 experience:',
+                            style: TextStyle(
+                              fontSize: 15,
+                              color: Colors.white70,
+                              height: 1.5,
+                            ),
+                          ),
+                          const SizedBox(height: 16),
+                          _buildSupportItem(
+                            '🖥️ Server Stability',
+                            'Ensures 24/7 uptime with reliable hosting infrastructure',
+                          ),
+                          _buildSupportItem(
+                            '🎮 New Features',
+                            'Funds plugin development and gameplay enhancements',
+                          ),
+                          _buildSupportItem(
+                            '🗺️ World Management',
+                            'Supports custom maps, creative builds, and events',
+                          ),
+                          _buildSupportItem(
+                            '👥 Community',
+                            'Enables staff support and player moderation tools',
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 28),
+                    const SizedBox(height: 14),
+                    Center(
+                      child: Container(
+                        height: 160,
+                        width: 320,
+                        padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          color: Colors.white.withValues(alpha: 0.06),
+                          borderRadius: BorderRadius.circular(14),
+                          border: Border.all(color: Colors.white12),
+                        ),
+                        child: HtmlElementView(viewType: _adViewType),
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.all(18),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withValues(alpha: 0.03),
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(
+                          color: Colors.green.withValues(alpha: 0.3),
+                        ),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text(
+                            'Support Options',
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.w600,
+                              color: Color(0xFF43D3E2),
+                            ),
+                          ),
+                          const SizedBox(height: 12),
+                          const Text(
+                            'Choose how you want to support FriendSMP75:',
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: Colors.white70,
+                            ),
+                          ),
+                          const SizedBox(height: 12),
+                          _buildOption(
+                            '💰 Direct Support',
+                            'Provide direct funding for server operations',
+                          ),
+                          _buildOption(
+                            '🎯 Supporter Perks',
+                            'Get exclusive in-game benefits and recognition',
+                          ),
+                          _buildOption(
+                            '📺 View Ads',
+                            'Contribute by viewing ads - 100% goes to the server',
+                          ),
+                        ],
+                      ),
+                    ),
                     const SizedBox(height: 20),
                     Center(
                       child: FilledButton.icon(
                         style: FilledButton.styleFrom(
-                          backgroundColor: const Color(0xFFFF8C4B),
+                          backgroundColor: const Color(0xFF43D3E2),
                           foregroundColor: Colors.black,
                           padding: const EdgeInsets.symmetric(
                             horizontal: 26,
                             vertical: 16,
                           ),
                           textStyle: const TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.w700,
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
                           ),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12),
                           ),
                         ),
-                        onPressed: _launchSmartlink,
-                        icon: const Icon(Icons.favorite),
-                        label: const Text('Support The Server'),
+                        onPressed: _showAdModal,
+                        icon: const Icon(Icons.video_library),
+                        label: const Text('View Ads & Support'),
                       ),
                     ),
+                    const SizedBox(height: 12),
                     const Padding(
                       padding: EdgeInsets.only(top: 12),
                       child: Center(
                         child: Text(
-                          'Supporting opens a sponsor page in a new tab.',
+                          'Viewing ads takes just a few minutes and helps tremendously!',
                           textAlign: TextAlign.center,
-                          style: TextStyle(fontSize: 12, color: Colors.white70),
+                          style: TextStyle(fontSize: 13, color: Colors.white70),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 22),
+                    const Padding(
+                      padding: EdgeInsets.only(top: 12),
+                      child: Center(
+                        child: Text(
+                          'Thank you for keeping FriendSMP75 alive! 💜',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(fontSize: 14, color: Colors.white70),
                         ),
                       ),
                     ),
