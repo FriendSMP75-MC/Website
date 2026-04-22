@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:server_site/widgets/appbar.dart';
 import 'package:server_site/widgets/footer.dart';
 import 'package:server_site/widgets/nav_drawer.dart';
@@ -14,11 +15,39 @@ class SupportUsPage extends StatefulWidget {
 
 class _SupportUsPageState extends State<SupportUsPage> {
   final String _adViewType = 'google-adsense-ad';
+  final String _razorpayViewType = 'razorpay-donate-button';
   final String _containerId = 'google-adsense-container';
+  final String _razorpayContainerId = 'razorpay-button-container';
+  static bool _viewsRegistered = false;
+
+  void _handleRazorpayReturn() {
+    final params = Uri.base.queryParameters;
+    final status = params['razorpay_payment_link_status']?.toLowerCase();
+
+    final hasRazorpaySignal =
+        params.containsKey('payment_id') ||
+        params.containsKey('razorpay_payment_id') ||
+        params.containsKey('razorpay_signature') ||
+        params.containsKey('razorpay_payment_link_id');
+
+    if (hasRazorpaySignal && (status == null || status == 'paid')) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) {
+          return;
+        }
+        context.go('/thank-you');
+      });
+    }
+  }
 
   @override
   void initState() {
     super.initState();
+    _handleRazorpayReturn();
+
+    if (_viewsRegistered) {
+      return;
+    }
 
     // Register the View Factory for Google AdSense
     ui.platformViewRegistry.registerViewFactory(_adViewType, (int viewId) {
@@ -49,12 +78,42 @@ class _SupportUsPageState extends State<SupportUsPage> {
 
       return div;
     });
+
+    ui.platformViewRegistry.registerViewFactory(_razorpayViewType, (
+      int viewId,
+    ) {
+      final div = web.document.createElement('div') as web.HTMLDivElement;
+      div.id = _razorpayContainerId;
+      div.style.setProperty('width', '100%');
+      div.style.setProperty('display', 'flex');
+      div.style.setProperty('justify-content', 'center');
+
+      final form = web.document.createElement('form') as web.HTMLFormElement;
+      final script =
+          web.document.createElement('script') as web.HTMLScriptElement;
+      script.src = 'https://checkout.razorpay.com/v1/payment-button.js';
+      script.setAttribute('data-payment_button_id', 'pl_SgRAbsZyCxGVjO');
+      script.setAttribute(
+        'data-redirect_url',
+        '${Uri.base.origin}/#/thank-you',
+      );
+      script.async = true;
+
+      form.append(script);
+      div.append(form);
+
+      return div;
+    });
+
+    _viewsRegistered = true;
   }
 
   @override
   void dispose() {
     final element = web.document.getElementById(_containerId);
     element?.remove();
+    final razorpayElement = web.document.getElementById(_razorpayContainerId);
+    razorpayElement?.remove();
     super.dispose();
   }
 
@@ -383,6 +442,78 @@ class _SupportUsPageState extends State<SupportUsPage> {
                       ),
                     ),
                     const SizedBox(height: 20),
+                    Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.all(18),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withValues(alpha: 0.04),
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: Colors.white12),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text(
+                            'Donate Securely',
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.w700,
+                              color: Color(0xFF43D3E2),
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 10,
+                              vertical: 4,
+                            ),
+                            decoration: BoxDecoration(
+                              color: Colors.orange.withValues(alpha: 0.15),
+                              borderRadius: BorderRadius.circular(999),
+                              border: Border.all(
+                                color: Colors.orange.withValues(alpha: 0.7),
+                              ),
+                            ),
+                            child: const Text(
+                              'TESTING',
+                              style: TextStyle(
+                                fontSize: 11,
+                                fontWeight: FontWeight.w700,
+                                letterSpacing: 0.8,
+                                color: Colors.orangeAccent,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 10),
+                          const Text(
+                            'Use the button below to make a direct contribution through Razorpay.',
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: Colors.white70,
+                            ),
+                          ),
+                          const SizedBox(height: 6),
+                          const Text(
+                            'After a successful payment, you will be redirected to the Thank You page.',
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: Colors.white60,
+                            ),
+                          ),
+                          const SizedBox(height: 12),
+                          Center(
+                            child: SizedBox(
+                              width: 360,
+                              height: 110,
+                              child: HtmlElementView(
+                                viewType: _razorpayViewType,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 18),
                     Center(
                       child: FilledButton.icon(
                         style: FilledButton.styleFrom(
