@@ -163,6 +163,21 @@ class BackendData {
     return null;
   }
 
+  /// Retrieves tickets from the backend (maps to `public.tickets`).
+  static Future<List<Map<String, dynamic>>?> getTickets() async {
+    try {
+      final result = await retrieveData('get-tickets', requireAuth: true);
+      if (result is List) {
+        return result.whereType<Map>().map((item) {
+          return item.map((key, value) => MapEntry(key.toString(), value));
+        }).toList();
+      }
+    } catch (e) {
+      debugPrint('Error fetching tickets: $e');
+    }
+    return null;
+  }
+
   static Future<List<Map<String, dynamic>>?> getMemberMemoryRequests({
     required String memberUuid,
   }) async {
