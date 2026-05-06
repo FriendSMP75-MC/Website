@@ -182,64 +182,6 @@ class _SupportUsPageState extends State<SupportUsPage> {
     );
   }
 
-  void _showAdModal() {
-    showDialog(
-      context: context,
-      barrierDismissible: true,
-      builder: (context) => Dialog(
-        backgroundColor: const Color(0xFF0A1423),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        child: Container(
-          padding: const EdgeInsets.all(20),
-          decoration: BoxDecoration(
-            gradient: const LinearGradient(
-              colors: [Color(0xFF2B395F), Color(0xFF214E6F)],
-            ),
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: Colors.white24),
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const Text(
-                'Support Us by Viewing Ads',
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                ),
-              ),
-              const SizedBox(height: 16),
-              Container(
-                height: 300,
-                width: 400,
-                decoration: BoxDecoration(
-                  color: Colors.white.withValues(alpha: 0.06),
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: Colors.white12),
-                ),
-                child: HtmlElementView(viewType: _adViewType),
-              ),
-              const SizedBox(height: 16),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  TextButton(
-                    onPressed: () => Navigator.pop(context),
-                    child: const Text(
-                      'Close',
-                      style: TextStyle(color: Color(0xFF43D3E2)),
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     final bool isMobile = MediaQuery.sizeOf(context).width < 760;
@@ -382,18 +324,49 @@ class _SupportUsPageState extends State<SupportUsPage> {
                       ),
                     ),
                     const SizedBox(height: 28),
-                    const SizedBox(height: 14),
-                    Center(
-                      child: Container(
-                        height: 160,
-                        width: 320,
-                        padding: const EdgeInsets.all(8),
-                        decoration: BoxDecoration(
-                          color: Colors.white.withValues(alpha: 0.06),
-                          borderRadius: BorderRadius.circular(14),
-                          border: Border.all(color: Colors.white12),
-                        ),
-                        child: HtmlElementView(viewType: _adViewType),
+                    Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.all(18),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withValues(alpha: 0.04),
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: Colors.white12),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text(
+                            'Support Through Ads',
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.w700,
+                              color: Color(0xFF43D3E2),
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          const Text(
+                            'We keep ad placements limited and only on content pages. Viewing an ad helps us pay for uptime and new features.',
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: Colors.white70,
+                              height: 1.45,
+                            ),
+                          ),
+                          const SizedBox(height: 12),
+                          Center(
+                            child: Container(
+                              height: 160,
+                              width: 320,
+                              padding: const EdgeInsets.all(8),
+                              decoration: BoxDecoration(
+                                color: Colors.white.withValues(alpha: 0.06),
+                                borderRadius: BorderRadius.circular(14),
+                                border: Border.all(color: Colors.white12),
+                              ),
+                              child: HtmlElementView(viewType: _adViewType),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                     const SizedBox(height: 16),
@@ -523,29 +496,6 @@ class _SupportUsPageState extends State<SupportUsPage> {
                       ),
                     ),
                     const SizedBox(height: 18),
-                    Center(
-                      child: FilledButton.icon(
-                        style: FilledButton.styleFrom(
-                          backgroundColor: const Color(0xFF43D3E2),
-                          foregroundColor: Colors.black,
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 26,
-                            vertical: 16,
-                          ),
-                          textStyle: const TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w600,
-                          ),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                        ),
-                        onPressed: _showAdModal,
-                        icon: const Icon(Icons.video_library),
-                        label: const Text('View Ads & Support'),
-                      ),
-                    ),
-                    const SizedBox(height: 12),
                     const Padding(
                       padding: EdgeInsets.only(top: 12),
                       child: Center(
