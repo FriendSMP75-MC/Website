@@ -10,7 +10,7 @@ import 'package:http_parser/http_parser.dart'; // Required for MediaType
 import 'package:server_site/data/supabase_config.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-const backendUrl = 'https://key-backend-for-friendsmp75-website.onrender.com/';
+const backendUrl = 'https://key-backend-for-friendsmp75-website.vercel.app/';
 const accessToken = String.fromEnvironment("ACCESS_TOKEN");
 
 class BackendData {
