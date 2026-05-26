@@ -17,7 +17,7 @@ class _StaffDmBroadcastPageState extends State<StaffDmBroadcastPage> {
   final TextEditingController _discordIdsController = TextEditingController();
   final TextEditingController _messageController = TextEditingController();
   bool _isSendingDm = false;
-
+  bool _onBehalfofTeam = true;
   @override
   void dispose() {
     _discordIdsController.dispose();
@@ -64,6 +64,7 @@ class _StaffDmBroadcastPageState extends State<StaffDmBroadcastPage> {
       senderName: senderName,
       senderDiscordId: senderDiscordId,
       serverName: 'FriendSMP75',
+      behalfOfStaff: _onBehalfofTeam
     );
 
     if (!mounted) {
@@ -225,29 +226,39 @@ class _StaffDmBroadcastPageState extends State<StaffDmBroadcastPage> {
                               },
                             ),
                             const SizedBox(height: 12),
-                            FilledButton.icon(
-                              onPressed: _isSendingDm
-                                  ? null
-                                  : _sendDmToMultiple,
-                              icon: _isSendingDm
-                                  ? const SizedBox(
-                                      width: 18,
-                                      height: 18,
-                                      child: CircularProgressIndicator(
-                                        strokeWidth: 2,
-                                        color: Colors.white,
-                                      ),
-                                    )
-                                  : const Icon(Icons.send_rounded),
-                              label: Text(
-                                _isSendingDm
-                                    ? 'Sending...'
-                                    : 'Send to Multiple',
-                              ),
-                              style: FilledButton.styleFrom(
-                                backgroundColor: const Color(0xFF1E7AA7),
-                                foregroundColor: Colors.white,
-                              ),
+                            Row(
+                              children: [
+                                FilledButton.icon(
+                                  onPressed: _isSendingDm
+                                      ? null
+                                      : _sendDmToMultiple,
+                                  icon: _isSendingDm
+                                      ? const SizedBox(
+                                          width: 18,
+                                          height: 18,
+                                          child: CircularProgressIndicator(
+                                            strokeWidth: 2,
+                                            color: Colors.white,
+                                          ),
+                                        )
+                                      : const Icon(Icons.send_rounded),
+                                  label: Text(
+                                    _isSendingDm
+                                        ? 'Sending...'
+                                        : 'Send to Multiple',
+                                  ),
+                                  style: FilledButton.styleFrom(
+                                    backgroundColor: const Color(0xFF1E7AA7),
+                                    foregroundColor: Colors.white,
+                                  ),
+                                ),
+                                Spacer(),
+                                Checkbox(
+                                  value: _onBehalfofTeam,
+                                  onChanged: (val) => setState(() => _onBehalfofTeam = val ?? false),
+                                ),
+                                Text('Send on Behalf of staff team?')
+                              ],
                             ),
                           ],
                         ),

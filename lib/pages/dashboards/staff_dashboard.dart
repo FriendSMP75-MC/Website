@@ -110,16 +110,7 @@ class _StaffDashboardState extends State<StaffDashboard> {
               },
               subText: 'Start, restart, and stop server operations.',
             ),
-            DashboardTiles(
-              title: 'Tickets',
-              color: const Color(0xFF6C5CE7),
-              icon: Icons.confirmation_number_rounded,
-              actionLabel: 'View',
-              onTap: () {
-                context.push('/staff/tickets');
-              },
-              subText: 'View and manage staff tickets.',
-            ),
+        
           ],
         ),
       ],
