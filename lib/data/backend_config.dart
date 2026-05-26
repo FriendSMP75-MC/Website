@@ -163,6 +163,21 @@ class BackendData {
     return null;
   }
 
+  /// Retrieves tickets from the backend (maps to `public.tickets`).
+  static Future<List<Map<String, dynamic>>?> getTickets() async {
+    try {
+      final result = await retrieveData('get-tickets', requireAuth: true);
+      if (result is List) {
+        return result.whereType<Map>().map((item) {
+          return item.map((key, value) => MapEntry(key.toString(), value));
+        }).toList();
+      }
+    } catch (e) {
+      debugPrint('Error fetching tickets: $e');
+    }
+    return null;
+  }
+
   static Future<List<Map<String, dynamic>>?> getMemberMemoryRequests({
     required String memberUuid,
   }) async {
@@ -240,6 +255,19 @@ class BackendData {
           request['title'] ?? request['memory_title'] ?? request['name'];
       final memberUuid =
           request['author_uuid'] ?? request['member_uuid'] ?? request['uuid'];
+      final displayName =
+          request['display_name'] ??
+          request['player'] ??
+          request['author'] ??
+          request['username'] ??
+          request['name'] ??
+          'Unknown';
+      final dateTaken =
+          request['time_taken'] ??
+          request['taken_date'] ??
+          request['date_taken'] ??
+          request['date'] ??
+          '';
 
       final payload = <String, dynamic>{
         'status': status,
@@ -288,6 +316,14 @@ class BackendData {
         }
 
         if (response.statusCode == 200 || response.statusCode == 201) {
+          if (approved) {
+            await notifyDiscordApprovedMemoryRequest(
+              displayName: displayName.toString(),
+              uuid: memberUuid?.toString() ?? 'Unknown',
+              title: title?.toString() ?? 'Untitled request',
+              dateTaken: dateTaken.toString(),
+            );
+          }
           return true;
         }
       }
@@ -384,17 +420,125 @@ class BackendData {
     return await sendData('add-uuid', {'uuid': uuid, 'nickname': nickname});
   }
 
+  static Future<bool> sendDirectMessage({
+    required String recipientDiscordId,
+    required String message,
+    String? senderUuid,
+    String? senderName,
+    String? senderDiscordId,
+    String serverName = 'FriendSMP75',
+  }) async {
+    try {
+      final sentAt = DateTime.now().toUtc().toIso8601String();
+      final safeSenderName =
+          (senderName != null && senderName.trim().isNotEmpty)
+          ? senderName.trim()
+          : 'Unknown';
+      final safeSenderUuid =
+          (senderUuid != null && senderUuid.trim().isNotEmpty)
+          ? senderUuid.trim()
+          : 'Unknown';
+      final safeSenderDiscordId =
+          (senderDiscordId != null && senderDiscordId.trim().isNotEmpty)
+          ? senderDiscordId.trim()
+          : 'Unknown';
+
+      final enrichedMessage =
+          '[Server: $serverName]\n'
+          'From: $safeSenderName\n'
+          'Sender UUID: $safeSenderUuid\n'
+          'Sender Discord ID: $safeSenderDiscordId\n'
+          'Sent At (UTC): $sentAt\n\n'
+          '${message.trim()}';
+
+      final payload = <String, dynamic>{
+        // Keep aliases to support backend field variations.
+        'recipient_discord_id': recipientDiscordId,
+        'discord_id': recipientDiscordId,
+        'recipient_uuid': recipientDiscordId,
+        'uuid': recipientDiscordId,
+        'message': enrichedMessage,
+        'message_body': enrichedMessage,
+        'raw_message': message,
+        'sender_uuid': safeSenderUuid,
+        'sender_name': safeSenderName,
+        'sender_discord_id': safeSenderDiscordId,
+        'sent_at': sentAt,
+        'server_name': serverName,
+        'source_server': serverName,
+      };
+
+      final response = await http.post(
+        Uri.parse('${backendUrl}send-dm'),
+        headers: _getHeaders(includeAuth: true),
+        body: jsonEncode(payload),
+      );
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        return true;
+      }
+
+      print('Send DM error: ${response.statusCode} ${response.body}');
+      return false;
+    } catch (e) {
+      print('Send DM exception: $e');
+      return false;
+    }
+  }
+
+  static Future<({int sentCount, List<String> failedIds})>
+  sendDirectMessageToMany({
+    required List<String> recipientDiscordIds,
+    required String message,
+    String? senderUuid,
+    String? senderName,
+    String? senderDiscordId,
+    String serverName = 'FriendSMP75',
+  }) async {
+    int sentCount = 0;
+    final failedIds = <String>[];
+
+    for (final id in recipientDiscordIds) {
+      final ok = await sendDirectMessage(
+        recipientDiscordId: id,
+        message: message,
+        senderUuid: senderUuid,
+        senderName: senderName,
+        senderDiscordId: senderDiscordId,
+        serverName: serverName,
+      );
+
+      if (ok) {
+        sentCount++;
+      } else {
+        failedIds.add(id);
+      }
+    }
+
+    return (sentCount: sentCount, failedIds: failedIds);
+  }
+
   static Future<String?> newAnnouncement(String title, String body) async {
     try {
       final author = SupabaseConfig.getDisplayName(user);
       final authorUUID = SupabaseConfig.getSupabaseUUID(user);
 
-      return await sendData('new-announcements', {
+      final result = await sendData('new-announcements', {
         'title': title,
         'body': body,
         'author': author,
         'author_uuid': authorUUID,
       });
+
+      // Notify Discord webhook
+      await notifyDiscordAnnouncement(
+        title: title,
+        body: body,
+        author: author,
+        authorUuid: authorUUID,
+      );
+
+      return result;
     } catch (e) {
       return 'Error: $e';
     }
@@ -466,6 +610,32 @@ class BackendData {
         {
           'title': messageTitle,
           'color': 15844367,
+          'fields': [
+            {'name': 'Display Name', 'value': displayName, 'inline': true},
+            {'name': 'UUID', 'value': uuid, 'inline': true},
+            {'name': 'Date Taken', 'value': dateTaken, 'inline': true},
+          ],
+        },
+      ],
+    );
+  }
+
+  static Future<String?> notifyDiscordApprovedMemoryRequest({
+    required String displayName,
+    required String uuid,
+    required String title,
+    required String dateTaken,
+  }) async {
+    final messageTitle = title.trim().isNotEmpty
+        ? title.trim()
+        : 'Member memory request approved';
+
+    return await sendDiscordWebhook(
+      content: '✅ Member memory request approved by staff',
+      embeds: [
+        {
+          'title': messageTitle,
+          'color': 3066993,
           'fields': [
             {'name': 'Display Name', 'value': displayName, 'inline': true},
             {'name': 'UUID', 'value': uuid, 'inline': true},

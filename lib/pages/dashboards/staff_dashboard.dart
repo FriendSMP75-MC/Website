@@ -90,6 +90,17 @@ class _StaffDashboardState extends State<StaffDashboard> {
               subText: 'Review and approve members\' memory submissions.',
             ),
             DashboardTiles(
+              title: 'DM Announcer',
+              color: const Color(0xFF1E7AA7),
+              icon: Icons.mark_chat_unread_rounded,
+              actionLabel: 'Open Announcer',
+              onTap: () {
+                context.push('/staff/dm-broadcast');
+              },
+              subText:
+                  'Open the DM announcer app to send one message to multiple Discord users.',
+            ),
+            DashboardTiles(
               title: 'Server access',
               color: Colors.redAccent,
               icon: Icons.verified_user_outlined,
@@ -98,6 +109,16 @@ class _StaffDashboardState extends State<StaffDashboard> {
                 context.push('/staff/server-access');
               },
               subText: 'Start, restart, and stop server operations.',
+            ),
+            DashboardTiles(
+              title: 'Tickets',
+              color: const Color(0xFF6C5CE7),
+              icon: Icons.confirmation_number_rounded,
+              actionLabel: 'View',
+              onTap: () {
+                context.push('/staff/tickets');
+              },
+              subText: 'View and manage staff tickets.',
             ),
           ],
         ),

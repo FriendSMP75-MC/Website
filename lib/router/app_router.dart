@@ -9,10 +9,13 @@ import 'package:server_site/pages/dashboard.dart';
 import 'package:server_site/pages/gallery.dart';
 import 'package:server_site/pages/status.dart';
 import 'package:server_site/pages/support_us.dart';
+import 'package:server_site/pages/thank_you.dart';
 import 'package:server_site/pages/votes.dart';
 import 'package:server_site/pages/dashboards/subpage/staff/staff_announcement.dart';
+import 'package:server_site/pages/dashboards/subpage/staff/staff_dm_broadcast.dart';
 import 'package:server_site/pages/dashboards/subpage/staff/staff_gallary.dart';
 import 'package:server_site/pages/dashboards/subpage/staff/staff_gallery_requests.dart';
+import 'package:server_site/pages/dashboards/subpage/staff/staff_tickets.dart';
 import 'package:server_site/sub_page/view_announcements.dart';
 
 class AppRouter {
@@ -191,6 +194,24 @@ class AppRouter {
         ),
       ),
       GoRoute(
+        path: '/thank-you',
+        name: 'thank-you',
+        pageBuilder: (context, state) => CustomTransitionPage(
+          key: state.pageKey,
+          child: const ThankYouPage(),
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            return SlideTransition(
+              position: Tween<Offset>(
+                begin: const Offset(1, 0),
+                end: Offset.zero,
+              ).animate(animation),
+              child: child,
+            );
+          },
+        ),
+      ),
+      GoRoute(path: '/Thank-you', redirect: (context, state) => '/thank-you'),
+      GoRoute(
         path: '/staff/announcements',
         name: 'staff-announcements',
         pageBuilder: (context, state) => CustomTransitionPage(
@@ -230,6 +251,40 @@ class AppRouter {
         pageBuilder: (context, state) => CustomTransitionPage(
           key: state.pageKey,
           child: const StaffGalleryRequestsPage(),
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            return SlideTransition(
+              position: Tween<Offset>(
+                begin: const Offset(1, 0),
+                end: Offset.zero,
+              ).animate(animation),
+              child: child,
+            );
+          },
+        ),
+      ),
+      GoRoute(
+        path: '/staff/tickets',
+        name: 'staff-tickets',
+        pageBuilder: (context, state) => CustomTransitionPage(
+          key: state.pageKey,
+          child: const StaffTicketsPage(),
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            return SlideTransition(
+              position: Tween<Offset>(
+                begin: const Offset(1, 0),
+                end: Offset.zero,
+              ).animate(animation),
+              child: child,
+            );
+          },
+        ),
+      ),
+      GoRoute(
+        path: '/staff/dm-broadcast',
+        name: 'staff-dm-broadcast',
+        pageBuilder: (context, state) => CustomTransitionPage(
+          key: state.pageKey,
+          child: const StaffDmBroadcastPage(),
           transitionsBuilder: (context, animation, secondaryAnimation, child) {
             return SlideTransition(
               position: Tween<Offset>(
