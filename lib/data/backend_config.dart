@@ -427,6 +427,7 @@ class BackendData {
     String? senderName,
     String? senderDiscordId,
     String serverName = 'FriendSMP75',
+    bool? behalfOfStaff
   }) async {
     try {
       final sentAt = DateTime.now().toUtc().toIso8601String();
@@ -443,13 +444,8 @@ class BackendData {
           ? senderDiscordId.trim()
           : 'Unknown';
 
-      final enrichedMessage =
-          '[Server: $serverName]\n'
-          'From: $safeSenderName\n'
-          'Sender UUID: $safeSenderUuid\n'
-          'Sender Discord ID: $safeSenderDiscordId\n'
-          'Sent At (UTC): $sentAt\n\n'
-          '${message.trim()}';
+      final spacedMessage =
+          '\n\n${message.trim()}';
 
       final payload = <String, dynamic>{
         // Keep aliases to support backend field variations.
@@ -457,8 +453,7 @@ class BackendData {
         'discord_id': recipientDiscordId,
         'recipient_uuid': recipientDiscordId,
         'uuid': recipientDiscordId,
-        'message': enrichedMessage,
-        'message_body': enrichedMessage,
+        'message': spacedMessage,
         'raw_message': message,
         'sender_uuid': safeSenderUuid,
         'sender_name': safeSenderName,
@@ -466,6 +461,7 @@ class BackendData {
         'sent_at': sentAt,
         'server_name': serverName,
         'source_server': serverName,
+        'behalf_of_staff': behalfOfStaff
       };
 
       final response = await http.post(
@@ -494,6 +490,7 @@ class BackendData {
     String? senderName,
     String? senderDiscordId,
     String serverName = 'FriendSMP75',
+    bool? behalfOfStaff
   }) async {
     int sentCount = 0;
     final failedIds = <String>[];
@@ -506,6 +503,7 @@ class BackendData {
         senderName: senderName,
         senderDiscordId: senderDiscordId,
         serverName: serverName,
+        behalfOfStaff: behalfOfStaff
       );
 
       if (ok) {
