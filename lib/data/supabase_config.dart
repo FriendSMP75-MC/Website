@@ -20,7 +20,7 @@ class SupabaseConfig {
   /// Fetch credentials from backend
   static Future<Map<String, String>?> fetchSupabaseDetails() async {
     const backendUrl =
-        'https://key-backend-for-friendsmp75-website.onrender.com/secure-data';
+        'https://key-backend-for-friendsmp75-website.vercel.app/secure-data';
     const accessToken = String.fromEnvironment("ACCESS_TOKEN");
 
     try {
