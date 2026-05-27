@@ -229,6 +229,25 @@ class _HomeState extends State<Home> {
                             answer:
                                 'FriendSMP75 was founded in 2020, during the COVID-19 period.',
                           ),
+                          SizedBox(height: 10),
+                          Faq(
+                            question:
+                                'How to make ticket for reports and support',
+                            answer:
+                                'Tickets can be created on discord by visiting "tickets and reports" channel and clicking the button. When the button is clicked a new channel will be created and will ping staff members to help with your request',
+                          ),
+                          SizedBox(height: 10),
+                          Faq(
+                            question: 'What if i get banned? [Minecraft]',
+                            answer:
+                                'If you think you are banned unfairly you are welcome to create a ticket and share what happened with us on discord. If you are banned for breaking the rules please keep in mind creating a ticket won\'t help you, and you must accept the punishment given by staff member and staff\'s decision is final',
+                          ),
+                          SizedBox(height: 10),
+                          Faq(
+                            question: 'What if i get banned [Discord]',
+                            answer:
+                                'If you are temporarily banned please wait till you are unbanned automatically. If you are banned unfairly you are allowed to reach directly to owner via Email (Email to: friendsmp75@outlook.com), only one email is allowed for request if you believe the email was ignored you can request another unban after 14 days.\n\n If you received an response email stating you will be banned you can\'t request another unban request. ',
+                          ),
                         ],
                       ),
                     ),
