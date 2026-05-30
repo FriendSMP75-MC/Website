@@ -92,6 +92,7 @@ class _StaffannouncementsState extends State<Staffannouncements> {
 
     return Scaffold(
       appBar: AppbarPage(backArrow: true),
+      resizeToAvoidBottomInset: false,
       backgroundColor: const Color(0xFF091323),
       body: LayoutBuilder(
         builder: (context, constraints) {
@@ -112,7 +113,8 @@ class _StaffannouncementsState extends State<Staffannouncements> {
                     ],
                   ),
                 ),
-                child: Center(
+                child: Align(
+                  alignment: Alignment.topCenter,
                   child: ConstrainedBox(
                     constraints: const BoxConstraints(maxWidth: 1100),
                     child: Padding(
