@@ -92,28 +92,39 @@ class _StaffannouncementsState extends State<Staffannouncements> {
 
     return Scaffold(
       appBar: AppbarPage(backArrow: true),
-      body: SingleChildScrollView(
-        child: Container(
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [Color(0xFF091323), Color(0xFF102037), Color(0xFF091323)],
-            ),
-          ),
-          child: Center(
+      backgroundColor: const Color(0xFF091323),
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          return SingleChildScrollView(
+            keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
             child: ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 1100),
-              child: Padding(
-                padding: EdgeInsets.fromLTRB(
-                  isMobile ? 12 : 20,
-                  16,
-                  isMobile ? 12 : 20,
-                  0,
+              constraints: BoxConstraints(minHeight: constraints.maxHeight),
+              child: Container(
+                width: double.infinity,
+                decoration: const BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      Color(0xFF091323),
+                      Color(0xFF102037),
+                      Color(0xFF091323),
+                    ],
+                  ),
                 ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
+                child: Center(
+                  child: ConstrainedBox(
+                    constraints: const BoxConstraints(maxWidth: 1100),
+                    child: Padding(
+                      padding: EdgeInsets.fromLTRB(
+                        isMobile ? 12 : 20,
+                        16,
+                        isMobile ? 12 : 20,
+                        0,
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
                     Container(
                       width: double.infinity,
                       padding: EdgeInsets.all(isMobile ? 16 : 20),
@@ -348,12 +359,15 @@ class _StaffannouncementsState extends State<Staffannouncements> {
                     ),
                     const SizedBox(height: 20),
                     const MyFooter(),
-                  ],
+                        ],
+                      ),
+                    ),
+                  ),
                 ),
               ),
             ),
-          ),
-        ),
+          );
+        },
       ),
     );
   }
