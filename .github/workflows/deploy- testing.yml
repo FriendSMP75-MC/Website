@@ -26,4 +26,4 @@ jobs:
         run: flutter build web --release --dart-define=ACCESS_TOKEN=${{ secrets.ACCESS_TOKEN }}
 
       - name: Deploy to Vercel
-        run: npx vercel@latest deploy --cwd ./build/web --yes
+        run: npx vercel@latest deploy --cwd ./build/web --yes --token "$VERCEL_TOKEN"
