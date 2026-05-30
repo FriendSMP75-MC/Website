@@ -9,9 +9,9 @@ jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
     env:
-      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
-      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID || vars.VERCEL_ORG_ID }}
+      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID || vars.VERCEL_PROJECT_ID }}
+      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN || secrets.VERCEL_TOKEN_PROD }}
 
     steps:
       - name: Checkout repository
@@ -24,6 +24,14 @@ jobs:
 
       - name: Build Flutter Web
         run: flutter build web --release --dart-define=ACCESS_TOKEN=${{ secrets.ACCESS_TOKEN }}
+
+      - name: Validate Vercel credentials
+        run: |
+          if [[ -z "$VERCEL_TOKEN" || -z "$VERCEL_ORG_ID" || -z "$VERCEL_PROJECT_ID" ]]; then
+            echo "Missing Vercel credentials for production deploy."
+            echo "Required: VERCEL_TOKEN, VERCEL_ORG_ID, VERCEL_PROJECT_ID (as Secrets or Variables)."
+            exit 1
+          fi
 
       - name: Deploy to Vercel
         run: npx vercel@latest deploy --cwd ./build/web --yes --prod --token "$VERCEL_TOKEN"
