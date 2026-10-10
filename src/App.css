@@ -12,6 +12,10 @@
 	color: #f4f4f4;
 }
 
+.route-page {
+	animation: page-enter 280ms ease-out both;
+}
+
 .brand {
 	display: inline-flex;
 	flex: 0 0 auto;
@@ -31,7 +35,7 @@
 
 .brand-name {
 	font-family: Georgia, 'Times New Roman', serif;
-	font-size: 16px;
+	font-size: 17px;
 	font-weight: 700;
 	letter-spacing: 0;
 	white-space: nowrap;
@@ -85,7 +89,7 @@
 	border-radius: 7px;
 	background: #242020;
 	font-family: Arial, sans-serif;
-	font-size: 11px;
+	font-size: 13px;
 	white-space: nowrap;
 }
 
@@ -106,6 +110,66 @@
 .nav-action-dashboard {
 	margin-left: 7px;
 	color: #ffffff;
+}
+
+.auth-form {
+	position: absolute;
+	top: calc(100% + 8px);
+	right: 18px;
+	z-index: 10;
+	display: grid;
+	gap: 10px;
+	width: min(280px, calc(100vw - 28px));
+	padding: 16px;
+	border: 1px solid #4f4f4f;
+	border-radius: 8px;
+	background: #211d1d;
+	box-shadow: 0 18px 35px rgba(0, 0, 0, 0.3);
+	font-family: Arial, sans-serif;
+}
+
+.auth-form label {
+	display: grid;
+	gap: 5px;
+	color: #b9b1af;
+	font-size: 13px;
+}
+
+.auth-form input {
+	min-height: 32px;
+	padding: 0 9px;
+	border: 1px solid #4f4747;
+	border-radius: 5px;
+	color: #f4f0ee;
+	background: #151313;
+	font: 13px Arial, sans-serif;
+}
+
+.auth-form input:focus {
+	border-color: #83d97c;
+	outline: 2px solid rgba(131, 217, 124, 0.18);
+}
+
+.auth-error {
+	margin: 0;
+	color: #f18c8c;
+	font-size: 13px;
+	line-height: 1.5;
+}
+
+.auth-submit {
+	min-height: 34px;
+	border: 0;
+	border-radius: 5px;
+	color: #14200e;
+	background: #83d97c;
+	cursor: pointer;
+	font: 700 13px Arial, sans-serif;
+}
+
+.auth-submit:disabled {
+	cursor: wait;
+	opacity: 0.65;
 }
 
 .menu-toggle {
@@ -159,6 +223,11 @@
 		flex-wrap: wrap;
 		gap: 0;
 		padding: 5px;
+	}
+
+	.auth-form {
+		top: calc(100% + 6px);
+		right: 5px;
 	}
 
 	.menu-toggle {
@@ -264,6 +333,17 @@
 	}
 }
 
+@keyframes page-enter {
+	from {
+		opacity: 0;
+		transform: translateY(8px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
 @keyframes nav-item-in {
 	to {
 		opacity: 1;
@@ -275,7 +355,8 @@
 	.nav-content,
 	.menu-toggle,
 	.nav-link,
-	.nav-action {
+	.nav-action,
+	.route-page {
 		animation: none;
 		transition: none;
 	}

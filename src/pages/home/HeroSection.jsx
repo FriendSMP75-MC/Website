@@ -1,5 +1,6 @@
-import { ArrowRight, ChevronRight, MessageCircle, Play } from 'lucide-react'
-import heroImage from '../../assets/hero.png'
+import { useEffect, useState } from 'react'
+import { ArrowRight, MessageCircle, Play } from 'lucide-react'
+import { getLatestGroupPhoto } from '../../lib/api'
 
 const heroActions = [
     { label: 'Play now', icon: Play, className: 'button-primary' },
@@ -7,6 +8,26 @@ const heroActions = [
 ]
 
 export function HeroSection() {
+    const [groupPhoto, setGroupPhoto] = useState(null)
+
+    useEffect(() => {
+        let active = true
+
+        getLatestGroupPhoto()
+            .then((photo) => {
+                if (active) setGroupPhoto(photo)
+            })
+            .catch(() => {
+                if (active) setGroupPhoto(null)
+            })
+
+        return () => {
+            active = false
+        }
+    }, [])
+
+    const photoUrl = groupPhoto?.url
+
     return (
         <section className="hero-section page-section" aria-labelledby="hero-title">
             <div className="hero-copy">
@@ -26,7 +47,13 @@ export function HeroSection() {
                     ))}
                 </div>
             </div>
-            
+            <div className="hero-art" aria-label="Latest FriendSMP75 group photo">
+                {photoUrl ? (
+                    <img src={photoUrl} alt="Latest FriendSMP75 group photo" />
+                ) : (
+                    <div className="hero-art-placeholder">Latest group photo will appear here</div>
+                )}
+            </div>
         </section>
     )
 }
