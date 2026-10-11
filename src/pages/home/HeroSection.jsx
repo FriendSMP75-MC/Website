@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react'
 import { ArrowRight, MessageCircle, Play } from 'lucide-react'
 import { getLatestGroupPhoto } from '../../lib/api'
+import { DISCORD_INVITE_URL } from '../../lib/links'
 
 const heroActions = [
-    { label: 'Play now', icon: Play, className: 'button-primary' },
-    { label: 'Join Discord', icon: MessageCircle, className: 'button-secondary' },
+    { label: 'Play now', icon: Play, className: 'button-primary', href: '#server' },
+    { label: 'Join Discord', icon: MessageCircle, className: 'button-secondary', href: DISCORD_INVITE_URL },
 ]
 
 export function HeroSection() {
@@ -38,8 +39,8 @@ export function HeroSection() {
                     Join a focused, low-drama environment where every session feels friendly, collaborative.
                 </p>
                 <div className="hero-actions">
-                    {heroActions.map(({ label, icon: Icon, className }) => (
-                        <a className={`home-button ${className}`} href="#server" key={label}>
+                    {heroActions.map(({ label, icon: Icon, className, href }) => (
+                        <a className={`home-button ${className}`} href={href} key={label}>
                             <Icon size={15} aria-hidden="true" />
                             <span>{label}</span>
                             {className === 'button-primary' && <ArrowRight size={14} aria-hidden="true" />}

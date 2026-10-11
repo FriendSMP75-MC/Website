@@ -14,7 +14,7 @@ import {
     X,
 } from 'lucide-react'
 import logo from "../assets/logo.jpg";
-import { supabase } from '../lib/supabase'
+import { signOutImmediately, supabase } from '../lib/supabase'
 import { Link, useLocation } from 'react-router-dom'
 
 const iconEndpoint = import.meta.env.VITE_SERVER_ICON_ENDPOINT
@@ -73,7 +73,7 @@ export default function NavBar(){
     const handleAuthSubmit = async (event) => {
         event.preventDefault()
         if (!supabase) {
-            setAuthError('Supabase is not configured. Add VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY.')
+            setAuthError('Something went wrong. Please try again.')
             return
         }
 
@@ -83,7 +83,7 @@ export default function NavBar(){
         setAuthLoading(false)
 
         if (error) {
-            setAuthError(error.message)
+            setAuthError('Something went wrong. Please try again.')
             return
         }
 
@@ -91,18 +91,18 @@ export default function NavBar(){
         setAuthOpen(false)
     }
 
-    const handleLogout = async () => {
-        await supabase?.auth.signOut()
+    const handleLogout = () => {
+        signOutImmediately()
     }
 
     const primaryLinks = [
         { label: 'Home', icon: Home, href: '/' },
         { label: 'About', icon: CircleHelp, href: '/about' },
         { label: 'Status', icon: BarChart3, href: '/status' },
-        { label: 'Gallery', icon: PanelTop, href: '#' },
-        { label: 'Announcements', icon: Megaphone, href: '#' },
-        { label: 'Support Us', icon: ShoppingBag, href: '#' },
-        { label: 'Vote', icon: Vote, href: '#' },
+        { label: 'Gallery', icon: PanelTop, href: '/gallery' },
+        { label: 'Announcements', icon: Megaphone, href: '/announcements' },
+        { label: 'Support Us', icon: ShoppingBag, href: '/support' },
+        { label: 'Vote', icon: Vote, href: '/vote' },
     ]
 
     return (
@@ -134,10 +134,10 @@ export default function NavBar(){
 
                 <div className="nav-actions">
                     {session && (
-                        <a className="nav-action nav-action-dashboard" href="#dashboard">
+                        <Link className="nav-action nav-action-dashboard" to="/dashboard">
                             <UserRound size={14} aria-hidden="true" />
                             <span>Dashboard</span>
-                        </a>
+                        </Link>
                     )}
                     {session ? (
                         <button className="nav-action nav-action-button" type="button" onClick={handleLogout}>
@@ -145,10 +145,10 @@ export default function NavBar(){
                             <span>Logout</span>
                         </button>
                     ) : (
-                        <button className="nav-action nav-action-button" type="button" onClick={() => setAuthOpen(!authOpen)}>
+                        <Link className="nav-action nav-action-button" to="/dashboard">
                             <LogIn size={14} aria-hidden="true" />
                             <span>Login</span>
-                        </button>
+                        </Link>
                     )}
                 </div>
             </div>

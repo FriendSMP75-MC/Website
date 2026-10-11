@@ -120,6 +120,20 @@
 	line-height: 1.55;
 }
 
+.about-card-link {
+	display: inline-flex;
+	margin-top: 12px;
+	color: #83d97c;
+	font: 700 12px Arial, sans-serif;
+	text-decoration: none;
+	transition: color 160ms ease;
+}
+
+.about-card-link:hover {
+	color: #a7ef9f;
+	text-decoration: underline;
+}
+
 .features-section,
 .join-section {
 	margin-top: 86px;

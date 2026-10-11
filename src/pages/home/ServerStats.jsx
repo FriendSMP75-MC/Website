@@ -1,27 +1,63 @@
 import { useEffect, useState } from 'react'
-import { Activity, Code2, Copy, Users } from 'lucide-react'
+import { Activity, Code2, Copy } from 'lucide-react'
 import { getServerStatus } from '../../lib/api'
+
+const STATUS_CACHE_KEY = 'friendsmp75:server-status'
+const STATUS_CACHE_TTL = 60 * 1000
 
 const serverStats = [
     { label: 'Server IP', value: 'play.friendsmp75.com', icon: Code2, action: 'copy' },
     { label: 'Minecraft version', value: '1.21.4', icon: Code2 },
     { label: 'Live status', value: 'Pending / Unconnected', icon: Activity },
-    { label: 'Player count', value: 'Awaiting content', icon: Users },
 ]
 
+function formatStatus(status) {
+    return status ? status[0].toUpperCase() + status.slice(1) : 'Unknown'
+}
+
+function readCachedStatus(maxAge = STATUS_CACHE_TTL) {
+    try {
+        const raw = window.localStorage.getItem(STATUS_CACHE_KEY)
+        if (!raw) return null
+        const cached = JSON.parse(raw)
+        if (!cached || typeof cached.status !== 'string' || typeof cached.fetchedAt !== 'number') return null
+        if (Date.now() - cached.fetchedAt > maxAge) return null
+        return cached.status
+    } catch {
+        return null
+    }
+}
+
+function writeCachedStatus(status) {
+    try {
+        window.localStorage.setItem(STATUS_CACHE_KEY, JSON.stringify({ status, fetchedAt: Date.now() }))
+    } catch {
+        // Storage may be unavailable (private mode); caching is best-effort.
+    }
+}
+
 export function ServerStats() {
-    const [serverStatus, setServerStatus] = useState('Checking')
+    const [serverStatus, setServerStatus] = useState(() => {
+        const cached = readCachedStatus()
+        return cached ? formatStatus(cached) : 'Checking'
+    })
     const [copied, setCopied] = useState(false)
 
     useEffect(() => {
+        if (readCachedStatus()) return undefined
+
         let active = true
 
         getServerStatus()
             .then(({ status }) => {
-                if (active) setServerStatus(status ? status[0].toUpperCase() + status.slice(1) : 'Unknown')
+                if (!status) return
+                writeCachedStatus(status)
+                if (active) setServerStatus(formatStatus(status))
             })
             .catch(() => {
-                if (active) setServerStatus('Unavailable')
+                if (!active) return
+                const stale = readCachedStatus(Number.POSITIVE_INFINITY)
+                setServerStatus(stale ? formatStatus(stale) : 'Unavailable')
             })
 
         return () => {
@@ -43,7 +79,6 @@ export function ServerStats() {
         'Server IP': 'friendsmp75.xubi.org',
         'Minecraft version': '1.8 to latest',
         'Live status': serverStatus,
-        'Player count': 'Awaiting content',
     }
 
     return (

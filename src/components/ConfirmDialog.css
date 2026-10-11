@@ -1,0 +1,83 @@
+.confirm-overlay {
+	position: fixed;
+	inset: 0;
+	z-index: 9999;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 20px;
+	background: rgba(10, 8, 8, .72);
+	backdrop-filter: blur(4px);
+	overflow-y: auto;
+}
+
+.confirm-dialog {
+	position: relative;
+	width: min(100%, 390px);
+	margin: auto;
+	padding: 26px;
+	border: 1px solid #594f4d;
+	border-radius: 13px;
+	background: #272121;
+	box-shadow: 0 24px 70px rgba(0, 0, 0, .42);
+	color: #eee9e7;
+	animation: confirm-dialog-enter 180ms ease-out both;
+}
+
+.confirm-close {
+	position: absolute;
+	top: 13px;
+	right: 13px;
+	display: grid;
+	width: 30px;
+	height: 30px;
+	place-items: center;
+	border: 0;
+	border-radius: 6px;
+	color: #aaa2a0;
+	background: transparent;
+	cursor: pointer;
+}
+
+.confirm-close:hover { color: #ffffff; background: #3b3333; }
+
+.confirm-icon {
+	display: grid;
+	width: 42px;
+	height: 42px;
+	margin-bottom: 16px;
+	place-items: center;
+	border-radius: 9px;
+	color: #83d97c;
+	background: #1d241e;
+}
+
+.confirm-icon-danger { color: #e6a0a0; background: #382525; }
+.confirm-dialog h2 { margin: 0 0 8px; font-size: 23px; }
+.confirm-dialog p { margin: 0; color: #b9b1af; font: 14px/1.6 Arial, sans-serif; }
+.confirm-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 24px; }
+.confirm-cancel,
+.confirm-submit,
+.confirm-secondary-danger {
+	min-height: 36px;
+	padding: 0 13px;
+	border-radius: 6px;
+	cursor: pointer;
+	font: 700 13px Arial, sans-serif;
+}
+.confirm-cancel { border: 1px solid #594f4d; color: #d6cecb; background: #302929; }
+.confirm-submit { border: 0; color: #14200e; background: #83d97c; }
+.confirm-submit-danger { color: #ffffff; background: #a85656; }
+.confirm-secondary-danger { border: 1px solid #805050; color: #e6a0a0; background: #382525; }
+.confirm-cancel:hover { background: #443b3b; }
+.confirm-submit:hover { filter: brightness(1.08); }
+.confirm-secondary-danger:hover { color: #ffffff; background: #a85656; }
+
+@keyframes confirm-dialog-enter {
+	from { opacity: 0; transform: translateY(8px) scale(.98); }
+	to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.confirm-dialog { animation: none; }
+}

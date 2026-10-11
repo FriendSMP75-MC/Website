@@ -7,8 +7,9 @@ import {
     UsersRound,
     Video,
 } from 'lucide-react'
-import NavBar from '../components/Navbar'
-import { Footer } from '../components/Footer'
+import NavBar from '../../components/Navbar'
+import { Footer } from '../../components/Footer'
+import { DISCORD_INVITE_URL, EMAIL_URL, YOUTUBE_URL } from '../../lib/links'
 import './about.css'
 
 const values = [
@@ -30,17 +31,22 @@ const values = [
 ]
 
 const connectOptions = [
-    { title: 'YouTube', description: 'Catch up with FriendSMP75 videos.', icon: Video },
-    { title: 'Discord', description: 'Connect with the community.', icon: MessageCircle },
-    { title: 'Email', description: 'Get in touch with us.', icon: Mail },
+    { title: 'YouTube', description: 'Catch up with FriendSMP75 videos.', icon: Video, href: YOUTUBE_URL },
+    { title: 'Discord', description: 'Connect with the community.', icon: MessageCircle, href: DISCORD_INVITE_URL },
+    { title: 'Email', description: 'Get in touch with us.', icon: Mail, href: EMAIL_URL },
 ]
 
-function AboutCard({ title, description, icon: Icon }) {
+function AboutCard({ title, description, icon: Icon, href }) {
     return (
         <article className="about-card">
             <div className="about-card-icon"><Icon size={17} aria-hidden="true" /></div>
             <h3>{title}</h3>
             <p>{description}</p>
+            {href && (
+                <a className="about-card-link" href={href}>
+                    Open {title}
+                </a>
+            )}
         </article>
     )
 }

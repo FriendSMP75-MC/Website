@@ -1,17 +1,23 @@
 import { Mail, MessageCircle, Video } from 'lucide-react'
 import logo from '../assets/logo.jpg'
+import { DISCORD_INVITE_URL, EMAIL_URL, YOUTUBE_URL } from '../lib/links'
 
 const navigationLinks = ['Home', 'About', 'Status', 'Gallery']
-const communityLinks = ['Discord', 'YouTube', 'Announcements', 'Support Us']
+const communityLinks = [
+    { label: 'Discord', href: DISCORD_INVITE_URL },
+    { label: 'YouTube', href: YOUTUBE_URL },
+    { label: 'Announcements', href: '/announcements' },
+    { label: 'Support Us', href: '/support' },
+]
 const connectLinks = [
-    { label: 'YouTube', icon: Video },
-    { label: 'Discord', icon: MessageCircle },
-    { label: 'Email', icon: Mail },
+    { label: 'YouTube', icon: Video, href: YOUTUBE_URL },
+    { label: 'Discord', icon: MessageCircle, href: DISCORD_INVITE_URL },
+    { label: 'Email', icon: Mail, href: EMAIL_URL },
 ]
 
-function FooterLink({ children, icon: Icon }) {
+function FooterLink({ children, icon: Icon, href = '#' }) {
     return (
-        <a className="footer-link" href="#">
+        <a className="footer-link" href={href}>
             {Icon && <Icon size={13} aria-hidden="true" />}
             <span>{children}</span>
         </a>
@@ -40,13 +46,13 @@ export function Footer() {
 
                 <div className="footer-link-group">
                     <p className="footer-heading">Community</p>
-                    {communityLinks.map((label) => <FooterLink key={label}>{label}</FooterLink>)}
+                    {communityLinks.map(({ label, href }) => <FooterLink key={label} href={href}>{label}</FooterLink>)}
                 </div>
 
                 <div className="footer-link-group">
                     <p className="footer-heading">Connect</p>
-                    {connectLinks.map(({ label, icon }) => (
-                        <FooterLink key={label} icon={icon}>{label}</FooterLink>
+                    {connectLinks.map(({ label, icon, href }) => (
+                        <FooterLink key={label} icon={icon} href={href}>{label}</FooterLink>
                     ))}
                 </div>
             </div>
