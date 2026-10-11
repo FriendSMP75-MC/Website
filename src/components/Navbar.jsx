@@ -108,7 +108,7 @@ export default function NavBar(){
     return (
         <nav className="navbar" aria-label="Main navigation">
             <Link className="brand" to="/" aria-label="FriendSMP75 home">
-                <img className="brand-logo" src={serverIcon} alt="FriendSMP75 logo" />
+                <img className="brand-logo" src={serverIcon} alt="" aria-hidden="true" />
                 <span className="brand-name">FriendSMP75</span>
             </Link>
 
