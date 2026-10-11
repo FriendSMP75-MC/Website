@@ -1,0 +1,8 @@
+# robots.txt for https://friendsmp75.vercel.app/
+User-agent: *
+Allow: /
+
+# Private / auth-gated area — not for search engines
+Disallow: /dashboard
+
+Sitemap: https://friendsmp75.vercel.app/sitemap.xml
