@@ -2,16 +2,21 @@ import { Mail, MessageCircle, Video } from 'lucide-react'
 import logo from '../assets/logo.jpg'
 import { DISCORD_INVITE_URL, EMAIL_URL, YOUTUBE_URL } from '../lib/links'
 
-const navigationLinks = ['Home', 'About', 'Status', 'Gallery']
+const navigationLinks = [
+        { label: 'Home', href: '/' },
+        { label: 'About', href: '/about' },
+        { label: 'Status', href: '/status' },
+        { label: 'Gallery', href: '/gallery' },
+]
 const communityLinks = [
-    { label: 'Discord', href: DISCORD_INVITE_URL },
-    { label: 'YouTube', href: YOUTUBE_URL },
+    { label: 'Discord', href: 'https://discord.gg/K8ucVvjfge' },
+    { label: 'YouTube', href: 'https://www.youtube.com/@FriendSMP75' },
     { label: 'Announcements', href: '/announcements' },
     { label: 'Support Us', href: '/support' },
 ]
 const connectLinks = [
-    { label: 'YouTube', icon: Video, href: YOUTUBE_URL },
-    { label: 'Discord', icon: MessageCircle, href: DISCORD_INVITE_URL },
+    { label: 'YouTube', icon: Video, href: 'https://www.youtube.com/@FriendSMP75' },
+    { label: 'Discord', icon: MessageCircle, href: 'https://discord.gg/K8ucVvjfge' },
     { label: 'Email', icon: Mail, href: EMAIL_URL },
 ]
 
@@ -41,7 +46,7 @@ export function Footer() {
 
                 <div className="footer-link-group">
                     <p className="footer-heading">Navigate</p>
-                    {navigationLinks.map((label) => <FooterLink key={label}>{label}</FooterLink>)}
+                    {navigationLinks.map((link) => <FooterLink key={link.label} href={link.href}>{link.label}</FooterLink>)}
                 </div>
 
                 <div className="footer-link-group">
