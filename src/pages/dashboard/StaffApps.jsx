@@ -4,7 +4,6 @@ import {
     Megaphone,
     MessageSquare,
     ServerCog,
-    ShieldCheck,
 } from 'lucide-react'
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
@@ -14,7 +13,6 @@ const staffApps = [
     { title: 'Gallery', description: 'Upload new gallery photos for public display.', action: 'Upload', path: '/dashboard/gallery-upload', icon: ImagePlus, className: 'staff-app-blue' },
     { title: 'Approve Gallery Request', description: "Review and approve members' memory submissions.", action: 'Review', path: '/dashboard/memory-requests', icon: FileCheck2, className: 'staff-app-green' },
     { title: 'DM Announcer', description: 'Open the DM announcer app to send one message to multiple Discord users.', action: 'Open Announcer', path: '/dashboard/dm-announcer', icon: MessageSquare, className: 'staff-app-cyan' },
-    { title: 'Server access', description: 'Start, restart, and stop server operations.', action: 'Server Access', path: '/dashboard/server-access', icon: ShieldCheck, className: 'staff-app-red' },
     { title: 'Staff Application', description: 'Open / close / review staff applications.', action: 'Open applications', path: '/dashboard/staff-applications', icon: ServerCog, className: 'staff-app-orange' },
 ]
 
