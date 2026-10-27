@@ -1687,3 +1687,27 @@
         grid-template-columns: 1fr;
     }
 }
+.dashboard-warning {
+    display: grid;
+    justify-items: center;
+    gap: 10px;
+    padding: 50px 24px;
+    text-align: center;
+    border: 1px solid #7a5a1a;
+    border-radius: 14px;
+    background: linear-gradient(135deg, #4a3614, #272121);
+    margin: 0 0 20px;
+}
+.dashboard-warning h2 {
+    margin: 0;
+    color: #f2b95b;
+    font-size: 24px;
+}
+.dashboard-warning p {
+    margin: 0;
+    color: #ddd6c9;
+    font: 15px/1.7 Arial, sans-serif;
+}
+.dashboard-warning svg {
+    color: #f2b95b;
+}
